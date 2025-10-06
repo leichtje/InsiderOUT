@@ -1,0 +1,6 @@
+@Insider_OUT.Server_HostAddress = http://localhost:5122
+
+GET {{Insider_OUT.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
