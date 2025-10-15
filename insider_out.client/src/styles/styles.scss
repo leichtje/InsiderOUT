@@ -1,4 +1,5 @@
 @use 'mixins' as mixins;
+@use 'material-styles';
 
 :root {
     --color-primary: #76a5af;
@@ -51,3 +52,6 @@ body {
 
 
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

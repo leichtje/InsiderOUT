@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './fragments/header/header.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     HeaderComponent,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
