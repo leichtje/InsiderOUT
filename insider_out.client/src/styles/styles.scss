@@ -1,0 +1,53 @@
+@use 'mixins' as mixins;
+
+:root {
+    --color-primary: #76a5af;
+    --color-secondary: #9dc9d2;
+    --color-glass-back: #b6cdd4;
+    --color-back: #ffffff;
+    --color-back-body: #b7c0c2;
+    --color-back-2: #b3b3b3;
+    --color-text: #212121;
+}
+
+body.dark-mode {
+    --color-primary: #76a5af;
+    --color-secondary: #3c5054;
+    --color-glass-back: #3a4a50;
+    --color-back: #434343;
+    --color-back-body: #192528;
+    --color-back-2: #232b2d;
+    --color-text: #ebebeb;
+}
+
+body {
+    margin: 0;
+    background-color: var(--color-back-body);
+    color: var(--color-text);
+}
+
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
+/*----------------------- General Styles -----------------------*/
+
+.page-container {
+    background-color: var(--color-back);
+    box-shadow: 0px 0px 100px var(--color-secondary);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+    border: 2px solid var(--color-back-2);
+
+    @include mixins.mobile{
+        margin: 10px 0px;
+    }
+}
+
+
+
+
