@@ -1,0 +1,44 @@
+<div class="header-container">
+    <div class="header-left">
+        <div class="header-logo">
+            @if (themeService.isDarkMode()) {
+                @if (breakpointService.isWeb() || breakpointService.isTablet()){
+                    <img class="header-logo" src="assets/insiderout_dark.png" alt="Insider OUT Logo">
+                }
+                @else {
+                    <img class="header-logo" src="assets/io_dark.png" alt="Insider OUT Logo">
+                }
+            }
+            @else {
+                @if (breakpointService.isWeb() || breakpointService.isTablet()){
+                    <img class="header-logo" src="assets/insiderout_light.png" alt="Insider OUT Logo">
+                }
+                @else {
+                    <img class="header-logo" src="assets/io_light.png" alt="Insider OUT Logo">
+                }
+            }
+        </div>
+
+        <div class="header-nav">
+            <a class="header-nav-item" routerLink="/home">Home</a>
+            <a class="header-nav-item" routerLink="/Test">Test</a>
+        </div>
+    </div>
+
+    <div class="header-right">
+
+        <div>
+            <button (click)="toggleTheme()">
+                Switch to {{ themeService.isDarkMode() ? 'Light' : 'Dark' }} Mode
+            </button>
+        </div>
+        
+        <div class="header-profile">
+            
+            
+        </div>
+    
+    </div>
+        
+    
+</div>
