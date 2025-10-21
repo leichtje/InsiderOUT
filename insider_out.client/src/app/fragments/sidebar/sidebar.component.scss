@@ -1,0 +1,66 @@
+@use '../../../styles/mixins' as mixins;
+
+.sidebar-container {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    @include mixins.phone() {
+        position: fixed;
+        width: 100%;
+    }
+
+    .sidebar-item {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 5px;
+        border: 2px solid var(--color-back);
+        width: fit-content;
+        
+        .sidebar-icon {
+            display: inline-flex;
+            color: var(--color-primary-dark);
+        }
+        
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: var(--color-text);
+            letter-spacing: 1px;
+
+            mat-icon.rotated {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    .subpage-container {
+        display: flex;
+        flex-direction: column;
+        margin-left: 30px;
+        gap: 5px;
+        
+        .subpage-item {
+            padding: 5px;
+            color: var(--color-text);
+            border: 2px solid var(--color-back);
+            width: fit-content;
+        }
+    }
+
+
+    .sidebar-item-active {
+        border: 2px solid var(--color-primary) !important;
+        background-color: var(--color-glass-back);
+        border-radius: 5px;
+
+        .sidebar-title, .subpage-title {
+            font-weight: 600;
+        }
+    }
+
+    .sidebar-divider {
+        border-bottom: 2px solid var(--color-back-2);
+    }
+}

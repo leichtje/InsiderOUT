@@ -1,19 +1,48 @@
-<div class="sidebar-container">
-
-    @for (item of sidebarItems; track item) {
-        <a routerLink={{item.route}}>
-            <div class="sidebar-item">
-                <div class="sidebar-icon">
-                    <mat-icon>{{item.icon}}</mat-icon>
+@if (!breakpointService.isPhone() || (breakpointService.isPhone() && isMobileSidebarOpen())) {
+    <div class="page-container sidebar-container"> 
+        
+        @for (item of sidebarItems; track item) {
+          
+            @if (!item.subpages) {
+                <a class="sidebar-item" 
+                    [routerLink]="item.route" 
+                    routerLinkActive="sidebar-item-active"
+                    [routerLinkActiveOptions]="{exact: true}"> <div class="sidebar-icon">
+                        <mat-icon>{{item.icon}}</mat-icon>
+                    </div>
+                    <div class="sidebar-title">
+                        {{item.title}}
+                    </div>
+                </a>
+            }
+            @else {
+              <div class="sidebar-item" (click)="toggleSubpages(item.title)"> 
+                    <div class="sidebar-icon">
+                        <mat-icon>{{item.icon}}</mat-icon>
+                    </div>
+                    <div class="sidebar-title">
+                      {{item.title}}
+                      <mat-icon [class.rotated]="openItem() === item.title">
+                          arrow_drop_down
+                      </mat-icon>
+                    </div>
                 </div>
-                
-                <div class="sidebar-title">
-                    {{item.title}}
-                </div>
-                    
-                
-            </div>
-        </a>
-    }
 
-</div>
+                @if (openItem() === item.title) {
+                    <div class="subpage-container">
+                        @for (subpage of item.subpages; track subpage) {
+                          <a class="subpage-item" 
+                            [routerLink]="subpage.route" 
+                            routerLinkActive="sidebar-item-active">
+                                <div class="subpage-title">
+                                    {{ subpage.title }}
+                                </div>
+                          </a>
+                        }
+                    </div>
+                }
+            }
+            <div class="sidebar-divider"></div>
+        }
+    </div>
+}

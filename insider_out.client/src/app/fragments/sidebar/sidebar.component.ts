@@ -1,18 +1,20 @@
 import { CommonModule } from "@angular/common";
-import { Component, Signal } from "@angular/core";
+import { Component, input, signal, Signal } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
 
-
 interface SidebarItem {
     title: string;
     icon: string;
     route: string;
+    subpages?: {
+        title: string,
+        route: string
+    }[];
 }
-
 
 @Component({
     selector:'io-sidebar',
@@ -30,13 +32,52 @@ interface SidebarItem {
 })
 
 export class SidebarComponent {
+    
+    isMobileSidebarOpen = input<boolean>();
 
-    // public isCollapsed: Signal<boolean> = true;
+    public openItem = signal<string | null>(null);
+    
+    constructor(public breakpointService: BreakpointService) {}
 
-    public dashboard: SidebarItem = { title: "Dashboard", icon: 'dashboard', route: '/dashboard'};
-    public incidents: SidebarItem = { title: "Incidents", icon: 'dashboard', route: '/incidents'};
-    public create: SidebarItem = { title: "Create", icon: 'dashboard', route: '/create'};
-
+    public dashboard: SidebarItem = { 
+        title: "Dashboard",
+        icon: "dashboard",
+        route: "/dashboard"
+    };
+    
+    public incidents: SidebarItem = {
+        title: "Incidents",
+        icon: "policy_alert",
+        route: "/incidents", 
+        subpages: 
+        [
+            { 
+                title: "Open", 
+                route: "/incidents/open"
+            },
+            { 
+                title: "Past", 
+                route: "/incidents/past"
+            }
+        ] 
+    };
+    
+    public create: SidebarItem = { 
+        title: "Create",
+        icon: "create_new_folder",
+        route: "/create",
+        subpages: 
+        [
+            { 
+                title: "Documents", 
+                route: "/create/documents"
+            },
+            { 
+                title: "Emails", 
+                route: "/create/emails"
+            }
+        ] 
+    };
 
     public sidebarItems: SidebarItem[] = [
         this.dashboard,
@@ -45,7 +86,12 @@ export class SidebarComponent {
     ]
 
 
-	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) {}
-
+    toggleSubpages(itemTitle: string): void {
+      if (this.openItem() === itemTitle) {
+        this.openItem.set(null);
+      } else {
+        this.openItem.set(itemTitle);
+      }
+    }
 
 }

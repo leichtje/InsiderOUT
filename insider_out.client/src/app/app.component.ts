@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject, input, signal, Signal, WritableSignal } from '@angular/core';
+import { BreakpointService } from './services/breakpoint.service';
 
 @Component({
     selector: 'app-root',
@@ -8,4 +9,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
     title = 'insider_out.client';
+
+private breakpointService = inject(BreakpointService);
+
+  isMobileSidebarOpen: WritableSignal<boolean> = signal(false);
+
+  constructor() {
+    effect(() => {
+      if (!this.breakpointService.isPhone()) {
+        this.isMobileSidebarOpen.set(false);
+      }
+    });
+  }
 }

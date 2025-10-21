@@ -3,21 +3,25 @@
 
 :root {
     --color-primary: #76a5af;
-    --color-secondary: #9dc9d2;
-    --color-glass-back: #b6cdd4;
+    --color-primary-dark: #104651;
+    --color-primary-light: #9dc9d2;
+    --color-glass-back: #daeaf0;
     --color-back: #ffffff;
     --color-back-body: #b7c0c2;
     --color-back-2: #b3b3b3;
+    --color-backdrop: #092430bd;
     --color-text: #212121;
 }
 
 body.dark-mode {
     --color-primary: #76a5af;
-    --color-secondary: #3c5054;
+    --color-primary-dark: #c8f6ff;
+    --color-primary-light: #3c5054;
     --color-glass-back: #3a4a50;
     --color-back: #434343;
     --color-back-body: #192528;
     --color-back-2: #232b2d;
+    --color-backdrop: #00080bb5;
     --color-text: #ebebeb;
 }
 
@@ -27,20 +31,54 @@ body {
     color: var(--color-text);
 }
 
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
 *,
 *::before,
 *::after {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 
+.mat-icon {
+    display: inline-flex !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
 /*----------------------- General Styles -----------------------*/
+
+
+.page {
+    display: flex;
+    margin: 10px;
+    gap: 10px;
+    @include mixins.phone {
+        margin: 0px;
+        gap: 0px;
+    }
+
+    .router-content {
+        flex-grow: 1;
+    }
+
+}
+
+.page-backdrop {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: var(--color-backdrop);
+    @include mixins.blur(1px);
+}
 
 .page-container {
     background-color: var(--color-back);
-    box-shadow: 0px 0px 100px var(--color-secondary);
+    box-shadow: 0px 0px 100px var(--color-primary-light);
     border-radius: 10px;
-    margin: 10px;
     padding: 10px;
     border: 2px solid var(--color-back-2);
 
@@ -51,7 +89,3 @@ body {
 
 
 
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

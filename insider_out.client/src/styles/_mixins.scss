@@ -9,6 +9,10 @@
     text-overflow: ellipsis;
 }
 
+@mixin blur($blur) {
+    -webkit-backdrop-filter: blur($blur);
+    backdrop-filter: blur($blur);
+}
 
 @mixin apply-theme($theme) {
     $theme-map: $theme !global;

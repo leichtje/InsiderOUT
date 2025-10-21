@@ -1,5 +1,15 @@
-<io-header></io-header>
-<io-sidebar></io-sidebar>
+<io-header 
+    [isOpen]="isMobileSidebarOpen()"
+    (isMobileSidebarOpen)="isMobileSidebarOpen.set($event)"
+>
+</io-header>
 
 
-<router-outlet></router-outlet>
+<div class="page">
+    <io-sidebar [isMobileSidebarOpen]="isMobileSidebarOpen()"></io-sidebar>
+    <div class="router-content">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+
