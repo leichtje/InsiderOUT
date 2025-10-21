@@ -16,10 +16,10 @@
 body.dark-mode {
     --color-primary: #76a5af;
     --color-primary-dark: #c8f6ff;
-    --color-primary-light: #3c5054;
+    --color-primary-light: #353535;
     --color-glass-back: #3a4a50;
     --color-back: #434343;
-    --color-back-body: #192528;
+    --color-back-body: #23282a;
     --color-back-2: #232b2d;
     --color-backdrop: #070a0bb5;
     --color-text: #ebebeb;
@@ -77,7 +77,7 @@ a {
 
 .page-container {
     background-color: var(--color-back);
-    box-shadow: 0px 0px 100px var(--color-primary-light);
+    // box-shadow: 0px 0px 100px var(--color-primary-light);
     border-radius: 10px;
     padding: 10px;
     border: 2px solid var(--color-back-2);
