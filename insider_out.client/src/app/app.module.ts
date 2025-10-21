@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './fragments/header/header.component';
+import { SidebarComponent } from "./fragments/sidebar/sidebar.component";
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +20,8 @@ import { MatIconModule } from '@angular/material/icon';
     RouterModule,
     HttpClientModule,
     MatIconModule,
-  ],
+    SidebarComponent
+],
   providers: [],
   bootstrap: [AppComponent]
 })

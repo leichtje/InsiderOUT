@@ -1,0 +1,19 @@
+<div class="sidebar-container">
+
+    @for (item of sidebarItems; track item) {
+        <a routerLink={{item.route}}>
+            <div class="sidebar-item">
+                <div class="sidebar-icon">
+                    <mat-icon>{{item.icon}}</mat-icon>
+                </div>
+                
+                <div class="sidebar-title">
+                    {{item.title}}
+                </div>
+                    
+                
+            </div>
+        </a>
+    }
+
+</div>
