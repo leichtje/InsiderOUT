@@ -1,20 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, input, signal, Signal } from "@angular/core";
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { Component, inject, input, OnDestroy, OnInit, signal, Signal } from "@angular/core";
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
-
-interface SidebarItem {
-    title: string;
-    icon: string;
-    route: string;
-    subpages?: {
-        title: string,
-        route: string
-    }[];
-}
+import { filter, Subscription } from "rxjs";
+import { SidebarItem } from "../../models/sidebar.model";
+import { NavigationService } from "../../services/sidebar.service";
 
 @Component({
     selector:'io-sidebar',
@@ -31,60 +24,46 @@ interface SidebarItem {
 
 })
 
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
     
     isMobileSidebarOpen = input<boolean>();
-
     public openItem = signal<string | null>(null);
+
+    private router = inject(Router);
+    private navService = inject(NavigationService);
     
+    private routerSub!: Subscription;
+
+    public sidebarItems: SidebarItem[] = [];
+
     constructor(public breakpointService: BreakpointService) {}
 
-    public dashboard: SidebarItem = { 
-        title: "Dashboard",
-        icon: "dashboard",
-        route: "/dashboard"
-    };
-    
-    public incidents: SidebarItem = {
-        title: "Incidents",
-        icon: "policy_alert",
-        route: "/incidents", 
-        subpages: 
-        [
-            { 
-                title: "Open", 
-                route: "/incidents/open"
-            },
-            { 
-                title: "Past", 
-                route: "/incidents/past"
-            }
-        ] 
-    };
-    
-    public create: SidebarItem = { 
-        title: "Create",
-        icon: "create_new_folder",
-        route: "/create",
-        subpages: 
-        [
-            { 
-                title: "Documents", 
-                route: "/create/documents"
-            },
-            { 
-                title: "Emails", 
-                route: "/create/emails"
-            }
-        ] 
-    };
+    ngOnInit(): void {
+        this.sidebarItems = this.navService.getSidebarItems()
+        this.routerSub = this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe(event => {
+            const currentUrl = (event as NavigationEnd).urlAfterRedirects;
+            this.expandActiveParent(currentUrl);
+        });
+        this.expandActiveParent(this.router.url);
+    }
 
-    public sidebarItems: SidebarItem[] = [
-        this.dashboard,
-        this.incidents,
-        this.create
-    ]
+    ngOnDestroy(): void {
+        if (this.routerSub) {
+            this.routerSub.unsubscribe();
+        }
+    }
 
+    private expandActiveParent(url: string): void {
+        const activeParent = this.sidebarItems.find(item =>
+            item.subpages?.some(subpage => url.startsWith(subpage.route))
+        );
+
+        if (activeParent) {
+            this.openItem.set(activeParent.title);
+        }
+    }
 
     toggleSubpages(itemTitle: string): void {
       if (this.openItem() === itemTitle) {
@@ -92,6 +71,10 @@ export class SidebarComponent {
       } else {
         this.openItem.set(itemTitle);
       }
+    }
+
+    openMainItem(): void {
+        this.openItem.set(null);
     }
 
 }

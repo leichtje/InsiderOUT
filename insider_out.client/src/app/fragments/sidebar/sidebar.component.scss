@@ -17,6 +17,7 @@
         border: 2px solid var(--color-back);
         border-radius: 5px;
         width: fit-content;
+        font-size: 1.25em;
         
         .sidebar-icon {
             display: inline-flex;
@@ -41,13 +42,19 @@
         flex-direction: column;
         margin-left: 30px;
         gap: 5px;
-        
+        font-size: 1em;
+
         .subpage-item {
             padding: 5px;
-            color: var(--color-text);
             border: 2px solid var(--color-back);
             border-radius: 5px;
             width: fit-content;
+
+            .subpage-title {
+                font-weight: 500;
+                color: var(--color-text);
+                letter-spacing: 1px;
+            }
         }
     }
 

@@ -7,7 +7,10 @@
                 <a class="sidebar-item" 
                     [routerLink]="item.route" 
                     routerLinkActive="sidebar-item-active"
-                    [routerLinkActiveOptions]="{exact: true}"> <div class="sidebar-icon">
+                    [routerLinkActiveOptions]="{exact: true}"
+                    (click)="openMainItem()"> 
+                    
+                    <div class="sidebar-icon">
                         <mat-icon>{{item.icon}}</mat-icon>
                     </div>
                     <div class="sidebar-title">
@@ -16,7 +19,7 @@
                 </a>
             }
             @else {
-              <div class="sidebar-item" (click)="toggleSubpages(item.title)"> 
+                <div class="sidebar-item" (click)="toggleSubpages(item.title)"> 
                     <div class="sidebar-icon">
                         <mat-icon>{{item.icon}}</mat-icon>
                     </div>
@@ -31,13 +34,13 @@
                 @if (openItem() === item.title) {
                     <div class="subpage-container">
                         @for (subpage of item.subpages; track subpage) {
-                          <a class="subpage-item" 
-                            [routerLink]="subpage.route" 
-                            routerLinkActive="sidebar-item-active">
+                            <a class="subpage-item" 
+                                [routerLink]="subpage.route" 
+                                routerLinkActive="sidebar-item-active">
                                 <div class="subpage-title">
                                     {{ subpage.title }}
                                 </div>
-                          </a>
+                            </a>
                         }
                     </div>
                 }
