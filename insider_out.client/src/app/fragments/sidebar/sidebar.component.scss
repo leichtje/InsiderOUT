@@ -6,7 +6,7 @@
     flex-direction: column;
     @include mixins.phone() {
         position: fixed;
-        width: 100%;
+        width: calc(100% - 24px);
     }
 
     .sidebar-item {
