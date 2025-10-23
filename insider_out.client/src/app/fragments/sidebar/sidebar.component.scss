@@ -1,0 +1,74 @@
+@use '../../../styles/mixins' as mixins;
+
+.sidebar-container {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    @include mixins.phone() {
+        position: fixed;
+        width: calc(100% - 24px);
+    }
+
+    .sidebar-item {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 5px;
+        border: 2px solid var(--color-back);
+        border-radius: 5px;
+        width: fit-content;
+        font-size: 1.25em;
+        
+        .sidebar-icon {
+            display: inline-flex;
+            color: var(--color-primary-dark);
+        }
+        
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: var(--color-text);
+            letter-spacing: 1px;
+
+            mat-icon.rotated {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    .subpage-container {
+        display: flex;
+        flex-direction: column;
+        margin-left: 30px;
+        gap: 5px;
+        font-size: 1em;
+
+        .subpage-item {
+            padding: 5px;
+            border: 2px solid var(--color-back);
+            border-radius: 5px;
+            width: fit-content;
+
+            .subpage-title {
+                font-weight: 500;
+                color: var(--color-text);
+                letter-spacing: 1px;
+            }
+        }
+    }
+
+
+    .sidebar-item-active {
+        border: 2px solid var(--color-primary) !important;
+        background-color: var(--color-glass-back);
+
+        .sidebar-title, .subpage-title {
+            font-weight: 600;
+        }
+    }
+
+    .sidebar-divider {
+        border-bottom: 2px solid var(--color-back-2);
+    }
+}

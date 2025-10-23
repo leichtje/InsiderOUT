@@ -8,7 +8,7 @@
     padding: 0px 10px;
     z-index: 1000;
     
-    .header-left, .header-right {
+    .header-left, .header-right, .header-middle {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -23,11 +23,20 @@
             }
         }
 
+        .header-search {
+            background-color: var(--color-back);
+            border: 2px solid var(--color-primary);
+            border-radius: 15px;
+            width: 500px;
+            height: 50px;
+        }
+
         .header-profile {
             width: 5vh;
             height: 5vh;
-            border: 3px solid var(--color-primary);
+            border: 2px solid var(--color-primary);
             border-radius: 50%;
         }
     }
+    
 }

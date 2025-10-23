@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, Input, input, output } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
@@ -20,10 +20,19 @@ import { BreakpointService } from "../../services/breakpoint.service";
 
 export class HeaderComponent {
 
-	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) {}
+	isOpen = input<boolean>(false); 
+
+	isMobileSidebarOpen = output<boolean>();
+
+	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) { }
 
 	toggleTheme() {
 		this.themeService.toggleTheme();
 	}
+
+	toggleMobileSidebar() {
+		this.isMobileSidebarOpen.emit(!this.isOpen());
+	}
+
 
 }

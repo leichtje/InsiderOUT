@@ -1,5 +1,12 @@
 <div class="header-container">
     <div class="header-left">
+        @if (breakpointService.isPhone()) {
+            <div class="header-mobile-sidebar-button">
+                <button (click)="toggleMobileSidebar()">
+                    sidebar
+                </button>
+            </div>
+        }
         <div class="header-logo">
             @if (themeService.isDarkMode()) {
                 @if (breakpointService.isWeb() || breakpointService.isTablet()){
@@ -18,11 +25,15 @@
                 }
             }
         </div>
+    </div>
 
-        <div class="header-nav">
-            <a class="header-nav-item" routerLink="/home">Home</a>
-            <a class="header-nav-item" routerLink="/Test">Test</a>
-        </div>
+    <div class="header-middle">
+        @if (!breakpointService.isPhone()) {
+
+            <div class="header-search">
+
+            </div>
+        }
     </div>
 
     <div class="header-right">
@@ -42,3 +53,8 @@
         
     
 </div>
+
+
+@if (isOpen()){
+    <div class="page-backdrop" (click)="toggleMobileSidebar()"></div>
+}
