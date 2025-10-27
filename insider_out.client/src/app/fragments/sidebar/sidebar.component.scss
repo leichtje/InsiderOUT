@@ -45,15 +45,16 @@
         font-size: 1em;
 
         .subpage-item {
-            padding: 5px;
-            border: 2px solid var(--color-back);
-            border-radius: 5px;
-            width: fit-content;
-
+            width: 100%;
+            
             .subpage-title {
+                padding: 5px;
+                border-radius: 5px;
+                border: 2px solid var(--color-back);
                 font-weight: 500;
                 color: var(--color-text);
                 letter-spacing: 1px;
+                width: fit-content;
             }
         }
     }
