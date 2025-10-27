@@ -1,5 +1,5 @@
+import { Component, input, output, computed } from "@angular/core"; 
 import { CommonModule } from "@angular/common";
-import { Component, input, output } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
@@ -12,14 +12,15 @@ import { MatIcon } from "@angular/material/icon";
     styleUrl:'header.component.scss',
     standalone:true,
     imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    MatIcon
-],
-
+        CommonModule,
+        RouterLink,
+        RouterLinkActive,
+        MatIcon
+    ],
+    host: {
+        '[class.menu-is-open]': 'isAnyMenuOpen()'
+    }
 })
-
 export class HeaderComponent {
 
 	isOpenMobileSidebar = input<boolean>(false); 
@@ -28,6 +29,7 @@ export class HeaderComponent {
 	isMobileSidebarOpen = output<boolean>();
 	isUserMenuOpen = output<boolean>();
 
+    isAnyMenuOpen = computed(() => this.isOpenMobileSidebar() || this.isOpenUserMenu());
 
 	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) { }
 
@@ -57,6 +59,4 @@ export class HeaderComponent {
 			this.isUserMenuOpen.emit(!this.isOpenUserMenu());
 		}
 	}
-
-
 }

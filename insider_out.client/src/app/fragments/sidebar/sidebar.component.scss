@@ -4,6 +4,12 @@
     gap: 10px;
     display: flex;
     flex-direction: column;
+    
+    @include mixins.non-phone() {
+        position: sticky;
+        top: 0;
+    }
+
     @include mixins.phone() {
         position: fixed;
         width: calc(100% - 24px);
