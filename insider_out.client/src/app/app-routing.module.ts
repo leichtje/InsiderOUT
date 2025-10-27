@@ -12,6 +12,7 @@ const routes: Routes = [
     { path: 'home', title: 'Home - InsiderOUT', component: HomeComponent },
 
     /* User */
+    { path: 'user', title: 'User - InsiderOUT', component: UserDetailComponent },
     { path: 'user/:id', title: 'User - InsiderOUT', component: UserDetailComponent },
 
     /* Dashboard */

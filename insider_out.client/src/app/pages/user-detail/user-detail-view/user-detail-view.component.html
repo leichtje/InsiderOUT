@@ -1,3 +1,8 @@
 <div class="page-container">
-    User Settings for user {{userId()}}
+    @if (userId()) {
+        User Settings for user {{userId()}}
+    }
+    @else {
+        List of all users 
+    }
 </div>
