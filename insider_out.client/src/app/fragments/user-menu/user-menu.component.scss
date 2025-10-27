@@ -6,7 +6,7 @@
     z-index: 100;
     display: flex;
     width: max-content;
-    box-shadow: 0px 0px 10px var(--color-primary);
+    box-shadow: 0px 0px 10px var(--color-backdrop);
     border-radius: 10px;
 
     @include mixins.phone() {
