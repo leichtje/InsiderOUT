@@ -2,7 +2,7 @@
     <div class="page-container sidebar-container"> 
         
         @for (item of sidebarItems; track item) {
-          
+        
             @if (!item.subpages) {
                 <a class="sidebar-item" 
                     [routerLink]="item.route" 
@@ -24,10 +24,10 @@
                         <mat-icon>{{item.icon}}</mat-icon>
                     </div>
                     <div class="sidebar-title">
-                      {{item.title}}
-                      <mat-icon [class.rotated]="openItem() === item.title">
-                          arrow_drop_down
-                      </mat-icon>
+                        {{item.title}}
+                        <mat-icon [class.rotated]="openItem() === item.title">
+                            arrow_drop_down
+                        </mat-icon>
                     </div>
                 </div>
 
@@ -35,7 +35,7 @@
                     <div class="subpage-container">
                         @for (subpage of item.subpages; track subpage) {
                             <a class="subpage-item" 
-                                [routerLink]="subpage.route" 
+                                [routerLink]="subpage.route"
                                 routerLinkActive="sidebar-item-active">
                                 <div class="subpage-title">
                                     {{ subpage.title }}

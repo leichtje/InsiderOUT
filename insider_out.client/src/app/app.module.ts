@@ -10,19 +10,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HeaderComponent,
-    RouterModule,
-    HttpClientModule,
-    MatIconModule,
-    SidebarComponent
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HeaderComponent,
+        RouterModule,
+        HttpClientModule,
+        MatIconModule,
+        SidebarComponent
 ],
-  providers: [],
-  bootstrap: [AppComponent]
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

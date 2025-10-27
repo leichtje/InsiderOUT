@@ -1,7 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject, input, OnDestroy, OnInit, signal, Signal } from "@angular/core";
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
-import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
@@ -66,11 +65,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
 
     toggleSubpages(itemTitle: string): void {
-      if (this.openItem() === itemTitle) {
-        this.openItem.set(null);
-      } else {
-        this.openItem.set(itemTitle);
-      }
+        if (this.openItem() === itemTitle) {
+            this.openItem.set(null);
+        } else {
+            this.openItem.set(itemTitle);
+        }
     }
 
     openMainItem(): void {
