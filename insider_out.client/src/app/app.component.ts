@@ -10,7 +10,7 @@ import { BreakpointService } from './services/breakpoint.service';
 export class AppComponent implements AfterViewInit, OnDestroy {
     title = 'insider_out.client';
 
-    private breakpointService = inject(BreakpointService);
+    public breakpointService = inject(BreakpointService);
 
     constructor() {
         effect(() => {
@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private userMenuMeasuredWidth = signal(0); 
 
     mainContentWidth = computed(() => {
-        if (this.isUserMenuOpen()) {
+        if (this.isUserMenuOpen() && !this.breakpointService.isPhone()) {
             return `calc(100% - ${this.userMenuMeasuredWidth()}px)`;
         } else {
             return '100%';
