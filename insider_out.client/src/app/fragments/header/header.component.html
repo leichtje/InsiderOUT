@@ -42,10 +42,9 @@
             {{ themeService.isDarkMode() ? 'light_mode' : 'bedtime' }}
         </mat-icon>
         
-        <div class="header-profile" (click)="toggleUserMenu()">
-            
-            
-        </div>
+        @if (!isOpenUserMenu()){
+            <div class="header-profile" (click)="toggleUserMenu()"></div>
+        }
     
     </div>
         

@@ -20,7 +20,7 @@ body.dark-mode {
     --color-glass-back: #3a4a50;
     --color-back: #434343;
     --color-back-body: #23282a;
-    --color-back-2: #232b2d;
+    --color-back-2: #676869;
     --color-backdrop: #070a0bb5;
     --color-text: #ebebeb;
 }
@@ -51,6 +51,9 @@ a {
 
 /*----------------------- General Styles -----------------------*/
 
+.nav {
+    display: flex;
+}
 
 .page {
     display: flex;

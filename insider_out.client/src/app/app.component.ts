@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal, Signal, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, OnDestroy, signal, Signal, ViewChild, WritableSignal } from '@angular/core';
 import { BreakpointService } from './services/breakpoint.service';
 
 @Component({
@@ -7,13 +7,10 @@ import { BreakpointService } from './services/breakpoint.service';
     standalone: false,
     styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit, OnDestroy {
     title = 'insider_out.client';
 
-private breakpointService = inject(BreakpointService);
-
-    isMobileSidebarOpen: WritableSignal<boolean> = signal(false);
-    isUserMenuOpen: WritableSignal<boolean> = signal(false);
+    private breakpointService = inject(BreakpointService);
 
     constructor() {
         effect(() => {
@@ -22,5 +19,39 @@ private breakpointService = inject(BreakpointService);
                 this.isUserMenuOpen.set(false);
             }
         });
+
+    }
+
+    isMobileSidebarOpen = signal(false);
+    isUserMenuOpen = signal(false);
+
+    private userMenuMeasuredWidth = signal(0); 
+
+    mainContentWidth = computed(() => {
+        if (this.isUserMenuOpen()) {
+            return `calc(100% - ${this.userMenuMeasuredWidth()}px)`;
+        } else {
+            return '100%';
+        }
+    });
+    
+    @ViewChild('userMenu', { read: ElementRef }) userMenuRef!: ElementRef;
+    private resizeObserver!: ResizeObserver;
+
+    ngAfterViewInit() {
+    this.resizeObserver = new ResizeObserver(entries => {
+        const menuWidth = entries[0].contentRect.width;
+        if (menuWidth > 0) {
+            this.userMenuMeasuredWidth.set(menuWidth);
+        }
+    });
+
+    this.resizeObserver.observe(this.userMenuRef.nativeElement);
+    }
+
+    ngOnDestroy() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
     }
 }

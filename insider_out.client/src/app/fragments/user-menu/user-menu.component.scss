@@ -1,17 +1,50 @@
 @use '../../../styles/mixins' as mixins;
 
-.user-menu-container {
+:host {
     position: fixed;
-    
-    @include mixins.non-phone() {
-        right: 0;
-        box-shadow: 0px 0px 10px var(--color-primary);
-        border-radius: 0px 0px 10px 10px;
-        border-top: none;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    width: max-content;
+    box-shadow: 0px 0px 10px var(--color-primary);
+    border-radius: 10px;
+}
+
+
+.user-menu-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: 200px;
+
+        @include mixins.non-phone() {
+        box-shadow: -2px 0px 0px var(--color-back-2);
+        border: none;
+        border-bottom: 2px solid var(--color-back-2);
+        border-radius: 0px 0px 0px 10px;
     }
 
     @include mixins.phone() {
         width: calc(100% - 24px);
+    }
+
+    .user-menu-info {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+
+        .user-menu-photo {
+            width: 10vh;
+            height: 10vh;
+            border: 2px solid var(--color-primary);
+            border-radius: 50%;
+        }
+
+        .user-menu-name {
+
+        }
+
     }
 
 
