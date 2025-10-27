@@ -16,7 +16,6 @@
     }
 }
 
-
 .user-menu-container {
     display: flex;
     flex-direction: column;
@@ -44,11 +43,9 @@
         align-items: center;
         gap: 10px;
 
-        .user-menu-photo {
+        .user-menu-avatar {
             width: 10vh;
             height: 10vh;
-            border: 2px solid var(--color-primary);
-            border-radius: 50%;
         }
 
         .user-menu-name {

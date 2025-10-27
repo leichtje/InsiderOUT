@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
 import { BreakpointService } from "../../services/breakpoint.service";
+import { AvatarComponent } from "../avatar/avatar.component";
 
 @Component({
     selector:'io-user-menu',
@@ -13,9 +14,9 @@ import { BreakpointService } from "../../services/breakpoint.service";
     imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive,
     BidiModule,
-    MatIcon
+    MatIcon,
+    AvatarComponent
 ],
 
 })

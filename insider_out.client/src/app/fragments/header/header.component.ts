@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { MatIcon } from "@angular/material/icon";
+import { AvatarComponent } from "../avatar/avatar.component";
 
 
 @Component({
@@ -12,11 +13,12 @@ import { MatIcon } from "@angular/material/icon";
     styleUrl:'header.component.scss',
     standalone:true,
     imports: [
-        CommonModule,
-        RouterLink,
-        RouterLinkActive,
-        MatIcon
-    ],
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    MatIcon,
+    AvatarComponent
+],
     host: {
         '[class.menu-is-open]': 'isAnyMenuOpen()'
     }
