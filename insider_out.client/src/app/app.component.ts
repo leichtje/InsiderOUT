@@ -13,11 +13,13 @@ export class AppComponent {
 private breakpointService = inject(BreakpointService);
 
     isMobileSidebarOpen: WritableSignal<boolean> = signal(false);
+    isUserMenuOpen: WritableSignal<boolean> = signal(false);
 
     constructor() {
         effect(() => {
             if (!this.breakpointService.isPhone()) {
                 this.isMobileSidebarOpen.set(false);
+                this.isUserMenuOpen.set(false);
             }
         });
     }

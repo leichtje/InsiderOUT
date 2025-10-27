@@ -1,0 +1,18 @@
+@use '../../../styles/mixins' as mixins;
+
+.user-menu-container {
+    position: fixed;
+    
+    @include mixins.non-phone() {
+        right: 0;
+        box-shadow: 0px 0px 10px var(--color-primary);
+        border-radius: 0px 0px 10px 10px;
+        border-top: none;
+    }
+
+    @include mixins.phone() {
+        width: calc(100% - 24px);
+    }
+
+
+}

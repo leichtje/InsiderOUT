@@ -44,7 +44,7 @@
             </button>
         </div>
         
-        <div class="header-profile">
+        <div class="header-profile" (click)="toggleUserMenu()">
             
             
         </div>
@@ -55,6 +55,6 @@
 </div>
 
 
-@if (isOpen()){
+@if (isOpenMobileSidebar() || isOpenUserMenu()){
     <div class="page-backdrop" (click)="toggleMobileSidebar()"></div>
 }

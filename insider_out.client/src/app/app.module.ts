@@ -8,19 +8,21 @@ import { SidebarComponent } from "./fragments/sidebar/sidebar.component";
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
+import { UserMenuComponent } from "./fragments/user-menu/user-menu.component";
 
 @NgModule({
     declarations: [
         AppComponent
     ],
     imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HeaderComponent,
-        RouterModule,
-        HttpClientModule,
-        MatIconModule,
-        SidebarComponent
+    BrowserModule,
+    AppRoutingModule,
+    HeaderComponent,
+    RouterModule,
+    HttpClientModule,
+    MatIconModule,
+    SidebarComponent,
+    UserMenuComponent
 ],
     providers: [],
     bootstrap: [AppComponent]

@@ -20,9 +20,12 @@ import { BreakpointService } from "../../services/breakpoint.service";
 
 export class HeaderComponent {
 
-	isOpen = input<boolean>(false); 
+	isOpenMobileSidebar = input<boolean>(false); 
+	isOpenUserMenu = input<boolean>(false); 
 
 	isMobileSidebarOpen = output<boolean>();
+	isUserMenuOpen = output<boolean>();
+
 
 	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) { }
 
@@ -31,7 +34,17 @@ export class HeaderComponent {
 	}
 
 	toggleMobileSidebar() {
-		this.isMobileSidebarOpen.emit(!this.isOpen());
+		this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar());
+		if (this.isOpenUserMenu()) {
+			this.isUserMenuOpen.emit(!this.isOpenUserMenu());
+		}
+	}
+
+	toggleUserMenu() {
+		this.isUserMenuOpen.emit(!this.isOpenUserMenu());
+		if (this.isOpenMobileSidebar()) {
+			this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar());
+		}
 	}
 
 

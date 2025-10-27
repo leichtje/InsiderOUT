@@ -1,10 +1,13 @@
 <io-header 
-    [isOpen]="isMobileSidebarOpen()"
+    [isOpenMobileSidebar]="isMobileSidebarOpen()"
+    [isOpenUserMenu]="isUserMenuOpen()"
     (isMobileSidebarOpen)="isMobileSidebarOpen.set($event)"
+    (isUserMenuOpen)="isUserMenuOpen.set($event)"
 >
 </io-header>
 
 
+<io-user-menu [isUserMenuOpen]="isUserMenuOpen()"></io-user-menu>
 <div class="page">
     <io-sidebar [isMobileSidebarOpen]="isMobileSidebarOpen()"></io-sidebar>
     <div class="router-content">
