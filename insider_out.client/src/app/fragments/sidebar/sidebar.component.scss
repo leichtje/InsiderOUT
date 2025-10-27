@@ -10,29 +10,35 @@
     }
 
     .sidebar-item {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-        padding: 5px;
-        border: 2px solid var(--color-back);
-        border-radius: 5px;
-        width: fit-content;
-        font-size: 1.25em;
+        // display: flex;
+        // gap: 5px;
+        // align-items: center;
+        width: 100%;
         
-        .sidebar-icon {
-            display: inline-flex;
-            color: var(--color-primary-dark);
-        }
-        
-        .sidebar-title {
+        .sidebar-item-main {
             display: flex;
-            align-items: center;
-            font-weight: 500;
-            color: var(--color-text);
-            letter-spacing: 1px;
+            gap: 5px;
+            padding: 5px;
+            border: 2px solid var(--color-back);
+            border-radius: 5px;
+            width: fit-content;
+            font-size: 1.25em;
 
-            mat-icon.rotated {
-                transform: rotate(180deg);
+            .sidebar-icon {
+                display: inline-flex;
+                color: var(--color-primary-dark);
+            }
+            
+            .sidebar-title {
+                display: flex;
+                align-items: center;
+                font-weight: 500;
+                color: var(--color-text);
+                letter-spacing: 1px;
+    
+                mat-icon.rotated {
+                    transform: rotate(180deg);
+                }
             }
         }
     }

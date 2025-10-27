@@ -2,9 +2,9 @@
     <div class="header-left">
         @if (breakpointService.isPhone()) {
             <div class="header-mobile-sidebar-button">
-                <button (click)="toggleMobileSidebar()">
-                    sidebar
-                </button>
+                <mat-icon (click)="toggleMobileSidebar()">
+                    menu
+                </mat-icon>
             </div>
         }
         <div class="header-logo">
@@ -38,11 +38,9 @@
 
     <div class="header-right">
 
-        <div>
-            <button (click)="toggleTheme()">
-                Switch to {{ themeService.isDarkMode() ? 'Light' : 'Dark' }} Mode
-            </button>
-        </div>
+        <mat-icon (click)="toggleTheme()">
+            {{ themeService.isDarkMode() ? 'light_mode' : 'bedtime' }}
+        </mat-icon>
         
         <div class="header-profile" (click)="toggleUserMenu()">
             
@@ -56,5 +54,5 @@
 
 
 @if (isOpenMobileSidebar() || isOpenUserMenu()){
-    <div class="page-backdrop" (click)="toggleMobileSidebar()"></div>
+    <div class="page-backdrop" (click)="handleBackdrop()"></div>
 }
