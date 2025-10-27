@@ -7,23 +7,13 @@
         (isUserMenuOpen)="isUserMenuOpen.set($event)"
     >
     </io-header>
-    @if (breakpointService.isTablet() || breakpointService.isWeb()) {
         <io-user-menu 
             #userMenu
             class="user-menu-component"
             [isUserMenuOpen]="isUserMenuOpen()"
         >
-        </io-user-menu>
-    }
-</div>
-
-@if (breakpointService.isPhone()) {
-    <io-user-menu 
-        class="user-menu-component"
-        [isUserMenuOpen]="isUserMenuOpen()"
-    >
     </io-user-menu>
-}
+</div>
 
 
 <div class="page">

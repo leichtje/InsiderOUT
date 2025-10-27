@@ -52,7 +52,9 @@ a {
 /*----------------------- General Styles -----------------------*/
 
 .nav {
-    display: flex;
+    @include mixins.non-phone() {
+        display: flex;
+    }
 }
 
 .page {
