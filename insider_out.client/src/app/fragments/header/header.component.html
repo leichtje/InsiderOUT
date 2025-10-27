@@ -3,7 +3,7 @@
         @if (breakpointService.isPhone()) {
             <div class="header-mobile-sidebar-button">
                 <mat-icon (click)="toggleMobileSidebar()">
-                    menu
+                    {{ isOpenMobileSidebar() ? 'close' : 'menu' }}
                 </mat-icon>
             </div>
         }
@@ -28,12 +28,17 @@
     </div>
 
     <div class="header-middle">
-        @if (!breakpointService.isPhone()) {
-            
-            <div class="header-search">
-
-            </div>
-        }
+        
+        <div class="header-search">
+            @if (!breakpointService.isPhone()) {
+                search
+            }
+            @else {
+                <mat-icon>
+                    search
+                </mat-icon>
+            }
+        </div>
     </div>
 
     <div class="header-right">

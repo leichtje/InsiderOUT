@@ -8,7 +8,7 @@
     --color-glass-back: #daeaf0;
     --color-back: #ffffff;
     --color-back-body: #b7c0c2;
-    --color-back-2: #b3b3b3;
+    --color-back-2: #b4b4b4;
     --color-backdrop: #092430bd;
     --color-text: #212121;
 }
@@ -50,7 +50,13 @@ body:has(io-header.menu-is-open) {
 }
 
 a {
+    cursor: pointer;
     text-decoration: none !important;
+    &:hover {
+        text-decoration: underline !important;
+        text-decoration-color: var(--color-primary) !important;
+        text-decoration-thickness: 2px;
+    }
 }
 
 /*----------------------- General Styles -----------------------*/
@@ -99,5 +105,9 @@ a {
     }
 }
 
+
+.divider {
+    border-bottom: 2px solid var(--color-back-2);
+}
 
 

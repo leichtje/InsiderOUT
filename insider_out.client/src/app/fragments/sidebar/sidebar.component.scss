@@ -16,10 +16,8 @@
     }
 
     .sidebar-item {
-        // display: flex;
-        // gap: 5px;
-        // align-items: center;
         width: 100%;
+        cursor: pointer;
         
         .sidebar-item-main {
             display: flex;
@@ -28,7 +26,7 @@
             border: 2px solid var(--color-back);
             border-radius: 5px;
             width: fit-content;
-            font-size: 1.25em;
+            @include mixins.font();
 
             .sidebar-icon {
                 display: inline-flex;
@@ -38,9 +36,7 @@
             .sidebar-title {
                 display: flex;
                 align-items: center;
-                font-weight: 500;
                 color: var(--color-text);
-                letter-spacing: 1px;
     
                 mat-icon.rotated {
                     transform: rotate(180deg);
@@ -79,9 +75,5 @@
         .sidebar-title, .subpage-title {
             font-weight: 600;
         }
-    }
-
-    .sidebar-divider {
-        border-bottom: 2px solid var(--color-back-2);
     }
 }

@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as mixins;
+
 .header-container {
     background-color: var(--color-back);
     border-bottom: 2px solid var(--color-back-2);
@@ -7,7 +9,7 @@
     position: relative;
     padding: 0px 10px;
     z-index: 1000;
-    
+
     .header-left, .header-right, .header-middle {
         display: flex;
         align-items: center;
@@ -28,7 +30,14 @@
             border: 2px solid var(--color-primary);
             border-radius: 10px;
             width: 200px;
-            height: 30px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+
+            @include mixins.phone() {
+                width: 70px;
+            }
         }
 
         .header-profile {

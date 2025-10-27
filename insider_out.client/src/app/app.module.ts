@@ -20,9 +20,10 @@ import { UserMenuComponent } from "./fragments/user-menu/user-menu.component";
     HeaderComponent,
     RouterModule,
     HttpClientModule,
+    // MatTooltipModule,
     MatIconModule,
     SidebarComponent,
-    UserMenuComponent
+    UserMenuComponent,
 ],
     providers: [],
     bootstrap: [AppComponent]
