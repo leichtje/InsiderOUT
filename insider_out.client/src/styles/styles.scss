@@ -52,6 +52,8 @@ body:has(io-header.menu-is-open) {
 a {
     cursor: pointer;
     text-decoration: none !important;
+    color: var(--color-text) !important;
+
     &:hover {
         text-decoration: underline !important;
         text-decoration-color: var(--color-primary) !important;

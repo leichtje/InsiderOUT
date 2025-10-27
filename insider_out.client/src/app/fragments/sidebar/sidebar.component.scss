@@ -36,7 +36,6 @@
             .sidebar-title {
                 display: flex;
                 align-items: center;
-                color: var(--color-text);
     
                 mat-icon.rotated {
                     transform: rotate(180deg);
@@ -60,7 +59,6 @@
                 border-radius: 5px;
                 border: 2px solid var(--color-back);
                 font-weight: 500;
-                color: var(--color-text);
                 letter-spacing: 1px;
                 width: fit-content;
             }
