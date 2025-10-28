@@ -14,9 +14,10 @@ import { AvatarComponent } from "../avatar/avatar.component";
     imports: [
     CommonModule,
     RouterLink,
+    RouterLinkActive,
     BidiModule,
     MatIcon,
-    AvatarComponent
+    AvatarComponent,
 ],
 
 })

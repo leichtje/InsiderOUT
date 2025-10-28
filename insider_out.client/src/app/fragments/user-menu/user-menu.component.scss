@@ -55,16 +55,30 @@
         .user-menu-item {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 5px;
+            width: 100%;
 
             mat-icon {
                 color: var(--color-primary-dark);
             }
+
+            .user-menu-option-title {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                padding: 5px;
+                border: 2px solid var(--color-back);
+                border-radius: 5px;
+
+                &.user-menu-option-active {
+                    border: 2px solid var(--color-primary) !important;
+                    background-color: var(--color-glass-back);
+                    font-weight: 600;
+                }
+            }
+
         }
-    }
 
-    .user-menu-divider {
-        border-bottom: 2px solid var(--color-back-2);
     }
-
 }
