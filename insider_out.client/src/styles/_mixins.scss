@@ -14,7 +14,7 @@
     backdrop-filter: blur($blur);
 }
 
-@mixin font($fontSize: 1.25em) {
+@mixin font($fontSize: 1.05em) {
     font-size: $fontSize;
     letter-spacing: 1px;
     font-weight: 500;

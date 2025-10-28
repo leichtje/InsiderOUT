@@ -23,6 +23,28 @@ export class AvatarComponent {
         lastName: "Freeman",
     };
 
+    // user: UserModel = {
+    //     userId: 1234,
+    //     firstName: "Matthew",
+    //     lastName: "Price",
+    // };
 
+    // user: UserModel = {
+    //     userId: 1234,
+    //     firstName: "Jonathon",
+    //     lastName: "Leicht",
+    // };
+
+    // user: UserModel = {
+    //     userId: 1234,
+    //     firstName: "Nitin",
+    //     lastName: "Penmetsa",
+    // };
+
+    // user: UserModel = {
+    //     userId: 1234,
+    //     firstName: "Chetan",
+    //     lastName: "Penmetsa",
+    // };
 
 }
