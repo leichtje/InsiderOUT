@@ -46,7 +46,7 @@ export class AvatarViewComponent {
         const currentUser = this.user();
 
         if (currentUser?.firstName && currentUser?.lastName) {
-            return currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+            return (currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0)).toUpperCase();
         }
         
         return null;
