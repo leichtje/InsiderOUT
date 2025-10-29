@@ -1,6 +1,4 @@
-import { CommonModule } from "@angular/common";
 import { Component, input, computed, inject } from "@angular/core";
-import { BidiModule } from "@angular/cdk/bidi";
 import { UserModel } from "../../../models/user.model";
 import { ThemeService } from "../../../services/theme.service";
 
@@ -16,7 +14,7 @@ export class AvatarViewComponent {
         '#FFAB91', // Light Salmon
         '#FFCC80', // Light Orange
         '#E6EE9B', // Light Lime
-        '#80CBC4', // Light Teal
+        '#8cd1caff', // Light Teal
         '#a7dbf3ff', // Light Blue
         '#a8cdeaff', // Lighter Blue
         '#cac2d8ff', // Light Purple
@@ -28,14 +26,14 @@ export class AvatarViewComponent {
     private avatarDarkColors = [
         '#aa3737ff', // Dark Salmon
         '#a87b38ff', // Dark Orange
-        '#8e9e18ff', // Dark Lime
-        '#359d92ff', // Dark Teal
+        '#b0a61aff', // Dark Lime
+        '#2e968bff', // Dark Teal
         '#306a84ff', // Dark Blue
         '#408cc7ff', // Darker Blue
         '#7a55baff', // Dark Purple
-        '#af3b60ff', // Dark Pink
-        '#5f737bff', // Blue Grey
-        '#369a39ff', // Dark Green
+        '#bb4067ff', // Dark Pink
+        '#4e6770ff', // Blue Grey
+        '#2f9232ff', // Dark Green
     ];
 
     private themeService = inject(ThemeService);
