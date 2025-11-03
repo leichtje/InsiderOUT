@@ -1,8 +1,19 @@
-<io-header 
-    [isOpen]="isMobileSidebarOpen()"
-    (isMobileSidebarOpen)="isMobileSidebarOpen.set($event)"
->
-</io-header>
+<div class="nav">
+    <io-header 
+        [isOpenMobileSidebar]="isMobileSidebarOpen()"
+        [isOpenUserMenu]="isUserMenuOpen()"
+        [style.width]="mainContentWidth()"
+        (isMobileSidebarOpen)="isMobileSidebarOpen.set($event)"
+        (isUserMenuOpen)="isUserMenuOpen.set($event)"
+    >
+    </io-header>
+        <io-user-menu 
+            #userMenu
+            class="user-menu-component"
+            [isUserMenuOpen]="isUserMenuOpen()"
+        >
+    </io-user-menu>
+</div>
 
 
 <div class="page">

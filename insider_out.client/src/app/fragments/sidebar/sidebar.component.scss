@@ -4,35 +4,42 @@
     gap: 10px;
     display: flex;
     flex-direction: column;
+    
+    @include mixins.non-phone() {
+        position: sticky;
+        top: 0;
+    }
+
     @include mixins.phone() {
         position: fixed;
         width: calc(100% - 24px);
     }
 
     .sidebar-item {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-        padding: 5px;
-        border: 2px solid var(--color-back);
-        border-radius: 5px;
-        width: fit-content;
-        font-size: 1.25em;
+        width: 100%;
+        cursor: pointer;
         
-        .sidebar-icon {
-            display: inline-flex;
-            color: var(--color-primary-dark);
-        }
-        
-        .sidebar-title {
+        .sidebar-item-main {
             display: flex;
-            align-items: center;
-            font-weight: 500;
-            color: var(--color-text);
-            letter-spacing: 1px;
+            gap: 5px;
+            padding: 5px;
+            border: 2px solid var(--color-back);
+            border-radius: 5px;
+            width: fit-content;
+            @include mixins.font();
 
-            mat-icon.rotated {
-                transform: rotate(180deg);
+            .sidebar-icon {
+                display: inline-flex;
+                color: var(--color-primary-dark);
+            }
+            
+            .sidebar-title {
+                display: flex;
+                align-items: center;
+    
+                mat-icon.rotated {
+                    transform: rotate(180deg);
+                }
             }
         }
     }
@@ -45,15 +52,15 @@
         font-size: 1em;
 
         .subpage-item {
-            padding: 5px;
-            border: 2px solid var(--color-back);
-            border-radius: 5px;
-            width: fit-content;
-
+            width: 100%;
+            
             .subpage-title {
+                padding: 5px;
+                border-radius: 5px;
+                border: 2px solid var(--color-back);
                 font-weight: 500;
-                color: var(--color-text);
                 letter-spacing: 1px;
+                width: fit-content;
             }
         }
     }
@@ -66,9 +73,5 @@
         .sidebar-title, .subpage-title {
             font-weight: 600;
         }
-    }
-
-    .sidebar-divider {
-        border-bottom: 2px solid var(--color-back-2);
     }
 }

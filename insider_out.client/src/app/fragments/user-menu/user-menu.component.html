@@ -1,0 +1,33 @@
+@if (isUserMenuOpen()) {
+<div class="page-container user-menu-container">
+
+    <div class="user-menu-info">
+        <div class="user-menu-avatar">
+            <io-avatar></io-avatar>
+        </div>
+        <div class="user-menu-name">User</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="user-menu-options">
+
+        <!-- Will need to be current user -->
+        <a class="user-menu-item" routerLink="/user">
+            <div class="user-menu-option-title" routerLinkActive="user-menu-option-active">
+                <mat-icon>settings</mat-icon> Settings
+            </div>
+        </a>
+
+        <a class="user-menu-item" routerLink="/logout">
+            <div class="user-menu-option-title">
+                <mat-icon>logout</mat-icon> Logout
+            </div>
+        </a>
+
+    </div>
+    
+
+    
+</div>
+}

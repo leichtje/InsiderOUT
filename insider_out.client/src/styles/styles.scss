@@ -8,7 +8,7 @@
     --color-glass-back: #daeaf0;
     --color-back: #ffffff;
     --color-back-body: #b7c0c2;
-    --color-back-2: #b3b3b3;
+    --color-back-2: #b4b4b4;
     --color-backdrop: #092430bd;
     --color-text: #212121;
 }
@@ -20,9 +20,9 @@ body.dark-mode {
     --color-glass-back: #3a4a50;
     --color-back: #434343;
     --color-back-body: #23282a;
-    --color-back-2: #232b2d;
+    --color-back-2: #676869;
     --color-backdrop: #070a0bb5;
-    --color-text: #ebebeb;
+    --color-text: #dfdfdf;
 }
 
 body {
@@ -34,10 +34,14 @@ body {
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+body:has(io-header.menu-is-open) {
+    overflow: hidden;
+}
+
 *,
 *::before,
 *::after {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 
@@ -46,11 +50,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 a {
+    cursor: pointer;
     text-decoration: none !important;
+    color: var(--color-text) !important;
+
+    &:hover {
+        text-decoration: underline !important;
+        text-decoration-color: var(--color-primary) !important;
+        text-decoration-thickness: 2px;
+    }
 }
 
 /*----------------------- General Styles -----------------------*/
 
+.nav {
+    @include mixins.non-phone() {
+        display: flex;
+    }
+}
 
 .page {
     display: flex;
@@ -71,21 +88,32 @@ a {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: var(--color-backdrop);
-    @include mixins.blur(1px);
+
+    @include mixins.phone {
+        background: var(--color-backdrop);
+        @include mixins.blur(1px);
+    }
 }
 
 .page-container {
     background-color: var(--color-back);
-    // box-shadow: 0px 0px 100px var(--color-primary-light);
     border-radius: 10px;
     padding: 10px;
     border: 2px solid var(--color-back-2);
+    margin-bottom: 10px;
 
-    @include mixins.mobile{
-        margin: 10px 0px;
+    @include mixins.phone{
+        margin: 10px 0;
     }
 }
 
 
+.divider {
+    border-bottom: 2px solid var(--color-back-2);
+}
 
+.flex-inline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

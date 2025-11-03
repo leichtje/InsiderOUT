@@ -14,6 +14,12 @@
     backdrop-filter: blur($blur);
 }
 
+@mixin font($fontSize: 1.05em) {
+    font-size: $fontSize;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
 @mixin apply-theme($theme) {
     $theme-map: $theme !global;
 
@@ -70,6 +76,12 @@
 
 @mixin web {
     @media (min-width: 1001px) {
+        @content;
+    }
+}
+
+@mixin non-phone {
+    @media (min-width: 600px) {
         @content;
     }
 }

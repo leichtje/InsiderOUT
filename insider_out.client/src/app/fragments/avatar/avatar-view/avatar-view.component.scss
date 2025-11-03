@@ -1,0 +1,19 @@
+@use '../../../../styles/mixins' as mixins;
+
+.avatar-container {
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+
+    container-type: inline-size;
+    container-name: avatar;
+
+    .avatar-initials {
+        font-size: 50cqi; 
+        font-weight: 700;   
+    }
+}

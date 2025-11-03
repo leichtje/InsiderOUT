@@ -2,13 +2,13 @@
     <div class="header-left">
         @if (breakpointService.isPhone()) {
             <div class="header-mobile-sidebar-button">
-                <button (click)="toggleMobileSidebar()">
-                    sidebar
-                </button>
+                <mat-icon (click)="toggleMobileSidebar()">
+                    {{ isOpenMobileSidebar() ? 'close' : 'menu' }}
+                </mat-icon>
             </div>
         }
         <div class="header-logo">
-            @if (themeService.isDarkMode()) {
+            @if (themeService.isDark()) {
                 @if (breakpointService.isWeb() || breakpointService.isTablet()){
                     <img class="header-logo" src="assets/insiderout_dark.png" alt="Insider OUT Logo">
                 }
@@ -28,26 +28,30 @@
     </div>
 
     <div class="header-middle">
-        @if (!breakpointService.isPhone()) {
-
-            <div class="header-search">
-
-            </div>
-        }
+        
+        <div class="header-search">
+            @if (!breakpointService.isPhone()) {
+                search
+            }
+            @else {
+                <mat-icon>
+                    search
+                </mat-icon>
+            }
+        </div>
     </div>
 
     <div class="header-right">
 
-        <div>
-            <button (click)="toggleTheme()">
-                Switch to {{ themeService.isDarkMode() ? 'Light' : 'Dark' }} Mode
-            </button>
-        </div>
+        <mat-icon (click)="toggleTheme()">
+            {{ themeService.isDark() ? 'light_mode' : 'bedtime' }}
+        </mat-icon>
         
-        <div class="header-profile">
-            
-            
-        </div>
+        @if (!isOpenUserMenu()){
+        <div class="header-avatar">
+                <io-avatar (click)="toggleUserMenu()"></io-avatar>
+            </div>
+        }
     
     </div>
         
@@ -55,6 +59,6 @@
 </div>
 
 
-@if (isOpen()){
-    <div class="page-backdrop" (click)="toggleMobileSidebar()"></div>
+@if (isOpenMobileSidebar() || isOpenUserMenu()){
+    <div class="page-backdrop" (click)="handleBackdrop()"></div>
 }
