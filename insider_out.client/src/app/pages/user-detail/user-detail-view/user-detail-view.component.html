@@ -8,23 +8,23 @@
 
         <div class="user-detail-list-users">
             <io-user-detail-list 
-                [people]="users" 
+                [profiles]="users" 
                 title="Users"
                 listType="user"
                 [activeId]="activeId"
                 [activeType]="activeType"
-                (personSelected)="onPersonClicked($event)"
+                (profileSelected)="onProfileClicked($event)"
             ></io-user-detail-list>
         </div>
 
         <div class="user-detail-list-subjects">
             <io-user-detail-list 
-                [people]="subjects" 
+                [profiles]="subjects" 
                 title="Employees"
                 listType="subject"
                 [activeId]="activeId"
                 [activeType]="activeType"
-                (personSelected)="onPersonClicked($event)"
+                (profileSelected)="onProfileClicked($event)"
             ></io-user-detail-list>
         </div>
 

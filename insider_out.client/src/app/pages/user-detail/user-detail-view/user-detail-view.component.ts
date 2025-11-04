@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { SubjectModel, UserModel } from '../../../models/person.model';
+import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { UserDetailListComponent } from "./user-detail-list/user-detail-list.component";
 import { RouterOutlet } from '@angular/router';
 
@@ -18,12 +18,12 @@ export class UserDetailViewComponent {
     activeId = input<number | null>();
     activeType = input<'user' | 'subject' | null>();
     
-    selectedPerson = input<UserModel | SubjectModel | null>();
+    selectedProfile = input<UserModel | SubjectModel | null>();
 
-    @Output() personSelected = new EventEmitter<UserModel | SubjectModel>();
+    @Output() profileSelected = new EventEmitter<UserModel | SubjectModel>();
 
-    onPersonClicked(person: UserModel | SubjectModel) {
-        this.personSelected.emit(person);
+    onProfileClicked(profile: UserModel | SubjectModel) {
+        this.profileSelected.emit(profile);
     }
 
 }

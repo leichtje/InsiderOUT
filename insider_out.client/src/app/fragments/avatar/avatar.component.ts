@@ -1,5 +1,5 @@
 import { Component, computed, inject, input } from "@angular/core";
-import { PersonModel } from "../../models/person.model";
+import { ProfileModel } from "../../models/profile.model";
 import { ThemeService } from "../../services/theme.service";
 
 @Component({
@@ -39,10 +39,10 @@ export class UserAvatarComponent {
 
     private themeService = inject(ThemeService);
 
-    person = input<PersonModel | null>();
+    profile = input<ProfileModel | null>();
 
     initials = computed(() => {
-        const currentUser = this.person();
+        const currentUser = this.profile();
 
         if (currentUser?.firstName && currentUser?.lastName) {
             return (currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0)).toUpperCase();

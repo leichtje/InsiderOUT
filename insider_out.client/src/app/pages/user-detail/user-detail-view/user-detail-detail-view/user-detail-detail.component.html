@@ -1,6 +1,6 @@
-@if (person$ | async; as person) {
+@if (profile$ | async; as profile) {
 
-    <io-user-profile [person]="person"></io-user-profile>
+    <io-user-profile [profile]="profile"></io-user-profile>
 
 } @else {
     <p>User Not Found</p>

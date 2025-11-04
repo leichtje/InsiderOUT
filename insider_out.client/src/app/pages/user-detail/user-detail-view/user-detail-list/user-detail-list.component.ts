@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, EventEmitter, input, Output } from '@angular/core';
-import { SubjectModel, UserModel } from '../../../../models/person.model';
+import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { UserAvatarComponent } from "../../../../fragments/avatar/avatar.component";
 
 @Component({
@@ -12,25 +12,25 @@ import { UserAvatarComponent } from "../../../../fragments/avatar/avatar.compone
 })
 export class UserDetailListComponent {
 
-    people = input<UserModel[] | SubjectModel[]>();
+    profiles = input<UserModel[] | SubjectModel[]>();
     title = input<string>();
-    @Output() personSelected = new EventEmitter<UserModel | SubjectModel>();
+    @Output() profileSelected = new EventEmitter<UserModel | SubjectModel>();
 
     activeId = input<number | null>();
     activeType = input<'user' | 'subject' | null>();
     listType = input<'user' | 'subject'>();
 
-    onSelectPerson(person: UserModel | SubjectModel) {
-        this.personSelected.emit(person);
+    onSelectProfile(profile: UserModel | SubjectModel) {
+        this.profileSelected.emit(profile);
     }
 
-    isActive(person: UserModel | SubjectModel): boolean {
+    isActive(profile: UserModel | SubjectModel): boolean {
         
         if (this.activeType() !== this.listType()) {
         return false;
         }
 
-        const id = ('userId' in person) ? person.userId : person.subjectId;
+        const id = ('userId' in profile) ? profile.userId : profile.subjectId;
         return id === this.activeId();
     }
 

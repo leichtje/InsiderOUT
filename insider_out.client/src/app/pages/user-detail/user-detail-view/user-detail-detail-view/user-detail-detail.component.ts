@@ -20,7 +20,7 @@ export class UserDetailDetailComponent {
     private userService = inject(UserService);
     private subjectService = inject(SubjectService);
 
-    person$ = this.route.paramMap.pipe(
+    profile$ = this.route.paramMap.pipe(
         switchMap(params => {
             const id = +params.get('id')!;
             const type = this.route.snapshot.url[0].path; 

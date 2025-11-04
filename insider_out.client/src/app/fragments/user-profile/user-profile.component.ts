@@ -1,5 +1,5 @@
 import { Component, input } from "@angular/core";
-import { SubjectModel, UserModel } from "../../models/person.model";
+import { SubjectModel, UserModel } from "../../models/profile.model";
 import { UserAvatarComponent } from "../avatar/avatar.component";
 
 @Component({
@@ -12,6 +12,6 @@ import { UserAvatarComponent } from "../avatar/avatar.component";
 
 export class UserProfileComponent {
 
-    person = input<UserModel | SubjectModel | null>();
+    profile = input<UserModel | SubjectModel | null>();
 
 }

@@ -4,7 +4,7 @@ import {UserDetailViewComponent } from './user-detail-view/user-detail-view.comp
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SubjectService } from '../../services/subject.service';
-import { SubjectModel, UserModel } from '../../models/person.model';
+import { SubjectModel, UserModel } from '../../models/profile.model';
 import { filter } from 'rxjs';
 
 @Component({
@@ -46,9 +46,9 @@ protected userService = inject(UserService);
         });
     }
 
-    onPersonSelected(person: UserModel | SubjectModel) {
-        const type = 'userId' in person ? 'user' : 'subject';
-        const id = 'userId' in person ? person.userId : person.subjectId;
+    onProfileSelected(profile: UserModel | SubjectModel) {
+        const type = 'userId' in profile ? 'user' : 'subject';
+        const id = 'userId' in profile ? profile.userId : profile.subjectId;
 
         this.router.navigate([`./${type}`, id], { relativeTo: this.route });
     }
