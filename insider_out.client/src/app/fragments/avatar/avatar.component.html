@@ -1,1 +1,9 @@
-<io-avatar-view [user]="user"></io-avatar-view>
+@let initials = this.initials();
+
+<div class="avatar-container" [style.background-color]="backgroundColor()">
+    @if (initials) {
+        <div class="avatar-initials">
+            {{initials}}
+        </div>
+    }
+</div>

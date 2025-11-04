@@ -1,37 +1,36 @@
+@let users = this.users();
+@let subjects = this.subjects();
+@let activeId = this.activeId();
+@let activeType = this.activeType();
+
 <div class="page-container user-detail">
     <div class="user-detail-list">
-        List of all users 
-    
-        <!--
-            list on the left
 
-            each list is collapsable
-            -->
-
-        <div class="user-detail-list-admin">
-            <!-- <io-user-detail-list [Type]="users"> -->
+        <div class="user-detail-list-users">
+            <io-user-detail-list 
+                [people]="users" 
+                title="Users"
+                listType="user"
+                [activeId]="activeId"
+                [activeType]="activeType"
+                (personSelected)="onPersonClicked($event)"
+            ></io-user-detail-list>
         </div>
 
-        <div class="user-detail-list-other">
-            <!-- <io-user-detail-list [Type]="subject"> -->
+        <div class="user-detail-list-subjects">
+            <io-user-detail-list 
+                [people]="subjects" 
+                title="Employees"
+                listType="subject"
+                [activeId]="activeId"
+                [activeType]="activeType"
+                (personSelected)="onPersonClicked($event)"
+            ></io-user-detail-list>
         </div>
+
     </div>
 
     <div class="user-detail-detail">
-
-        <!--
-            detail on the right
-
-            <io-user-profile></io-user-profile>
-        -->
-
-        @if (userId()) {
-            User Settings for user {{userId()}}
-            <!-- user-detail-detail-view -->
-        }
-        @else {
-            <!-- settings for user, cannot edit other admin accounts -->
-        }
-
+        <router-outlet></router-outlet> 
     </div>
 </div>

@@ -1,10 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { Component, computed, effect, inject, input } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
 import { BreakpointService } from "../../services/breakpoint.service";
-import { AvatarComponent } from "../avatar/avatar.component";
+import { UserAvatarComponent } from "../avatar/avatar.component";
+import { UserModel } from "../../models/person.model";
+import { Observable } from "rxjs";
+import { UserService } from "../../services/user.service";
 
 @Component({
     selector:'io-user-menu',
@@ -17,18 +20,18 @@ import { AvatarComponent } from "../avatar/avatar.component";
     RouterLinkActive,
     BidiModule,
     MatIcon,
-    AvatarComponent,
+    UserAvatarComponent,
 ],
 
 })
 
 export class UserMenuComponent {
 
-
     isUserMenuOpen = input<boolean>();
 
+
+    protected userService = inject(UserService);
+    
     constructor(public breakpointService: BreakpointService) {}
     
-
-
 }

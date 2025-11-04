@@ -1,0 +1,12 @@
+
+.user-profile {
+    background-color: var(--color-back);
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid var(--color-back-2);
+
+    .user-profile-avatar {
+        width: 50px;
+        height: 50px;
+    }
+}

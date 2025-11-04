@@ -1,0 +1,26 @@
+@let people = this.people();
+@let title = this.title();
+
+<div class="user-detail-list">
+    <div class="user-detail-list-title">
+        {{title}}
+    </div>
+
+    @for (person of people; track person) {
+        
+        <div class="user-detail-list-person" (click)="onSelectPerson(person)" [class.active]="isActive(person)">
+
+            <div class="user-detail-list-person-avatar">
+                <io-user-avatar [person]="person"></io-user-avatar>
+            </div>
+            <div class="user-detail-list-person-firstname">  
+                {{person.firstName}}
+            </div>
+            <div class="user-detail-list-person-lastname">
+                {{person.lastName}}
+            </div>
+
+        </div>
+    }
+
+</div>

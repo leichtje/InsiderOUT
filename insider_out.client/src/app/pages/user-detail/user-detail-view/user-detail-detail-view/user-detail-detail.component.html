@@ -1,0 +1,7 @@
+@if (person$ | async; as person) {
+
+    <io-user-profile [person]="person"></io-user-profile>
+
+} @else {
+    <p>User Not Found</p>
+}

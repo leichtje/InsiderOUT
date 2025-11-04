@@ -1,1 +1,7 @@
-<io-user-detail-view [userId]="userId"></io-user-detail-view>
+<io-user-detail-view
+    [users]="users()"
+    [subjects]="subjects()"
+    [activeId]="activeId()"
+    [activeType]="activeType()"
+    (personSelected)="onPersonSelected($event)"
+></io-user-detail-view>

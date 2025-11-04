@@ -4,6 +4,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/notfound/notfound.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
+import { UserDetailDetailComponent } from './pages/user-detail/user-detail-view/user-detail-detail-view/user-detail-detail.component';
 
 const routes: Routes = [
     /* Home */
@@ -12,8 +13,14 @@ const routes: Routes = [
     { path: 'home', title: 'Home - InsiderOUT', component: HomeComponent },
 
     /* User */
-    { path: 'user', title: 'User - InsiderOUT', component: UserDetailComponent },
-    { path: 'user/:id', title: 'User - InsiderOUT', component: UserDetailComponent },
+    {
+        path: 'profiles', // This is the main route for your page
+        component: UserDetailComponent,
+        children: [
+            { path: 'user/:id', component: UserDetailDetailComponent },
+            { path: 'subject/:id', component: UserDetailDetailComponent }
+        ]
+    },
 
     /* Dashboard */
     { path: 'dashboard', title: 'Dashboard - InsiderOUT', component: DashboardComponent },

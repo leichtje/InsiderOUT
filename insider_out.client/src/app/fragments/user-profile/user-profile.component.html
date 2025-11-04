@@ -1,15 +1,19 @@
-<!--
-    this will be a reusable user content component 
-    ie:
-    the avatar, name, email, etc
+@let person = this.person();
 
-    will take in: 
-    user
-    other params
+<div class="user-profile">
+    <div class="user-profile-avatar">
+        <io-user-avatar [person]="person"></io-user-avatar>
+    </div>
 
+    <div class="user-profile-name">
+        {{person?.firstName}}
 
-    ( ) name
-        email
-        department
-        etc.
--->
+        {{person?.lastName}}
+    </div>
+
+    <div class="user-profile-email">
+
+        {{person?.email}}
+
+    </div>
+</div>

@@ -1,0 +1,15 @@
+
+
+.user-detail {
+    display: flex;
+    
+    .user-detail-list {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: fit-content;
+        padding: 0px 20px;
+        margin-right: 20px;
+        border-right: 2px solid var(--color-back-2);
+    }
+} 

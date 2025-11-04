@@ -1,0 +1,33 @@
+@use '../../../../../styles/mixins' as mixins;
+
+
+.user-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .user-detail-list-title {
+        @include mixins.font();
+    }
+
+    .user-detail-list-person {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px;
+        border: 2px solid var(--color-back);
+        border-radius: 5px;
+        cursor: pointer;
+
+        .user-detail-list-person-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        &.active {
+            border: 2px solid var(--color-primary) !important;
+            background-color: var(--color-glass-back);
+            font-weight: 600;
+        }
+    }
+}

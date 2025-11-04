@@ -29,7 +29,12 @@ export class NavigationService {
             { title: "Documents", route: "/create/documents" },
             { title: "Emails", route: "/create/emails" }
         ] 
-    }
+    },
+    { 
+        title: "Profiles",
+        icon: "account_box",
+        route: "/profiles"
+    },
     ];
 
     getSidebarItems(): SidebarItem[] {
