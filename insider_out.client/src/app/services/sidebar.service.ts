@@ -18,7 +18,7 @@ export class NavigationService {
         route: "/incidents", 
         subpages: [
             { title: "Open", route: "/incidents/open" },
-            { title: "Past", route: "/incidents/past" }
+            { title: "Closed", route: "/incidents/closed" }
         ] 
     },
     { 
