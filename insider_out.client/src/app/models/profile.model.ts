@@ -1,12 +1,11 @@
 export interface ProfileModel {
-  firstName: string;
-  lastName: string;
-  email?: string;
+    firstName: string;
+    lastName: string;
+    email?: string;
 }
 
 export interface UserModel extends ProfileModel {
     userId: number;
-
 }
 
 export interface SubjectModel extends ProfileModel {

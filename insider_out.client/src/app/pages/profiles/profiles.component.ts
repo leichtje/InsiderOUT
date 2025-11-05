@@ -15,7 +15,7 @@ import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
 })
 export class ProfilesComponent {
 
-protected userService = inject(UserService);
+    protected userService = inject(UserService);
     protected subjectService = inject(SubjectService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);

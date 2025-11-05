@@ -5,6 +5,7 @@ import { UserService } from "../../../../services/user.service";
 import { ActivatedRoute } from "@angular/router";
 import { AsyncPipe } from "@angular/common";
 import { ProfileCardComponent } from "../../../../fragments/profile-card/profile-card.component";
+import { SubjectModel, UserModel } from "../../../../models/profile.model";
 
 @Component({
     selector:'io-profiles-detail',
@@ -17,10 +18,10 @@ import { ProfileCardComponent } from "../../../../fragments/profile-card/profile
 export class ProfilesDetailComponent {
 
     private route = inject(ActivatedRoute);
-    private userService = inject(UserService);
+    protected userService = inject(UserService);
     private subjectService = inject(SubjectService);
 
-    isUser: boolean = false; 
+    protected currentUser = this.userService.currentUser;
 
     profile$ = this.route.paramMap.pipe(
         switchMap(params => {
@@ -28,13 +29,22 @@ export class ProfilesDetailComponent {
             const type = this.route.snapshot.url[0].path; 
 
             if (type === 'user') {
-                this.isUser = true;
                 return this.userService.getUserById(id);
             } else {
-                this.isUser = false;
                 return this.subjectService.getSubjectById(id);
             }
         })
-  );
+    );
+
+    isSubject(profile: UserModel | SubjectModel): boolean {
+        return 'subjectId' in profile;
+    }
+
+    isCurrentUser(profile: UserModel | SubjectModel, currentUser: UserModel): boolean {
+        if ('userId' in profile) {
+            return profile.userId === currentUser.userId;
+        }
+        return false;
+    }
 
 }

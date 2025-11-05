@@ -1,19 +1,22 @@
+@let currentUser = this.currentUser();
+
 @if (profile$ | async; as profile) {
 
     <io-profile-card [profile]="profile"></io-profile-card>
 
-    @if(isUser){
+    @if (isCurrentUser(profile, currentUser)) {
+
+        <button>Edit Profile</button>
+        <button class="danger">Delete Account</button>
 
     }
-    @else {
-
+    @else if (isSubject(profile)) {
 
         <button>Save</button>
-
         <button class="danger">Remove</button>
-
+        
     }
 
 } @else {
-    <p>User Not Found</p>
+    <p>Profile Not Found</p>
 }

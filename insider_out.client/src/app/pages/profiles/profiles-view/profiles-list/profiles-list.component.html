@@ -1,5 +1,6 @@
 @let profiles = this.profiles();
 @let title = this.title();
+@let currentUser = this.currentUser();
 
 <div class="profiles-list">
     <div class="profiles-list-title">
@@ -13,11 +14,20 @@
             <div class="profiles-list-profile-avatar">
                 <io-profile-avatar [profile]="profile"></io-profile-avatar>
             </div>
-            <div class="profiles-list-profile-firstname">  
-                {{profile.firstName}}
-            </div>
-            <div class="profiles-list-profile-lastname">
-                {{profile.lastName}}
+            <div class="profiles-list-profile-section">
+                <div class="profiles-list-profile-name">
+                    <div class="profiles-list-profile-firstname">  
+                        {{profile.firstName}}
+                    </div>
+                    <div class="profiles-list-profile-lastname">
+                        {{profile.lastName}}
+                    </div>
+                </div>
+                @if (isCurrentUser(profile, currentUser)){
+                    <div class="profiles-list-profile-currentuser">
+                        Current User
+                    </div>
+                }
             </div>
 
         </div>

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
     selector: 'io-profiles-list',
@@ -11,6 +12,9 @@ import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/pro
     imports: [CommonModule, ProfileAvatarComponent]
 })
 export class ProfilesListComponent {
+
+    protected userService = inject(UserService);
+    protected currentUser = this.userService.currentUser;
 
     profiles = input<UserModel[] | SubjectModel[]>();
     title = input<string>();
@@ -33,5 +37,13 @@ export class ProfilesListComponent {
         const id = ('userId' in profile) ? profile.userId : profile.subjectId;
         return id === this.activeId();
     }
+
+    isCurrentUser(profile: UserModel | SubjectModel, currentUser: UserModel): boolean {
+        if ('userId' in profile) {
+            return profile.userId === currentUser.userId;
+        }
+        return false;
+    }
+
 
 }

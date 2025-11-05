@@ -24,6 +24,23 @@
             height: 40px;
         }
 
+        .profiles-list-profile-section {
+
+            .profiles-list-profile-name {
+                display: flex;
+                gap: 5px;
+            }
+
+            .profiles-list-profile-currentuser {
+                display: flex;
+                align-items: center;
+                color: var(--color-text-2);
+                font-size: 15px;
+            }
+
+        }
+
+
         &.profiles-list-profile-active {
             border: 2px solid var(--color-primary) !important;
             background-color: var(--color-glass-back);
