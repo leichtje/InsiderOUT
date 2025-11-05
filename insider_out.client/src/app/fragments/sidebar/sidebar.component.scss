@@ -30,7 +30,7 @@
 
             .sidebar-icon {
                 display: inline-flex;
-                color: var(--color-primary-dark);
+                color: var(--color-primary-2);
             }
             
             .sidebar-title {
@@ -68,7 +68,7 @@
 
     .sidebar-item-active {
         border: 2px solid var(--color-primary) !important;
-        background-color: var(--color-glass-back);
+        background-color: var(--color-back-glass);
 
         .sidebar-title, .subpage-title {
             font-weight: 600;

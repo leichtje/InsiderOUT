@@ -3,31 +3,37 @@
 
 :root {
     --color-primary: #76a5af;
-    --color-primary-dark: #104651;
+    --color-primary-2: #104651;
     --color-primary-light: #9dc9d2;
-    --color-glass-back: #daeaf0;
+
     --color-back: #ffffff;
-    --color-back-body: #b7c0c2;
     --color-back-2: #b4b4b4;
-    --color-backdrop: #092430bd;
+    --color-back-glass: #daeaf0;
+    --color-back-body: #b7c0c2;
+    --color-back-drop: #092430bd;
+    
     --color-text: #212121;
     --color-text-2: #777777;
-    --color-danger: #cc5e5e;
+    
+    --color-danger: #e07c7c;
     --color-danger-back: #d0141433;
     --color-bw: white;
 }
 
 body.dark-mode {
-    --color-primary: #76a5af;
-    --color-primary-dark: #c8f6ff;
+    --color-primary: #5a8893;
+    --color-primary-2: #8dbbc2;
     --color-primary-light: #353535;
-    --color-glass-back: #3a4a50;
+    
     --color-back: #434343;
-    --color-back-body: #23282a;
     --color-back-2: #676869;
-    --color-backdrop: #070a0bb5;
+    --color-back-glass: #3a4a50;
+    --color-back-body: #23282a;
+    --color-back-drop: #070a0bb5;
+    
     --color-text: #dfdfdf;
     --color-text-2: #a3a3a3;
+    
     --color-danger: #9f3f3f;
     --color-danger-back: #83171766;
     --color-bw: black;
@@ -37,10 +43,13 @@ body {
     margin: 0;
     background-color: var(--color-back-body);
     color: var(--color-text);
+
+    font-family: "Momo Trust Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 body:has(io-header.menu-is-open) {
     overflow: hidden;
@@ -51,7 +60,6 @@ body:has(io-header.menu-is-open) {
 *::after {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-
 
 .mat-icon {
     display: inline-flex !important;
@@ -98,7 +106,7 @@ a {
     height: 100%;
 
     @include mixins.phone {
-        background: var(--color-backdrop);
+        background: var(--color-back-drop);
         @include mixins.blur(1px);
     }
 }
@@ -129,7 +137,7 @@ a {
 button {
     border: 2px solid var(--color-primary);
     border-radius: 5px;
-    background-color: var(--color-glass-back);
+    background-color: var(--color-back-glass);
     color: var(--color-text);
     @include mixins.font();
     font-weight: 600;
@@ -145,7 +153,6 @@ button {
 
     &:hover {
         border: 2px solid var(--color-text);
-        color: var(--color-bw);
         text-decoration: underline;
 
         background-color: var(--color-primary);

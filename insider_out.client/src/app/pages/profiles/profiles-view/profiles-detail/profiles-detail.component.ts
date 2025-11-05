@@ -10,7 +10,6 @@ import { SubjectModel, UserModel } from "../../../../models/profile.model";
 @Component({
     selector:'io-profiles-detail',
     templateUrl:'profiles-detail.component.html',
-    // styleUrl:'user-detail-detail.component.scss',
     standalone:true,
     imports: [AsyncPipe, ProfileCardComponent]
 })
@@ -39,5 +38,5 @@ export class ProfilesDetailComponent {
     isSubject(profile: UserModel | SubjectModel): boolean {
         return 'subjectId' in profile;
     }
-    
+
 }
