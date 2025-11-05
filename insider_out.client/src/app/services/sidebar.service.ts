@@ -22,7 +22,7 @@ export class NavigationService {
         ] 
     },
     { 
-        title: "Create",
+        title: "Tokens",
         icon: "create_new_folder",
         route: "/create",
         subpages: [

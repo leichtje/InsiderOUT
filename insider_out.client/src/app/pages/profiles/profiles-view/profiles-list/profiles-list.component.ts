@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, EventEmitter, input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
-import { UserAvatarComponent } from "../../../../fragments/avatar/avatar.component";
+import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
 
 @Component({
-    selector: 'io-user-detail-list',
-    templateUrl: './user-detail-list.component.html',
-    styleUrl: './user-detail-list.component.scss',
+    selector: 'io-profiles-list',
+    templateUrl: './profiles-list.component.html',
+    styleUrl: './profiles-list.component.scss',
     standalone: true,
-    imports: [CommonModule, UserAvatarComponent]
+    imports: [CommonModule, ProfileAvatarComponent]
 })
-export class UserDetailListComponent {
+export class ProfilesListComponent {
 
     profiles = input<UserModel[] | SubjectModel[]>();
     title = input<string>();

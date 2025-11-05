@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
-import { UserDetailListComponent } from "./user-detail-list/user-detail-list.component";
 import { RouterOutlet } from '@angular/router';
+import { ProfilesListComponent } from './profiles-list/profiles-list.component';
 
 @Component({
-    selector: 'io-user-detail-view',
-    templateUrl: './user-detail-view.component.html',
-    styleUrl: './user-detail-view.component.scss',
+    selector: 'io-profiles-view',
+    templateUrl: './profiles-view.component.html',
+    styleUrl: './profiles-view.component.scss',
     standalone: true,
-    imports: [CommonModule, UserDetailListComponent, RouterOutlet]
+    imports: [CommonModule, RouterOutlet, ProfilesListComponent]
 })
-export class UserDetailViewComponent {
+export class ProfilesViewComponent {
 
     users = input<UserModel[]>();
     subjects = input<SubjectModel[]>();

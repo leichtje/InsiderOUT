@@ -3,10 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/notfound/notfound.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { UserDetailComponent } from './pages/user-detail/user-detail.component';
-import { UserDetailDetailComponent } from './pages/user-detail/user-detail-view/user-detail-detail-view/user-detail-detail.component';
 import { IncidentsComponent } from './pages/incidents/incidents.component';
 import { IncidentsOpenViewComponent } from './pages/incidents/incidents-open-view/incidents-open-view.component';
+import { ProfilesDetailComponent } from './pages/profiles/profiles-view/profiles-detail/profiles-detail.component';
+import { ProfilesComponent } from './pages/profiles/profiles.component';
 
 const routes: Routes = [
     /* Home */
@@ -17,10 +17,10 @@ const routes: Routes = [
     /* User */
     {
         path: 'profiles',
-        component: UserDetailComponent,
+        component: ProfilesComponent,
         children: [
-            { path: 'user/:id', component: UserDetailDetailComponent },
-            { path: 'subject/:id', component: UserDetailDetailComponent }
+            { path: 'user/:id', component: ProfilesDetailComponent },
+            { path: 'subject/:id', component: ProfilesDetailComponent }
         ]
     },
 

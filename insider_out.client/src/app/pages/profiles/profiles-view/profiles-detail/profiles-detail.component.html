@@ -1,0 +1,19 @@
+@if (profile$ | async; as profile) {
+
+    <io-profile-card [profile]="profile"></io-profile-card>
+
+    @if(isUser){
+
+    }
+    @else {
+
+
+        <button>Save</button>
+
+        <button class="danger">Remove</button>
+
+    }
+
+} @else {
+    <p>User Not Found</p>
+}

@@ -3,34 +3,34 @@
 @let activeId = this.activeId();
 @let activeType = this.activeType();
 
-<div class="page-container user-detail">
-    <div class="user-detail-list">
+<div class="page-container profiles">
+    <div class="profiles-list">
 
-        <div class="user-detail-list-users">
-            <io-user-detail-list 
+        <div class="profiles-list-users">
+            <io-profiles-list 
                 [profiles]="users" 
                 title="Users"
                 listType="user"
                 [activeId]="activeId"
                 [activeType]="activeType"
                 (profileSelected)="onProfileClicked($event)"
-            ></io-user-detail-list>
+            ></io-profiles-list>
         </div>
 
-        <div class="user-detail-list-subjects">
-            <io-user-detail-list 
+        <div class="profiles-list-subjects">
+            <io-profiles-list 
                 [profiles]="subjects" 
                 title="Employees"
                 listType="subject"
                 [activeId]="activeId"
                 [activeType]="activeType"
                 (profileSelected)="onProfileClicked($event)"
-            ></io-user-detail-list>
+            ></io-profiles-list>
         </div>
 
     </div>
 
-    <div class="user-detail-detail">
+    <div class="profiles-detail">
         <router-outlet></router-outlet> 
     </div>
 </div>

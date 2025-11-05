@@ -1,19 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import {UserDetailViewComponent } from './user-detail-view/user-detail-view.component';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SubjectService } from '../../services/subject.service';
 import { SubjectModel, UserModel } from '../../models/profile.model';
 import { filter } from 'rxjs';
+import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
 
 @Component({
-    selector: 'io-user-detail',
-    templateUrl: './user-detail.component.html',
+    selector: 'io-profiles',
+    templateUrl: './profiles.component.html',
     standalone: true,
-    imports: [CommonModule, UserDetailViewComponent, RouterOutlet]
+    imports: [CommonModule, RouterOutlet, ProfilesViewComponent]
 })
-export class UserDetailComponent {
+export class ProfilesComponent {
 
 protected userService = inject(UserService);
     protected subjectService = inject(SubjectService);

@@ -4,7 +4,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
 import { BreakpointService } from "../../services/breakpoint.service";
-import { UserAvatarComponent } from "../avatar/avatar.component";
+import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { UserModel } from "../../models/profile.model";
 import { Observable } from "rxjs";
 import { UserService } from "../../services/user.service";
@@ -20,7 +20,7 @@ import { UserService } from "../../services/user.service";
     RouterLinkActive,
     BidiModule,
     MatIcon,
-    UserAvatarComponent,
+    ProfileAvatarComponent,
 ],
 
 })

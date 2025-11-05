@@ -1,0 +1,26 @@
+@let profiles = this.profiles();
+@let title = this.title();
+
+<div class="profiles-list">
+    <div class="profiles-list-title">
+        {{title}}
+    </div>
+
+    @for (profile of profiles; track profile) {
+        
+        <div class="profiles-list-profile" (click)="onSelectProfile(profile)" [class.profiles-list-profile-active]="isActive(profile)">
+
+            <div class="profiles-list-profile-avatar">
+                <io-profile-avatar [profile]="profile"></io-profile-avatar>
+            </div>
+            <div class="profiles-list-profile-firstname">  
+                {{profile.firstName}}
+            </div>
+            <div class="profiles-list-profile-lastname">
+                {{profile.lastName}}
+            </div>
+
+        </div>
+    }
+
+</div>

@@ -11,6 +11,8 @@
     --color-back-2: #b4b4b4;
     --color-backdrop: #092430bd;
     --color-text: #212121;
+    --color-danger: #cc5e5e;
+    --color-danger-back: #d0141433;
 }
 
 body.dark-mode {
@@ -23,7 +25,8 @@ body.dark-mode {
     --color-back-2: #676869;
     --color-backdrop: #070a0bb5;
     --color-text: #dfdfdf;
-
+    --color-danger: #9f3f3f;
+    --color-danger-back: #83171766;
 }
 
 body {
@@ -117,4 +120,33 @@ a {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+button {
+    border: 2px solid var(--color-primary);
+    border-radius: 5px;
+    background-color: var(--color-glass-back);
+    color: var(--color-text);
+    @include mixins.font();
+    font-weight: 600;
+    cursor: pointer;
+
+    padding: 0px 15px;
+    margin: 10px;
+
+    &.danger {
+        border: 2px solid var(--color-danger);
+        background-color: var(--color-danger-back);
+    }
+
+    &:hover {
+        border: 2px solid var(--color-text);
+
+        background-color: var(--color-primary);
+
+        &.danger {
+            background-color: var(--color-danger);
+        }
+    }
+
 }

@@ -4,7 +4,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { MatIcon } from "@angular/material/icon";
-import { UserAvatarComponent } from "../avatar/avatar.component";
+import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { UserService } from "../../services/user.service";
 
 
@@ -18,7 +18,7 @@ import { UserService } from "../../services/user.service";
     RouterLink,
     RouterLinkActive,
     MatIcon,
-    UserAvatarComponent
+    ProfileAvatarComponent
 ],
     host: {
         '[class.menu-is-open]': 'isAnyMenuOpen()'

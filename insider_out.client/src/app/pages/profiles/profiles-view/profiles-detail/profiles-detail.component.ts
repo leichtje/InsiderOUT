@@ -4,21 +4,23 @@ import { SubjectService } from "../../../../services/subject.service";
 import { UserService } from "../../../../services/user.service";
 import { ActivatedRoute } from "@angular/router";
 import { AsyncPipe } from "@angular/common";
-import { UserProfileComponent } from "../../../../fragments/user-profile/user-profile.component";
+import { ProfileCardComponent } from "../../../../fragments/profile-card/profile-card.component";
 
 @Component({
-    selector:'io-user-detail-detail',
-    templateUrl:'user-detail-detail.component.html',
+    selector:'io-profiles-detail',
+    templateUrl:'profiles-detail.component.html',
     // styleUrl:'user-detail-detail.component.scss',
     standalone:true,
-    imports: [AsyncPipe, UserProfileComponent]
+    imports: [AsyncPipe, ProfileCardComponent]
 })
 
-export class UserDetailDetailComponent {
+export class ProfilesDetailComponent {
 
     private route = inject(ActivatedRoute);
     private userService = inject(UserService);
     private subjectService = inject(SubjectService);
+
+    isUser: boolean = false; 
 
     profile$ = this.route.paramMap.pipe(
         switchMap(params => {
@@ -26,8 +28,10 @@ export class UserDetailDetailComponent {
             const type = this.route.snapshot.url[0].path; 
 
             if (type === 'user') {
+                this.isUser = true;
                 return this.userService.getUserById(id);
             } else {
+                this.isUser = false;
                 return this.subjectService.getSubjectById(id);
             }
         })

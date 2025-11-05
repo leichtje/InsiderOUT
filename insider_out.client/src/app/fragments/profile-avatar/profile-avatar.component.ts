@@ -3,13 +3,13 @@ import { ProfileModel } from "../../models/profile.model";
 import { ThemeService } from "../../services/theme.service";
 
 @Component({
-    selector:'io-user-avatar',
-    templateUrl:'avatar.component.html',
-    styleUrl:'avatar.component.scss',
+    selector:'io-profile-avatar',
+    templateUrl:'profile-avatar.component.html',
+    styleUrl:'profile-avatar.component.scss',
     standalone:true
 })
 
-export class UserAvatarComponent {
+export class ProfileAvatarComponent {
 
  private avatarLightColors = [
         '#FFAB91', // Light Salmon
