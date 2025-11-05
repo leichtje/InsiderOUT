@@ -1,10 +1,8 @@
-@let currentUser = this.currentUser();
-
 @if (profile$ | async; as profile) {
 
     <io-profile-card [profile]="profile"></io-profile-card>
 
-    @if (isCurrentUser(profile, currentUser)) {
+    @if (userService.isCurrentUser(profile)) {
 
         <button>Edit Profile</button>
         <button class="danger">Delete Account</button>
@@ -14,7 +12,7 @@
 
         <button>Save</button>
         <button class="danger">Remove</button>
-        
+
     }
 
 } @else {

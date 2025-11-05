@@ -14,7 +14,6 @@ import { UserService } from '../../../../services/user.service';
 export class ProfilesListComponent {
 
     protected userService = inject(UserService);
-    protected currentUser = this.userService.currentUser;
 
     profiles = input<UserModel[] | SubjectModel[]>();
     title = input<string>();
@@ -37,13 +36,5 @@ export class ProfilesListComponent {
         const id = ('userId' in profile) ? profile.userId : profile.subjectId;
         return id === this.activeId();
     }
-
-    isCurrentUser(profile: UserModel | SubjectModel, currentUser: UserModel): boolean {
-        if ('userId' in profile) {
-            return profile.userId === currentUser.userId;
-        }
-        return false;
-    }
-
 
 }

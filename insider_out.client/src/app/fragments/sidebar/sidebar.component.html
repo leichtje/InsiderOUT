@@ -39,8 +39,7 @@
                 @if (openItem() === item.title) {
                     <div class="subpage-container">
                         @for (subpage of item.subpages; track subpage) {
-                            <a class="subpage-item" 
-                                [routerLink]="subpage.route">
+                            <a class="subpage-item" [routerLink]="subpage.route">
                                 <div class="subpage-title" routerLinkActive="sidebar-item-active">
                                     {{ subpage.title }}
                                 </div>

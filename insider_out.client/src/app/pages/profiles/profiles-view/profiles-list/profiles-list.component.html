@@ -1,6 +1,5 @@
 @let profiles = this.profiles();
 @let title = this.title();
-@let currentUser = this.currentUser();
 
 <div class="profiles-list">
     <div class="profiles-list-title">
@@ -23,7 +22,7 @@
                         {{profile.lastName}}
                     </div>
                 </div>
-                @if (isCurrentUser(profile, currentUser)){
+                @if (userService.isCurrentUser(profile)){
                     <div class="profiles-list-profile-currentuser">
                         Current User
                     </div>

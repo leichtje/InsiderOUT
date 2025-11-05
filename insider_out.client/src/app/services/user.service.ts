@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { UserModel } from '../models/profile.model';
+import { SubjectModel, UserModel } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +46,13 @@ export class UserService {
         const user = userList.find(u => u.userId === id);
         
         return of(user);
+    }
+
+    public isCurrentUser(profile: UserModel | SubjectModel): boolean {
+        if ('userId' in profile) {
+            return profile.userId === this.currentUser().userId;
+        }
+        return false;
     }
 
 }

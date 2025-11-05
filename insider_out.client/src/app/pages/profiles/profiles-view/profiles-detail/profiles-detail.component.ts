@@ -39,12 +39,5 @@ export class ProfilesDetailComponent {
     isSubject(profile: UserModel | SubjectModel): boolean {
         return 'subjectId' in profile;
     }
-
-    isCurrentUser(profile: UserModel | SubjectModel, currentUser: UserModel): boolean {
-        if ('userId' in profile) {
-            return profile.userId === currentUser.userId;
-        }
-        return false;
-    }
-
+    
 }
