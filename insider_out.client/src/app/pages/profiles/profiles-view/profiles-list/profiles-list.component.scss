@@ -22,13 +22,14 @@
         .profiles-list-profile-avatar {
             width: 40px;
             height: 40px;
+            min-width: 40px;
         }
 
         .profiles-list-profile-section {
+            overflow: hidden;
 
             .profiles-list-profile-name {
-                display: flex;
-                gap: 5px;
+                @include mixins.ellipsis();
             }
 
             .profiles-list-profile-currentuser {

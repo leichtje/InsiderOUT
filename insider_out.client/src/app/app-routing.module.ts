@@ -7,6 +7,7 @@ import { IncidentsComponent } from './pages/incidents/incidents.component';
 import { IncidentsOpenViewComponent } from './pages/incidents/incidents-open-view/incidents-open-view.component';
 import { ProfilesDetailComponent } from './pages/profiles/profiles-view/profiles-detail/profiles-detail.component';
 import { ProfilesComponent } from './pages/profiles/profiles.component';
+import { IncidentsClosedViewComponent } from './pages/incidents/incidents-closed-view/incidents-closed-view.component';
 
 const routes: Routes = [
     /* Home */
@@ -34,8 +35,8 @@ const routes: Routes = [
         children: [
             { path: 'open', component: IncidentsOpenViewComponent },
             { path: 'open/:id', component: IncidentsOpenViewComponent },
-            { path: 'closed', component: IncidentsOpenViewComponent },
-            { path: 'closed/:id', component: IncidentsOpenViewComponent }
+            { path: 'closed', component: IncidentsClosedViewComponent },
+            { path: 'closed/:id', component: IncidentsClosedViewComponent }
         ]
     },
 

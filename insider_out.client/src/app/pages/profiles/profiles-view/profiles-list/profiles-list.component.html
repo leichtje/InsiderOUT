@@ -15,12 +15,8 @@
             </div>
             <div class="profiles-list-profile-section">
                 <div class="profiles-list-profile-name">
-                    <div class="profiles-list-profile-firstname">  
-                        {{profile.firstName}}
-                    </div>
-                    <div class="profiles-list-profile-lastname">
-                        {{profile.lastName}}
-                    </div>
+                    {{profile.firstName}}
+                    {{profile.lastName}}
                 </div>
                 @if (userService.isCurrentUser(profile)){
                     <div class="profiles-list-profile-currentuser">
