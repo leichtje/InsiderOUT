@@ -6,6 +6,7 @@ import { ActivatedRoute } from "@angular/router";
 import { AsyncPipe } from "@angular/common";
 import { ProfileCardComponent } from "../../../../fragments/profile-card/profile-card.component";
 import { SubjectModel, UserModel } from "../../../../models/profile.model";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
     selector:'io-profiles-detail',
@@ -34,6 +35,8 @@ export class ProfilesDetailComponent {
             }
         })
     );
+
+    profile = toSignal(this.profile$, { initialValue: null });
 
     isSubject(profile: UserModel | SubjectModel): boolean {
         return 'subjectId' in profile;

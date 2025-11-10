@@ -10,13 +10,15 @@ export class IncidentService {
     private incidentsSignal = signal<IncidentsModel[]>([
         {
             incidentId: 1,
-            title: 'testing',
-            assignedUserId: 101
+            title: 'Incident #1',
+            assignedUserId: 101,
+            tiedSubjectId: 700
         },
         {
             incidentId: 2,
-            title: 'test',
-            assignedUserId: 101
+            title: 'Incident #2',
+            assignedUserId: 101,
+            tiedSubjectId: 700
         },
     ]);
 

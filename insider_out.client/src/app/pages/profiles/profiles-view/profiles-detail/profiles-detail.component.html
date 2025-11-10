@@ -1,4 +1,6 @@
-@if (profile$ | async; as profile) {
+@let profile = this.profile();
+
+@if (profile) {
 
     <io-profile-card [profile]="profile"></io-profile-card>
 

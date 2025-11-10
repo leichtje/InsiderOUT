@@ -1,9 +1,56 @@
+@let incident = this.incident();
+@let assignedUser = this.assignedUser();
+@let tiedSubject = this.tiedSubject();
+
 <div class="page-container">
-    @if (incident$ | async; as incident) {
-        
-        {{incident.incidentId}}
-        {{incident.title}}
-        {{incident.assignedUserId}}
+    <div routerLink="/incidents/open">
+        Back to List
+    </div>
+    <br>
+    <br>
+    
+    @if (incident) {
+
+        Incident Id: <b>{{incident.incidentId}}</b>
+        <br>
+        <br>
+        Title: <b>{{incident.title}}</b>
+        <br>
+        <br>
+
+        <h3>User</h3>
+
+        @if (assignedUser) {
+
+            Assigned User Id: <b>{{incident.assignedUserId}}</b>
+            <br>
+            <br>
+            Assigned User First Name: <b>{{assignedUser.firstName}}</b>
+            <br>
+            <br>
+            Assigned User Last Name: <b>{{assignedUser.lastName}}</b>
+            <br>
+            <br>
+            Assigned User Email: <b>{{assignedUser.email}}</b>
+            <br>
+            <br>
+        }
+
+        <h3>Subject</h3>
+
+        @if (tiedSubject) {
+
+            Tied Subject Id: <b>{{incident.tiedSubjectId}}</b>
+            <br>
+            <br>
+            Tied Subject First Name: <b>{{tiedSubject.firstName}}</b>
+            <br>
+            <br>
+            Tied Subject Last Name: <b>{{tiedSubject.lastName}}</b>
+            <br>
+            <br>
+            Tied Subject Email: <b>{{tiedSubject.email}}</b>
+        }
         
     } @else {
         <p>Profile Not Found</p>
