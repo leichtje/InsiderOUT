@@ -25,7 +25,6 @@ export class IncidentsOpenDetailComponent {
 
     protected activeId = signal<number | null>(null);
 
-
     private incidentId$ = this.route.paramMap.pipe(
         switchMap(params => {
             const id = params.get('id');
@@ -35,10 +34,10 @@ export class IncidentsOpenDetailComponent {
 
     incident = toSignal(
         this.incidentId$.pipe(
-        filter((id): id is number => id !== null),
-        switchMap(id => {
-            return this.incidentService.getIncidentById(id);
-        })
+            filter((id): id is number => id !== null),
+            switchMap(id => {
+                return this.incidentService.getIncidentById(id);
+            })
         ),
         { initialValue: null }
     );

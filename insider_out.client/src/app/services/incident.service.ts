@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { IncidentsModel } from '../models/incidents.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class IncidentService {
 
