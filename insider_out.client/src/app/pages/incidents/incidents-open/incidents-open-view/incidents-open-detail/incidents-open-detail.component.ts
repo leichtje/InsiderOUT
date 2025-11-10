@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { filter, of, Subject, switchMap } from 'rxjs';
-import { IncidentService } from '../../../../services/incident.service';
-import { UserService } from '../../../../services/user.service';
+import { IncidentService } from '../../../../../services/incident.service';
+import { UserService } from '../../../../../services/user.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { IncidentsModel } from '../../../../models/incidents.model';
-import { SubjectModel, UserModel } from '../../../../models/profile.model';
-import { SubjectService } from '../../../../services/subject.service';
+import { IncidentsModel } from '../../../../../models/incidents.model';
+import { SubjectModel, UserModel } from '../../../../../models/profile.model';
+import { SubjectService } from '../../../../../services/subject.service';
 
 @Component({
     selector: 'io-incidents-open-detail',

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
-import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
-import { UserService } from '../../../../services/user.service';
-import { IncidentsModel } from '../../../../models/incidents.model';
+import { ProfileAvatarComponent } from '../../../../../fragments/profile-avatar/profile-avatar.component';
+import { UserService } from '../../../../../services/user.service';
+import { IncidentsModel } from '../../../../../models/incidents.model';
 
 @Component({
     selector: 'io-incidents-open-list',

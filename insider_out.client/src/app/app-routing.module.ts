@@ -8,7 +8,7 @@ import { ProfilesDetailComponent } from './pages/profiles/profiles-view/profiles
 import { ProfilesComponent } from './pages/profiles/profiles.component';
 import { IncidentsClosedComponent } from './pages/incidents/incidents-closed/incidents-closed.component';
 import { IncidentsOpenComponent } from './pages/incidents/incidents-open/incidents-open.component';
-import { IncidentsOpenDetailComponent } from './pages/incidents/incidents-open/incidents-open-detail/incidents-open-detail.component';
+import { IncidentsOpenDetailComponent } from './pages/incidents/incidents-open/incidents-open-view/incidents-open-detail/incidents-open-detail.component';
 
 const routes: Routes = [
     /* Home */

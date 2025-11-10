@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
 import { IncidentsModel } from '../../../../models/incidents.model';
-import { IncidentsOpenListComponent } from "../incidents-open-list/incidents-open-list.component";
+import { IncidentsOpenListComponent } from "./incidents-open-list/incidents-open-list.component";
 
 @Component({
     selector: 'io-incidents-open-view',
