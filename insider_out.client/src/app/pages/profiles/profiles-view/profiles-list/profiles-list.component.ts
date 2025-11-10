@@ -30,7 +30,7 @@ export class ProfilesListComponent {
     isActive(profile: UserModel | SubjectModel): boolean {
         
         if (this.activeType() !== this.listType()) {
-        return false;
+            return false;
         }
 
         const id = ('userId' in profile) ? profile.userId : profile.subjectId;

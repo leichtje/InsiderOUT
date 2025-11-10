@@ -1,0 +1,8 @@
+@let incidents = this.incidents();
+
+<div class="page-container">
+    <io-incidents-open-list
+        [incidents]="incidents"
+        (incidentSelected)="onIncidentClicked($event)"
+    ></io-incidents-open-list>
+</div>

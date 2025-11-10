@@ -4,10 +4,11 @@ import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/notfound/notfound.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { IncidentsComponent } from './pages/incidents/incidents.component';
-import { IncidentsOpenViewComponent } from './pages/incidents/incidents-open-view/incidents-open-view.component';
 import { ProfilesDetailComponent } from './pages/profiles/profiles-view/profiles-detail/profiles-detail.component';
 import { ProfilesComponent } from './pages/profiles/profiles.component';
-import { IncidentsClosedViewComponent } from './pages/incidents/incidents-closed-view/incidents-closed-view.component';
+import { IncidentsClosedComponent } from './pages/incidents/incidents-closed/incidents-closed.component';
+import { IncidentsOpenComponent } from './pages/incidents/incidents-open/incidents-open.component';
+import { IncidentsOpenDetailComponent } from './pages/incidents/incidents-open/incidents-open-detail/incidents-open-detail.component';
 
 const routes: Routes = [
     /* Home */
@@ -33,10 +34,10 @@ const routes: Routes = [
         path: 'incidents',
         component: IncidentsComponent,
         children: [
-            { path: 'open', component: IncidentsOpenViewComponent },
-            { path: 'open/:id', component: IncidentsOpenViewComponent },
-            { path: 'closed', component: IncidentsClosedViewComponent },
-            { path: 'closed/:id', component: IncidentsClosedViewComponent }
+            { path: 'open', component: IncidentsOpenComponent },
+            { path: 'open/:id', component: IncidentsOpenDetailComponent },
+            { path: 'closed', component: IncidentsClosedComponent },
+            { path: 'closed/:id', component: IncidentsClosedComponent }
         ]
     },
 

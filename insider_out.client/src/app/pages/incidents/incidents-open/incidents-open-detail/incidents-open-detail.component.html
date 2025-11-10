@@ -1,0 +1,11 @@
+<div class="page-container">
+    @if (incident$ | async; as incident) {
+        
+        {{incident.incidentId}}
+        {{incident.title}}
+        {{incident.assignedUserId}}
+        
+    } @else {
+        <p>Profile Not Found</p>
+    }
+</div>

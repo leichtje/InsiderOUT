@@ -27,23 +27,23 @@ export class ProfilesComponent {
     protected activeType = signal<'user' | 'subject' | null>(null);
 
     constructor() {
-    this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd)
-        ).subscribe(() => {
-        let child = this.route.firstChild;
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+            ).subscribe(() => {
+                let child = this.route.firstChild;
 
-        if (child) {
-            const id = child.snapshot.paramMap.get('id');
-            const type = child.snapshot.url[0].path;
-            
-            this.activeId.set(id ? +id : null);
-            this.activeType.set(type as any);
+                if (child) {
+                    const id = child.snapshot.paramMap.get('id');
+                    const type = child.snapshot.url[0].path;
+                    
+                    this.activeId.set(id ? +id : null);
+                    this.activeType.set(type as any);
 
-        } else {
-            this.activeId.set(null);
-            this.activeType.set(null);
-        }
-        });
+                } else {
+                    this.activeId.set(null);
+                    this.activeType.set(null);
+                }
+            });
     }
 
     onProfileSelected(profile: UserModel | SubjectModel) {
