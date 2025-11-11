@@ -19,6 +19,7 @@
         border-right: 2px solid var(--color-gray);
         padding-right: 10px;
         width: fit-content;
+        height: -webkit-fill-available;
         
         .incident-card__title {
             display: inline-flex;
