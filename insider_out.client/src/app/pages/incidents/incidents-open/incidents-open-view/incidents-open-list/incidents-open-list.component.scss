@@ -49,7 +49,7 @@
             .item {
                 .label {
                     font-weight: 600;
-                    font-size: 0.8rem;
+                    @include mixins.font(0.8rem);
                     color: var(--color-gray-2);
                     margin-bottom: 5px;
                 }

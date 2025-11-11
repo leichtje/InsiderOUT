@@ -11,7 +11,7 @@ import { ThemeService } from "../../services/theme.service";
 
 export class ProfileAvatarComponent {
 
- private avatarLightColors = [
+    private avatarLightColors = [
         '#FFAB91', // Light Salmon
         '#FFCC80', // Light Orange
         '#E6EE9B', // Light Lime
@@ -20,7 +20,7 @@ export class ProfileAvatarComponent {
         '#a8cdeaff', // Lighter Blue
         '#cac2d8ff', // Light Purple
         '#e9a8bdff', // Light Pink
-        '#CFD8DC', // Blue Grey
+        '#bfc7cbff', // Blue Grey
         '#A5D6A7', // Light Green
     ];
 
