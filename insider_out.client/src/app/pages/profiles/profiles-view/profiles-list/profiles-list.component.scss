@@ -40,6 +40,14 @@
         }
     }
 
+    &:hover {
+        .name {
+            text-decoration: underline !important;
+            text-decoration-color: var(--color-primary) !important;
+            text-decoration-thickness: 2px;
+        }
+    }
+
     &--active {
         border: 2px solid var(--color-primary) !important;
         background-color: var(--color-primary-3);
