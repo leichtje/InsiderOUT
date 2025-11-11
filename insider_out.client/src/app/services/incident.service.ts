@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { IncidentModel } from '../models/incidents.model';
+import { IncidentModel, IncidentStatus } from '../models/incidents.model';
 import { TokenType } from '../models/token.model';
 
 @Injectable({
@@ -19,6 +19,7 @@ export class IncidentService {
                 name: 'MFA Password Enrollment',
                 location: 'Server A'
             },
+            status: IncidentStatus.inProgress,
             assignedUserId: 101,
             tiedSubjectId: 700,
             tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Word 16.0.17126)"
@@ -33,6 +34,7 @@ export class IncidentService {
                 name: 'Payroll Incentives 2026',
                 location: 'Server B'
             },
+            status: IncidentStatus.inProgress,
             assignedUserId: 101,
             tiedSubjectId: 700,
             tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 6.1; Microsoft Word 16.0.17126; ProPlus)"

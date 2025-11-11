@@ -1,3 +1,71 @@
 @use '../../../../../../styles/mixins' as mixins;
 
+.incidents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
+.incident-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 5px;
+    border: 2px solid var(--color-primary);
+    border-radius: 5px;
+    cursor: pointer;
+
+    &__info, &__subject, &__user {
+        border-right: 2px solid var(--color-gray);
+        padding-right: 10px;
+        width: fit-content;
+        
+        .incident-card__title {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            padding: 10px;
+            height: 30px;
+            @include mixins.font();
+
+            mat-icon {
+                color: var(--color-primary-2)
+            }
+        }
+
+        .incident-card__details {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+            }
+
+            .item {
+                .label {
+                    font-weight: 600;
+                    font-size: 0.8rem;
+                    color: var(--color-gray-2);
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
+
+    &:hover {
+        background-color: var(--color-primary-3);
+        .divider {
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .incident-card__info, .incident-card__subject, .incident-card__user {
+            border-right: 2px solid var(--color-primary);
+        }
+    }
+
+}

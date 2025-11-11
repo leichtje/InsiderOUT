@@ -6,8 +6,22 @@ export interface IncidentModel {
     title: string;
     date: Date;
     token: Token;
+    status: IncidentStatus;
     assignedUserId: UserModel["userId"];
     tiedSubjectId: SubjectModel["subjectId"];
     tiedSubjectAgent: string;
 }
 
+
+export interface IncidentViewModel {
+    incident: IncidentModel;
+    subject: SubjectModel | null;
+    user: UserModel | null;
+}
+
+export enum IncidentStatus {
+    inProgress,
+    New,
+    Resolved,
+    Closed
+}

@@ -1,50 +1,47 @@
 @use '../../../../../styles/mixins' as mixins;
 
-
 .profiles-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
 
-    .profiles-list-title {
+    &__title {
         @include mixins.font();
     }
+}
 
-    .profiles-list-profile {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        padding: 5px;
-        border: 2px solid var(--color-back);
-        border-radius: 5px;
-        cursor: pointer;
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    border: 2px solid var(--color-back);
+    border-radius: 5px;
+    cursor: pointer;
 
-        .profiles-list-profile-avatar {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
+    &__avatar {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    &__info {
+        overflow: hidden;
+
+        .name {
+            @include mixins.ellipsis();
         }
 
-        .profiles-list-profile-section {
-            overflow: hidden;
-
-            .profiles-list-profile-name {
-                @include mixins.ellipsis();
-            }
-
-            .profiles-list-profile-currentuser {
-                display: flex;
-                align-items: center;
-                color: var(--color-text-2);
-                font-size: 15px;
-            }
-
+        .current-user {
+            display: flex;
+            align-items: center;
+            color: var(--color-text-2);
+            font-size: 15px;
         }
+    }
 
-
-        &.profiles-list-profile-active {
-            border: 2px solid var(--color-primary) !important;
-            background-color: var(--color-back-glass);
-        }
+    &--active {
+        border: 2px solid var(--color-primary) !important;
+        background-color: var(--color-primary-3);
     }
 }

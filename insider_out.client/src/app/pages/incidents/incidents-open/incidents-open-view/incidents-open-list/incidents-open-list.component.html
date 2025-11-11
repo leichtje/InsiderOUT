@@ -1,26 +1,103 @@
-@let incidents = this.incidents();
+@let vms = this.incidentViewModels();
 
-<div class="incidents-open-list">
+<div class="incidents-list">
 
-    @for (incident of incidents; track incident) {
-        
-        <div class="incidents-open-incident" (click)="onSelectIncident(incident)">
+    @for (vm of vms; track vm.incident.incidentId) {
+    
+        <div class="incident-card" (click)="onSelectIncident(vm.incident)">
 
-            {{incident.title}}
-            {{incident.date | date:'short'}}
-            
-            @switch (incident.token.type) {
-
-                @case (tokenType.document){
-                    {{incident.token.name}}
-                    {{incident.token.location}}
-                }
-                @case (tokenType.email){
+            <div class="incident-card__info">
                 
-                }
-            }
+                <div class="incident-card__title">
+
+                    @switch (vm.incident.token.type) {
+                        @case (tokenType.document){
+                            <mat-icon>description</mat-icon>
+                        }
+                        @case (tokenType.email){
+                            <mat-icon>email</mat-icon>
+
+                        }
+                    }
+
+                    {{vm.incident.title}}
+
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="incident-card__details">
+
+                    @switch (vm.incident.token.type) {
+                        @case (tokenType.document){
+                            <div class="item">
+                                <div class="label">Doc Name</div>
+                                {{vm.incident.token.name}}
+                            </div>
+                            <div class="item">
+                                <div class="label">Doc Location</div>
+                                {{vm.incident.token.location}}
+                            </div>
+                        }
+                        @case (tokenType.email){
+                            <div>
+                                <div class="label">Email Subject</div>
+                                {{vm.incident.token.subject}}
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="incident-card__subject">
+
+                <div class="incident-card__title">
+                    {{vm.incident.date | date:'short'}}
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="incident-card__details">
+
+                    <div class="item">
+                        <div class="label">Subject</div>
+                        @if (vm.subject) {
+                            <div class="avatar">
+                                <io-profile-avatar [profile]="vm.subject"></io-profile-avatar>
+                            </div>
+                            <span>{{ vm.subject.firstName }} {{ vm.subject.lastName }}</span>
+                        } @else {
+                            <span>Loading subject...</span>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="incident-card__user">
+                <div class="incident-card__title">
+                    <io-incident-status [status]="vm.incident.status"></io-incident-status>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="incident-card__details">
+
+                    <div class="item">
+                        <div class="label">Assignee</div>
+                        @if (vm.user) {
+                            <div class="avatar">
+                                <io-profile-avatar [profile]="vm.user"></io-profile-avatar>
+                            </div>
+                            <span>{{ vm.user.firstName }} {{ vm.user.lastName }}</span>
+                        } @else {
+                            <span>Loading user...</span>
+                        }
+                    </div>
+
+                </div>
+            </div>
 
         </div>
     }
-
 </div>

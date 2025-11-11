@@ -26,9 +26,9 @@
     @include mixins.font();
 
     @include mixins.non-phone() {
-        box-shadow: -2px 0px 0px var(--color-back-2);
+        box-shadow: -2px 0px 0px var(--color-gray);
         border: none;
-        border-bottom: 2px solid var(--color-back-2);
+        border-bottom: 2px solid var(--color-gray);
         border-radius: 0px 0px 0px 10px;
     }
 
@@ -73,7 +73,7 @@
 
                 &.user-menu-option-active {
                     border: 2px solid var(--color-primary) !important;
-                    background-color: var(--color-back-glass);
+                    background-color: var(--color-primary-3);
                     font-weight: 600;
                 }
             }
