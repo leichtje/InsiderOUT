@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 import { filter } from 'rxjs';
 import { IncidentsOpenViewComponent } from "./incidents-open-view/incidents-open-view.component";
 import { IncidentService } from '../../../services/incident.service';
-import { IncidentsModel } from '../../../models/incidents.model';
+import { IncidentModel } from '../../../models/incidents.model';
 
 @Component({
     selector: 'io-incidents-open',
@@ -23,7 +23,7 @@ export class IncidentsOpenComponent {
     constructor() {
     }
 
-    onIncidentSelected(incident: IncidentsModel) {
+    onIncidentSelected(incident: IncidentModel) {
         const id = incident.incidentId;
 
         this.router.navigate([id], { relativeTo: this.route });

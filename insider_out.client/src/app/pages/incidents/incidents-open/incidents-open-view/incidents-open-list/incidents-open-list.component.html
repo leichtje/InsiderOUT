@@ -7,6 +7,18 @@
         <div class="incidents-open-incident" (click)="onSelectIncident(incident)">
 
             {{incident.title}}
+            {{incident.date | date:'short'}}
+            
+            @switch (incident.token.type) {
+
+                @case (tokenType.document){
+                    {{incident.token.name}}
+                    {{incident.token.location}}
+                }
+                @case (tokenType.email){
+                
+                }
+            }
 
         </div>
     }

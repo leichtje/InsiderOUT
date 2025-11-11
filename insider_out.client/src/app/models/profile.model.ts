@@ -10,5 +10,7 @@ export interface UserModel extends ProfileModel {
 
 export interface SubjectModel extends ProfileModel {
     subjectId: number;
+    title?: string;
     department?: string;
+    agent?: string;
 }

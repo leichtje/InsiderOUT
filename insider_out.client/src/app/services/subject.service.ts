@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { SubjectModel } from '../models/profile.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SubjectService {
 
@@ -12,29 +12,30 @@ export class SubjectService {
             subjectId: 700,
             firstName: "Matthew",
             lastName: "Price",
-            email: 'matthew@example.com',
-            department: 'Cybersecurity'
+            email: "matthew@example.com",
+            department: "Cybersecurity",
+            title: "Senior Data Analyst"
         },
         {
             subjectId: 701,
             firstName: "Jonathon",
             lastName: "Leicht",
-            email: 'jonathon@example.com',
-            department: 'Cybersecurity'
+            email: "jonathon@example.com",
+            department: "Cybersecurity"
         },
         {
             subjectId: 702,
             firstName: "Nitin",
             lastName: "Penmetsa",
-            email: 'nitin@example.com',
+            email: "nitin@example.com",
             department: 'Cybersecurity'
         },
         {
             subjectId: 703,
             firstName: "Chetan",
             lastName: "Penmetsaaaaaaaaaaaaa",
-            email: 'chetan@example.com',
-            department: 'Cybersecurity'
+            email: "chetan@example.com",
+            department: "Cybersecurity"
         }
     ]);
 

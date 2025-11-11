@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { IncidentsModel } from '../../../../models/incidents.model';
+import { IncidentModel } from '../../../../models/incidents.model';
 import { IncidentsOpenListComponent } from "./incidents-open-list/incidents-open-list.component";
 
 @Component({
@@ -12,14 +12,14 @@ import { IncidentsOpenListComponent } from "./incidents-open-list/incidents-open
 })
 export class IncidentsOpenViewComponent {
 
-    incidents = input<IncidentsModel[]>();
+    incidents = input<IncidentModel[]>();
     activeId = input<number | null>();
     
-    selectedIncident = input<IncidentsModel | null>();
+    selectedIncident = input<IncidentModel | null>();
 
-    @Output() incidentSelected = new EventEmitter<IncidentsModel>();
+    @Output() incidentSelected = new EventEmitter<IncidentModel>();
 
-    onIncidentClicked(incident: IncidentsModel) {
+    onIncidentClicked(incident: IncidentModel) {
         this.incidentSelected.emit(incident);
     }
 

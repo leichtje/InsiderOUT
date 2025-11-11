@@ -5,7 +5,7 @@ import { filter, of, Subject, switchMap } from 'rxjs';
 import { IncidentService } from '../../../../../services/incident.service';
 import { UserService } from '../../../../../services/user.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { IncidentsModel } from '../../../../../models/incidents.model';
+import { IncidentModel } from '../../../../../models/incidents.model';
 import { SubjectModel, UserModel } from '../../../../../models/profile.model';
 import { SubjectService } from '../../../../../services/subject.service';
 
@@ -46,7 +46,7 @@ export class IncidentsOpenDetailComponent {
 
     assignedUser = toSignal(
         this.incidentSignal$.pipe(
-            filter((incident): incident is IncidentsModel => !!incident),
+            filter((incident): incident is IncidentModel => !!incident),
             switchMap(incident => {
                 const userId = incident.assignedUserId;
                 if (userId) {
@@ -60,7 +60,7 @@ export class IncidentsOpenDetailComponent {
 
     tiedSubject = toSignal(
         this.incidentSignal$.pipe(
-            filter((incident): incident is IncidentsModel => !!incident),
+            filter((incident): incident is IncidentModel => !!incident),
             switchMap(incident => {
                 const subjectId = incident.tiedSubjectId;
                 if (subjectId) {
