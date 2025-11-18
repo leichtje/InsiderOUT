@@ -10,52 +10,35 @@ import { IncidentStatus } from "../../models/incidents.model";
 })
 export class StatusComponent {
 
-    private themeService = inject(ThemeService);
-
-    private statusLightColors = new Map<IncidentStatus, string>([
-        [IncidentStatus.New, '#A5D6A7'],        // Light Green
-        [IncidentStatus.inProgress, '#a7dbf3ff'], // Light Blue
-        [IncidentStatus.Resolved, '#FFCC80'],    // Light Orange
-        [IncidentStatus.Closed, '#CFD8DC'],       // Blue Grey
-    ]);
-
-    private statusDarkColors = new Map<IncidentStatus, string>([
-        [IncidentStatus.New, '#2f9232ff'],        // Dark Green
-        [IncidentStatus.inProgress, '#306a84ff'], // Dark Blue
-        [IncidentStatus.Resolved, '#a87b38ff'],    // Dark Orange
-        [IncidentStatus.Closed, '#4e6770ff'],       // Dark Grey
+private statusVarMap = new Map<IncidentStatus, string>([
+        [IncidentStatus.New,        'var(--status-new)'],
+        [IncidentStatus.inProgress, 'var(--status-in-progress)'],
+        [IncidentStatus.Resolved,   'var(--status-resolved)'],
+        [IncidentStatus.Closed,     'var(--status-closed)'],
     ]);
 
     private statusText = new Map<IncidentStatus, string>([
-        [IncidentStatus.New, 'New'],
+        [IncidentStatus.New,        'New'],
         [IncidentStatus.inProgress, 'In Progress'],
-        [IncidentStatus.Resolved, 'Resolved'],
-        [IncidentStatus.Closed, 'Closed'],
+        [IncidentStatus.Resolved,   'Resolved'],
+        [IncidentStatus.Closed,     'Closed'],
     ]);
 
     status = input<IncidentStatus>();
 
-    isDark = computed(() => this.themeService.isDark());
-
     backgroundColor = computed(() => {
         const currentStatus = this.status();
-        const colorPalette = this.isDark() ? this.statusDarkColors : this.statusLightColors;
-
-        const defaultColor = this.isDark() ? '#424242' : '#BDBDBD';
         
         if (currentStatus === undefined) {
-            return defaultColor;
+            return 'var(--color-gray-2)';
         }
         
-        return colorPalette.get(currentStatus) ?? defaultColor;
+        return this.statusVarMap.get(currentStatus) ?? 'var(--color-gray-2)';
     });
 
     displayText = computed(() => {
         const currentStatus = this.status();
-        if (currentStatus === undefined) {
-            return 'Unknown';
-        }
-        return this.statusText.get(currentStatus) ?? 'Unknown';
+        return currentStatus ? (this.statusText.get(currentStatus) ?? 'Unknown') : 'Unknown';
     });
 
     @HostBinding('style.--background-color')

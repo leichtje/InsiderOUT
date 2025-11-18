@@ -1,9 +1,11 @@
 @use '../../../../../../styles/mixins' as mixins;
 
+
 .incidents-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 40px;
+    justify-content: center;
 }
 
 .incident-card {
@@ -16,7 +18,6 @@
     cursor: pointer;
 
     &__info, &__subject, &__user {
-        border-right: 2px solid var(--color-gray);
         padding-right: 10px;
         width: fit-content;
         height: -webkit-fill-available;
@@ -58,15 +59,14 @@
         }
     }
 
+    &__info, &__subject {
+        border-right: 2px solid var(--global-border-color);
+    }
+
     &:hover {
         background-color: var(--color-primary-3);
-        .divider {
-            border-bottom: 2px solid var(--color-primary);
-        }
 
-        .incident-card__info, .incident-card__subject, .incident-card__user {
-            border-right: 2px solid var(--color-primary);
-        }
+        --global-border-color: var(--color-primary);
     }
 
 }

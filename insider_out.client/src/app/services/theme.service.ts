@@ -22,7 +22,12 @@ export class ThemeService {
 
     private loadTheme() {
         const savedTheme = localStorage.getItem('isDark');
-        this.isDarkSignal.set(savedTheme ? JSON.parse(savedTheme) : false);
+        if (savedTheme) {
+            this.isDarkSignal.set(JSON.parse(savedTheme));
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            this.isDarkSignal.set(prefersDark);
+        }
     }
 
     private createThemeEffect() {

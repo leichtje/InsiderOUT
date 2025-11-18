@@ -11,35 +11,7 @@ import { ThemeService } from "../../services/theme.service";
 
 export class ProfileAvatarComponent {
 
-    private avatarLightColors = [
-        '#FFAB91', // Light Salmon
-        '#FFCC80', // Light Orange
-        '#E6EE9B', // Light Lime
-        '#8cd1caff', // Light Teal
-        '#a7dbf3ff', // Light Blue
-        '#a8cdeaff', // Lighter Blue
-        '#cac2d8ff', // Light Purple
-        '#e9a8bdff', // Light Pink
-        '#bfc7cbff', // Blue Grey
-        '#A5D6A7', // Light Green
-    ];
-
-    private avatarDarkColors = [
-        '#a55f49ff', // Dark Salmon
-        '#a87b38ff', // Dark Orange
-        '#b0a61aff', // Dark Lime
-        '#2e968bff', // Dark Teal
-        '#306a84ff', // Dark Blue
-        '#408cc7ff', // Darker Blue
-        '#7a55baff', // Dark Purple
-        '#bb4067ff', // Dark Pink
-        '#4e6770ff', // Blue Grey
-        '#2f9232ff', // Dark Green
-    ];
-
-    private themeService = inject(ThemeService);
-
-    profile = input<ProfileModel | null>();
+profile = input<ProfileModel | null>();
 
     initials = computed(() => {
         const currentUser = this.profile();
@@ -54,18 +26,14 @@ export class ProfileAvatarComponent {
     backgroundColor = computed(() => {
         const currentInitials = this.initials();
         
-        const isDark = this.themeService.isDark(); 
-        
-        const colorPalette = isDark ? this.avatarDarkColors : this.avatarLightColors;
-
         if (currentInitials) {
             const charCode = currentInitials.charCodeAt(0);
-            const colorIndex = charCode % colorPalette.length;
+            const colorIndex = charCode % 10; 
             
-            return colorPalette[colorIndex];
+            return `var(--avatar-${colorIndex})`;
         }
 
-        return isDark ? '#424242' : '#BDBDBD';
+        return 'var(--color-gray-2)'; 
     });
 
 

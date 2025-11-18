@@ -1,45 +1,6 @@
 @use 'mixins' as mixins;
 @use 'material-styles';
-
-:root {
-    --color-primary: #76a5af;
-    --color-primary-2: #104651;
-    --color-primary-3: #daeaf0;
-
-    --color-back: #ffffff;
-    --color-back-body: #b7c0c2;
-    --color-back-drop: #092430bd;
-    
-    --color-gray: #d0d0d0;
-    --color-gray-2: #555;    
-
-    --color-text: #212121;
-    --color-text-2: #777777;
-    
-    --color-danger: #e07c7c;
-    --color-danger-back: #d0141433;
-    --color-bw: white;
-}
-
-body.dark-mode {
-    --color-primary: #5a8893;
-    --color-primary-2: #8dbbc2;
-    --color-primary-3: #3a4a50;
-    
-    --color-back: #434343;
-    --color-back-body: #23282a;
-    --color-back-drop: #070a0bb5;
-    
-    --color-gray: #595959;
-    --color-gray-2: #a6a6a6;    
-    
-    --color-text: #dfdfdf;
-    --color-text-2: #787878;
-    
-    --color-danger: #9f3f3f;
-    --color-danger-back: #83171766;
-    --color-bw: black;
-}
+@use 'colors';
 
 body {
     margin: 0;
@@ -127,7 +88,7 @@ a {
 
 
 .divider {
-    border-bottom: 2px solid var(--color-gray);
+    border-bottom: 2px solid var(--global-border-color);
 }
 
 .flex-inline {
