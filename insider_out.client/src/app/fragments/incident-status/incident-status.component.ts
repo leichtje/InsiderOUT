@@ -38,7 +38,12 @@ private statusVarMap = new Map<IncidentStatus, string>([
 
     displayText = computed(() => {
         const currentStatus = this.status();
-        return currentStatus ? (this.statusText.get(currentStatus) ?? 'Unknown') : 'Unknown';
+        
+        if (currentStatus === null || currentStatus === undefined) {
+            return 'Unknown';
+        }
+        
+        return this.statusText.get(currentStatus) ?? 'Unknown';
     });
 
     @HostBinding('style.--background-color')

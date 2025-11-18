@@ -20,8 +20,8 @@ export interface IncidentViewModel {
 }
 
 export enum IncidentStatus {
-    inProgress,
-    New,
-    Resolved,
-    Closed
+    New = 'New',
+    inProgress = 'inProgress',
+    Resolved = 'Resolved',
+    Closed = 'Closed'
 }

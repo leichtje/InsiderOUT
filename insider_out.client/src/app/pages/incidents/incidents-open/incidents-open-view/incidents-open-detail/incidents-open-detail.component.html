@@ -11,12 +11,10 @@
     
     @if (incident) {
 
-        Incident Id: <b>{{incident.incidentId}}</b>
-        <br>
-        <br>
         Title: <b>{{incident.title}}</b>
         <br>
         <br>
+        <io-incident-status [status]="incident.status"></io-incident-status>
 
         @if (assignedUser) {
             

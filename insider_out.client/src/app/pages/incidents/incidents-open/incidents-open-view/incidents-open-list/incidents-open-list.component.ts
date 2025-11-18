@@ -9,6 +9,7 @@ import { catchError, forkJoin, map, of, Subject, switchMap } from 'rxjs';
 import { SubjectService } from '../../../../../services/subject.service';
 import { MatIcon } from "@angular/material/icon";
 import { StatusComponent } from "../../../../../fragments/incident-status/incident-status.component";
+import { BreakpointService } from '../../../../../services/breakpoint.service';
 
 @Component({
     selector: 'io-incidents-open-list',
@@ -26,6 +27,8 @@ export class IncidentsOpenListComponent {
     incidents = input<IncidentModel[]>();
 
     @Output() incidentSelected = new EventEmitter<IncidentModel>();
+
+    constructor(public breakpointService: BreakpointService) { }
 
     onSelectIncident(incident: IncidentModel) {
         this.incidentSelected.emit(incident);

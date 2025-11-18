@@ -49,52 +49,56 @@
                 </div>
             </div>
 
-            <div class="incident-card__subject">
+            <div class="incident-card__meta-row">
+    
 
-                <div class="incident-card__title">
-                    {{vm.incident.date | date:'short'}}
-                </div>
+                <div class="incident-card__subject">
 
-                <div class="divider"></div>
-
-                <div class="incident-card__details">
-
-                    <div class="item">
-                        <div class="label">Subject</div>
-                        @if (vm.subject) {
-                            <div class="avatar">
-                                <io-profile-avatar [profile]="vm.subject"></io-profile-avatar>
-                            </div>
-                            <span>{{ vm.subject.firstName }} {{ vm.subject.lastName }}</span>
-                        } @else {
-                            <span>Loading subject...</span>
-                        }
+                    <div class="incident-card__title">
+                        {{vm.incident.date | date:'short'}}
                     </div>
 
+                    <div class="divider"></div>
+
+                    <div class="incident-card__details">
+
+                        <div class="item">
+                            <div class="label">Subject</div>
+                            @if (vm.subject) {
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]="vm.subject"></io-profile-avatar>
+                                </div>
+                                <span>{{ vm.subject.firstName }} {{ vm.subject.lastName }}</span>
+                            } @else {
+                                <span>Loading subject...</span>
+                            }
+                        </div>
+
+                    </div>
                 </div>
-            </div>
 
-            <div class="incident-card__user">
-                <div class="incident-card__title">
-                    <io-incident-status [status]="vm.incident.status"></io-incident-status>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="incident-card__details">
-
-                    <div class="item">
-                        <div class="label">Assignee</div>
-                        @if (vm.user) {
-                            <div class="avatar">
-                                <io-profile-avatar [profile]="vm.user"></io-profile-avatar>
-                            </div>
-                            <span>{{ vm.user.firstName }} {{ vm.user.lastName }}</span>
-                        } @else {
-                            <span>Loading user...</span>
-                        }
+                <div class="incident-card__user">
+                    <div class="incident-card__title">
+                        <io-incident-status [status]="vm.incident.status"></io-incident-status>
                     </div>
 
+                    <div class="divider"></div>
+
+                    <div class="incident-card__details">
+
+                        <div class="item">
+                            <div class="label">Assignee</div>
+                            @if (vm.user) {
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]="vm.user"></io-profile-avatar>
+                                </div>
+                                <span>{{ vm.user.firstName }} {{ vm.user.lastName }}</span>
+                            } @else {
+                                <span>Loading user...</span>
+                            }
+                        </div>
+
+                    </div>
                 </div>
             </div>
 

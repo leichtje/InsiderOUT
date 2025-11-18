@@ -6,6 +6,13 @@
     grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
     gap: 40px;
     justify-content: center;
+
+    @include mixins.phone() {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
 }
 
 .incident-card {
@@ -13,15 +20,33 @@
     align-items: flex-start;
     gap: 5px;
     padding: 5px;
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--global-border-color);
+    background-color: var(--color-primary-4);
     border-radius: 5px;
     cursor: pointer;
 
+    @include mixins.phone(){
+        width: 100%;
+        max-width: 100%;
+        flex-direction: column;
+    }
+
     &__info, &__subject, &__user {
-        padding-right: 10px;
         width: fit-content;
         height: -webkit-fill-available;
         
+        @include mixins.non-phone(){
+            padding-right: 5px;
+        }
+
+        @include mixins.phone(){
+            width: 100%;
+
+            .divider {
+                display: none;
+            }
+        }
+
         .incident-card__title {
             display: inline-flex;
             align-items: center;
@@ -60,7 +85,35 @@
     }
 
     &__info, &__subject {
-        border-right: 2px solid var(--global-border-color);
+        @include mixins.non-phone(){
+            border-right: 2px solid var(--global-border-color);
+        }
+    }
+
+    &__info {
+        @include mixins.phone(){
+            border-bottom: 2px solid var(--global-border-color);
+        }
+    }
+
+    &__subject {
+        @include mixins.phone(){
+            border-right: 2px solid var(--global-border-color);
+        }
+    }
+
+    &__user {
+        margin-left: 5px;
+    }
+
+    &__meta-row {
+        display: flex;
+        height: -webkit-fill-available;
+        
+        @include mixins.phone() {
+            width: 100%;
+            flex-direction: row; 
+        }
     }
 
     &:hover {

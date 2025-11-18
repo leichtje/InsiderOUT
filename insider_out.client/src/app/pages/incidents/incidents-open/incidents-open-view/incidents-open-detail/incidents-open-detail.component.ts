@@ -8,13 +8,14 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IncidentModel } from '../../../../../models/incidents.model';
 import { SubjectModel, UserModel } from '../../../../../models/profile.model';
 import { SubjectService } from '../../../../../services/subject.service';
+import { StatusComponent } from "../../../../../fragments/incident-status/incident-status.component";
 
 @Component({
     selector: 'io-incidents-open-detail',
     templateUrl: './incidents-open-detail.component.html',
     styleUrl: './incidents-open-detail.component.scss',
     standalone: true,
-    imports: [CommonModule, RouterLink]
+    imports: [CommonModule, RouterLink, StatusComponent]
 })
 export class IncidentsOpenDetailComponent {
 

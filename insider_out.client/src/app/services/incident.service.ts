@@ -39,6 +39,21 @@ export class IncidentService {
             tiedSubjectId: 702,
             tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 6.1; Microsoft Word 16.0.17126; ProPlus)"
         },
+        {
+            incidentId: 3,
+            title: 'Incident #3',
+            date: new Date("2025-11-17T21:05:00Z"),
+            token: {
+                type: TokenType.document,
+                documentId: 123,
+                name: 'Budget 2026 - CFO',
+                location: 'Server C'
+            },
+            status: IncidentStatus.inProgress,
+            assignedUserId: 102,
+            tiedSubjectId: 703,
+            tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/10.0.22621"
+        },
     ]);
 
     public incidents = this.incidentsSignal.asReadonly();
