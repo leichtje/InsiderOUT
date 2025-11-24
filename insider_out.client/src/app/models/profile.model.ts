@@ -1,7 +1,8 @@
 export interface ProfileModel {
     firstName: string;
     lastName: string;
-    email?: string;
+    email: string;
+    phone?: string;
 }
 
 export interface UserModel extends ProfileModel {

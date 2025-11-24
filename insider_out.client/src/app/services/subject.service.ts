@@ -14,28 +14,32 @@ export class SubjectService {
             lastName: "Price",
             email: "matthew@example.com",
             department: "Cybersecurity",
-            title: "Senior Data Analyst"
+            title: "Senior Data Analyst",
+            phone: '513-555-5555'
         },
         {
             subjectId: 701,
             firstName: "Jonathon",
             lastName: "Leicht",
             email: "jonathon@example.com",
-            department: "Cybersecurity"
+            department: "Cybersecurity",
+            phone: '513-555-5555'
         },
         {
             subjectId: 702,
             firstName: "Nitin",
             lastName: "Penmetsa",
             email: "nitin@example.com",
-            department: 'Cybersecurity'
+            department: 'Cybersecurity',
+            phone: '513-555-5555'
         },
         {
             subjectId: 703,
             firstName: "Chetan",
             lastName: "Penmetsaaaaaaa",
             email: "chetan@example.com",
-            department: "Cybersecurity"
+            department: "Cybersecurity",
+            phone: '513-555-5555'
         }
     ]);
 

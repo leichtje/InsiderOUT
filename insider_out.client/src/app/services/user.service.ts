@@ -12,7 +12,8 @@ export class UserService {
         userId: 101,
         firstName: 'Logan',
         lastName: 'Freeman',
-        email: 'loganfree18@gmail.com'
+        email: 'loganfree18@gmail.com',
+        phone: '513-555-5555'
     });
 
     private usersSignal = signal<UserModel[]>([
@@ -20,13 +21,15 @@ export class UserService {
             userId: 101,
             firstName: 'Logan',
             lastName: 'Freeman',
-            email: 'loganfree18@gmail.com'
+            email: 'loganfree18@gmail.com',
+            phone: '513-555-5555'
         },
         {
             userId: 102,
             firstName: 'Freeman',
             lastName: 'Logan',
-            email: 'freemanlogan@gmail.com'
+            email: 'freemanlogan@gmail.com',
+            phone: '513-555-5555'
         },
     ]);
 

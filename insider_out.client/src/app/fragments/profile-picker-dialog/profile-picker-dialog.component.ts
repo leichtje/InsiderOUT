@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -49,6 +49,18 @@ export class ProfilePickerDialogComponent {
         email: [''],
         department: ['']
     });
+
+    constructor() {
+        effect(() => {
+            const list = this.filteredItems();
+
+            if (list.length > 0) {
+                this.selectedItem.set(list[0]);
+            } else {
+                this.selectedItem.set(null);
+            }
+        }, { allowSignalWrites: true });
+    }
 
     filters = toSignal(this.filterForm.valueChanges, { initialValue: this.filterForm.value });
 

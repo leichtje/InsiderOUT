@@ -32,7 +32,10 @@
 }
 
 .current-value {
-    display: flex; align-items: center; gap: 10px; flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
 }
 
 .avatar {
@@ -57,32 +60,15 @@
     text-overflow: ellipsis;
 }
 
-.sub-text.email {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.9em;
-    color: var(--color-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    mat-icon {
-        width: 20px;
-        height: 20px;
-        font-size: 20px;
-    }
-}
-
 .metadata-row {
     display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 6px;
+    align-items: flex-start;
+    flex-direction: column; 
+    gap: 8px;
+    margin-top: 8px;
 
     font-size: 0.9em;
     color: var(--color-text);
-    margin-top: 2px;
     
     overflow: hidden;
     white-space: nowrap;
@@ -93,14 +79,22 @@
     display: inline-flex;
     gap: 4px;
     white-space: nowrap;
+
+    .label {
+        font-size: 0.9em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--color-primary-2);
+        font-weight: 600;
+    }
+
+    mat-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+    }
 }
 
-.label {
-    font-size: 0.9em;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--color-primary-2);
-}
 
 .placeholder { 
     display: flex;

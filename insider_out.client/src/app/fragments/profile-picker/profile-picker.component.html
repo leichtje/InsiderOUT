@@ -12,10 +12,16 @@
                 <div class="text-info">
                     <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
                     
-                    <span class="sub-text email"><mat-icon>email</mat-icon>{{ item.email }}</span>
-
                     <div class="metadata-row">
                         
+                        <span class="meta-item"><mat-icon>email</mat-icon>{{ item.email }}</span>
+
+                        @if (item.phone) {
+                            <span class="meta-item">
+                                <mat-icon>phone</mat-icon> {{ item.phone }}
+                            </span>
+                        }
+
                         @if (item.department) {
                             <span class="meta-item">
                                 <span class="label">Dept:</span> {{ item.department }}
