@@ -1,0 +1,21 @@
+<mat-form-field appearance="outline">
+    <mat-label>{{ label() }}</mat-label>
+
+    <mat-select 
+        [value]="value()" 
+        [disabled]="isDisabled()"
+        (selectionChange)="onSelectionChange($event)"
+        panelClass="status-select-panel">
+
+        <mat-select-trigger>
+            <io-incident-status [status]="value()"></io-incident-status>
+        </mat-select-trigger>
+
+        @for (option of options(); track option) {
+            <mat-option [value]="option">
+                <io-incident-status [status]="option"></io-incident-status>
+            </mat-option>
+        }
+
+    </mat-select>
+</mat-form-field>

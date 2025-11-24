@@ -27,26 +27,12 @@
             <br>
             <br>
             
-            <mat-form-field appearance="outline">
-                <mat-label>Status</mat-label>
-                
-                <mat-select formControlName="status">
-                    
-                    <mat-select-trigger>
-                        <io-incident-status 
-                            [status]="form.get('status')?.value">
-                        </io-incident-status>
-                    </mat-select-trigger>
-
-                    @for (statusOption of statusOptions; track statusOption) {
-                        <mat-option [value]="statusOption">
-                            <io-incident-status [status]="statusOption"></io-incident-status>
-                        </mat-option>
-                    }
-
-                </mat-select>
-            </mat-form-field>
-
+            <io-status-select
+                formControlName="status"
+                label="Status"
+                [options]="statusOptions">
+            </io-status-select>
+            
             <br>
             <br>
                 

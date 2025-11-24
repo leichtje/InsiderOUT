@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ProfileAvatarComponent } from "../../../fragments/profile-avatar/profile-avatar.component";
 import { ProfileSelectComponent } from "../../../fragments/header/profile-select/profile-select.component";
+import { StatusSelectComponent } from "../../../fragments/incident-status-select/incident-status-select.component";
 
 @Component({
     selector: 'io-incidents-detail',
@@ -35,7 +36,8 @@ import { ProfileSelectComponent } from "../../../fragments/header/profile-select
     MatInputModule,
     MatSelectModule,
     ProfileAvatarComponent,
-    ProfileSelectComponent
+    ProfileSelectComponent,
+    StatusSelectComponent
 ]
 })
 export class IncidentsDetailComponent {
