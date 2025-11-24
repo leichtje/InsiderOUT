@@ -9,12 +9,13 @@ import { ProfilesComponent } from './pages/profiles/profiles.component';
 import { IncidentsClosedComponent } from './pages/incidents/incidents-closed/incidents-closed.component';
 import { IncidentsOpenComponent } from './pages/incidents/incidents-open/incidents-open.component';
 import { IncidentsDetailComponent } from './pages/incidents/incidents-detail/incidents-detail.component';
+import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 
 const routes: Routes = [
     /* Home */
     // Need this to point to the user selected home page, default dashboard. 
     { path: '', title: 'Home - InsiderOUT', component: HomeComponent },
-    { path: 'home', title: 'Home - InsiderOUT', component: HomeComponent },
+    { path: 'home', title: 'Home - InsiderOUT', component: HomeComponent},
 
     /* User */
     {
@@ -34,10 +35,10 @@ const routes: Routes = [
         path: 'incidents',
         component: IncidentsComponent,
         children: [
-            { path: 'open', component: IncidentsOpenComponent },
-            { path: 'open/:id', component: IncidentsDetailComponent },
+            { path: 'open', component: IncidentsOpenComponent},
+            { path: 'open/:id', component: IncidentsDetailComponent, canDeactivate: [unsavedChangesGuard]},
             { path: 'closed', component: IncidentsClosedComponent },
-            { path: 'closed/:id', component: IncidentsClosedComponent }
+            { path: 'closed/:id', component: IncidentsClosedComponent, canDeactivate: [unsavedChangesGuard]}
         ]
     },
 

@@ -42,7 +42,7 @@ import { ProfilePickerComponent } from '../../../fragments/profile-picker/profil
     ProfilePickerComponent,
 ]
 })
-export class IncidentsDetailComponent {
+export class IncidentsDetailComponent { //in the future make this a base to be extended. 
 
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
@@ -101,20 +101,27 @@ export class IncidentsDetailComponent {
         return this.subjects().find(s => s.subjectId === id) || null;
     });
 
+    canDeactivate(): boolean {
+        if (this.form.dirty) {
+            return confirm('You have unsaved changes. Do you really want to leave?');
+        }
+        return true;
+    }
+
     onSave() {
         if (this.form.valid) {
-        const formValue = this.form.value;
-        console.log('Saving payload:', formValue);
-        // TODO: Call service update method here
+            const formValue = this.form.value;
+            console.log('Saving payload:', formValue);
+            // TODO: Call service update method here
 
-        this.form.markAsPristine();
+            this.form.markAsPristine();
         }
     }
 
     onCancel() {
         const data = this.incident();
         if (data) {
-        this.form.reset(data);
+            this.form.reset(data);
         }
     }
 
