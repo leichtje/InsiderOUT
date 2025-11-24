@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
-    <mat-label>Filter Type</mat-label>
+    <mat-label>Filter Incidents</mat-label>
     
     <mat-select 
         [value]="selectedFilter()" 
@@ -13,4 +13,15 @@
         }
 
     </mat-select>
+
+    @if (selectedFilter() !== 'all') {
+        <button 
+            class="flat"
+            matSuffix 
+            (click)="resetFilter($event)" 
+            aria-label="Clear filter">
+            <mat-icon>list</mat-icon>
+        </button>
+    }
+
 </mat-form-field>

@@ -1,18 +1,13 @@
-@let profile = this.profile();
-
-<div class="user-profile">
-    <div class="user-profile-avatar">
-        <io-profile-avatar [profile]="profile"></io-profile-avatar>
-    </div>
-
-    <div class="user-profile-name">
-        {{profile?.firstName}}
-        {{profile?.lastName}}
-    </div>
-
-    <div class="user-profile-email">
-
-        {{profile?.email}}
-
+<div class="profile-card">
+    <io-profile-avatar [profile]="profile()" class="large-avatar"></io-profile-avatar>
+    
+    <h3>{{ profile().firstName }} {{ profile().lastName }}</h3>
+    <p class="role">{{ profile().title || 'No Title' }}</p>
+    
+    <div class="info-grid">
+        <label>Email</label>    <span>{{ profile().email }}</span>
+        <label>Dept</label>     <span>{{ profile().department || 'N/A' }}</span>
+        <label>Phone</label>    <span>{{ profile().phone || 'N/A' }}</span>
+        <label>Location</label> <span>{{ profile().location || 'N/A' }}</span>
     </div>
 </div>

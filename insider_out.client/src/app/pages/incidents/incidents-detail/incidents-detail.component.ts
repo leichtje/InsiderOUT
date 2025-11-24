@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProfileAvatarComponent } from "../../../fragments/profile-avatar/profile-avatar.component";
 import { ProfileSelectComponent } from "../../../fragments/header/profile-select/profile-select.component";
 import { StatusSelectComponent } from "../../../fragments/incident-status-select/incident-status-select.component";
+import { ProfilePickerComponent } from '../../../fragments/profile-picker/profile-picker.component';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -37,7 +38,8 @@ import { StatusSelectComponent } from "../../../fragments/incident-status-select
     MatSelectModule,
     ProfileAvatarComponent,
     ProfileSelectComponent,
-    StatusSelectComponent
+    StatusSelectComponent,
+    ProfilePickerComponent,
 ]
 })
 export class IncidentsDetailComponent {

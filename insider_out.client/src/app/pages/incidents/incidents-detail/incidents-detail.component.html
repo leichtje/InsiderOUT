@@ -35,61 +35,39 @@
             
             <br>
             <br>
-                
-            <io-profile-select
+
+            <io-profile-picker
                 formControlName="assignedUserId"
                 label="Assigned User"
                 [items]="users"
                 idKey="userId"
                 nullLabel="Unassigned">
-            </io-profile-select>
+            </io-profile-picker>
 
-            @if (selectedUser; as user) {
-                <div class="field-helper-text">
-                    <mat-icon>mail</mat-icon>
-                    <span>{{ user.email }}</span>
-                </div>
-            } @else {
-                <div class="field-helper-text muted">
-                    <span>No User Assigned</span>
-                </div>
-            }
-            
             <br>
             <br>
 
-            <io-profile-select
+            <io-profile-picker
                 formControlName="tiedSubjectId"
                 label="Tied Subject"
                 [items]="subjects"
                 idKey="subjectId"
                 nullLabel="No Subject">
-            </io-profile-select>
+            </io-profile-picker>
 
-            @if (selectedSubject; as subject) {
-                <div class="field-helper-text">
-                    <mat-icon>mail</mat-icon>
-                    <span>{{ subject.email }}</span>
-                </div>
-            } @else {
-                <div class="field-helper-text muted">
-                    <span>No Subject</span>
-                </div>
-            }
+            <br>
+            <br>
 
-            
+            *Token Section*
+
+            <br>
+            <br>
+
+            *Activity Section*
+
         } @else {
             <p>incident Not Found</p>
         }
-        <br>
-        <br>
-
-        *Token Section*
-
-        <br>
-        <br>
-
-        *Activity Section*
 
     </div>
 </form>

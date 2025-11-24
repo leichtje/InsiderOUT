@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<mat-dialog-content class="picker-content">
+    
+    <form [formGroup]="filterForm" class="filter-grid">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Department</mat-label>
+            <input matInput formControlName="department">
+        </mat-form-field>
+    </form>
+
+    <div class="master-detail-container">
+        
+        <div class="list-panel">
+            <mat-nav-list>
+                @for (item of filteredItems(); track item[data.idKey]) {
+                    <mat-list-item 
+                        (click)="selectItem(item)"
+                        [class.active]="selectedItem() === item">
+                        <span matListItemIcon>
+                            <io-profile-avatar [profile]="item"></io-profile-avatar>
+                        </span>
+                        <span matListItemTitle>{{ item.firstName }} {{ item.lastName }}</span>
+                        <span matListItemLine>{{ item.email }}</span>
+                    </mat-list-item>
+                }
+                @if (filteredItems().length === 0) {
+                    <div class="no-results">No matches found</div>
+                }
+            </mat-nav-list>
+        </div>
+
+        <div class="detail-panel">
+            @if (selectedItem(); as current) {
+                
+                <io-profile-card [profile]="current"></io-profile-card>
+
+            } @else {
+                <div class="placeholder-state">
+                    <mat-icon>touch_app</mat-icon>
+                    <p>Select a profile from the list to view details</p>
+                </div>
+            }
+        </div>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="flat" (click)="onCancel()">Cancel</button>
+    <button [disabled]="!selectedItem()" (click)="onConfirm()">Select Profile</button>
+</mat-dialog-actions>

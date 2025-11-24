@@ -1,0 +1,48 @@
+<div class="picker-container">
+    <label class="picker-label">{{ label() }}</label>
+    
+    <div class="picker-box" [class.disabled]="isDisabled()">
+        
+        @if (selectedItem(); as item) {
+            <div class="current-value">
+                <div class="avatar">
+                    <io-profile-avatar [profile]="item"></io-profile-avatar>
+                </div>
+                
+                <div class="text-info">
+                    <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
+                    
+                    <span class="sub-text email"><mat-icon>email</mat-icon>{{ item.email }}</span>
+
+                    <div class="metadata-row">
+                        
+                        @if (item.department) {
+                            <span class="meta-item">
+                                <span class="label">Dept:</span> {{ item.department }}
+                            </span>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        } @else {
+            <div class="placeholder">
+                <mat-icon>person_add</mat-icon>
+                <span>{{ nullLabel() }}</span>
+            </div>
+        }
+
+        <button color="primary" 
+                [disabled]="isDisabled()"
+                (click)="openDialog()">
+            {{ selectedItem() ? 'Change' : 'Select' }}
+        </button>
+        
+        @if (selectedItem() && !isDisabled()) {
+            <button class="flat" (click)="clearSelection($event)">
+                <mat-icon>close</mat-icon>
+            </button>
+        }
+    </div>
+</div>

@@ -1,12 +1,48 @@
+:host {
+    display: block;
+    width: 100%;
+}
 
-.user-profile {
-    background-color: var(--color-back);
-    border-radius: 10px;
-    padding: 10px;
-    border: 2px solid var(--color-primary);
+.profile-card {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
 
-    .user-profile-avatar {
-        width: 50px;
-        height: 50px;
+    .large-avatar {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+        margin-bottom: 16px;
+    }
+
+    h3 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .role {
+        color: var(--color-text-2);
+        margin-bottom: 24px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px 24px;
+        text-align: left;
+        background: var(--color-back-gray);
+        padding: 20px;
+        border-radius: 8px;
+
+        label { 
+            font-weight: 600; 
+            color: var(--color-gray-2); 
+        }
+
+        span {
+            color: var(--color-text); 
+        }
     }
 }

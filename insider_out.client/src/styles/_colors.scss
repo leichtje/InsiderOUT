@@ -7,10 +7,13 @@ $light-theme: (
     color-primary-2: #104651,
     color-primary-3: #daeaf0,
     color-primary-4: #f4fbff,
+    color-primary-5: #035869,
+
 
     color-back: #ffffff,
     color-back-body: #b7c0c2,
     color-back-drop: #092430bd,
+    color-back-gray: #e9e9e9,
     
     color-gray: #cdcdcd,
     color-gray-2: #555,
@@ -18,7 +21,7 @@ $light-theme: (
     color-text: #212121,
     color-text-2: #777777,
     
-    color-danger: #e07c7c,
+    color-danger: #c26666,
     color-danger-back: #d0141433,
     color-bw: white,
 
@@ -54,13 +57,16 @@ $dark-theme: (
     color-primary-2: #8dbbc2,
     color-primary-3: #2d3b40,
     color-primary-4: #292b2c,
+    color-primary-5: #14a2be,
     
     color-back: #303030,
     color-back-body: #1c1f20,
     color-back-drop: #070a0bb5,
+    color-back-gray: #424242,
     
     color-gray: #505050,
     color-gray-2: #a6a6a6,
+
     
     color-text: #dfdfdf,
     color-text-2: #787878,
