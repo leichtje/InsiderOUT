@@ -24,12 +24,12 @@ private statusVarMap = new Map<IncidentStatus, string>([
         [IncidentStatus.Closed,     'Closed'],
     ]);
 
-    status = input<IncidentStatus>();
+    status = input<IncidentStatus | null>();
 
     backgroundColor = computed(() => {
         const currentStatus = this.status();
         
-        if (currentStatus === undefined) {
+        if (!currentStatus) {
             return 'var(--color-gray-2)';
         }
         
@@ -39,7 +39,7 @@ private statusVarMap = new Map<IncidentStatus, string>([
     displayText = computed(() => {
         const currentStatus = this.status();
         
-        if (currentStatus === null || currentStatus === undefined) {
+        if (!currentStatus) {
             return 'Unknown';
         }
         

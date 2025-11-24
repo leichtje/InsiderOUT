@@ -70,7 +70,10 @@
                                 </div>
                                 <span>{{ vm.subject.firstName }} {{ vm.subject.lastName }}</span>
                             } @else {
-                                <span>Loading subject...</span>
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]=""></io-profile-avatar>
+                                </div>
+                                <span>No Subject</span>
                             }
                         </div>
 
@@ -94,7 +97,10 @@
                                 </div>
                                 <span>{{ vm.user.firstName }} {{ vm.user.lastName }}</span>
                             } @else {
-                                <span>Loading user...</span>
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]=""></io-profile-avatar>
+                                </div>
+                                <span>No Assignee</span>
                             }
                         </div>
 

@@ -1,0 +1,115 @@
+@let incident = this.incident();
+
+@let users = this.users();
+@let assignedUser = this.assignedUser();
+@let selectedUser = this.selectedUser();
+
+@let subjects = this.subjects();
+@let tiedSubject = this.tiedSubject();
+@let selectedSubject = this.selectedSubject();
+
+
+
+
+<form [formGroup]="form" class="incident-form">
+    <div class="page-container" *ngIf="incident as data">
+        <div routerLink="/incidents/open" class="back flex-inline">
+            <mat-icon>arrow_back</mat-icon> Back to List
+        </div>
+        <br>
+        
+        @if (incident) {
+
+            <div class="title flex-inline">
+                <b>{{incident.title}}</b><mat-icon>edit</mat-icon>
+            </div>
+
+            <br>
+            <br>
+            
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                
+                <mat-select formControlName="status">
+                    
+                    <mat-select-trigger>
+                        <io-incident-status 
+                            [status]="form.get('status')?.value">
+                        </io-incident-status>
+                    </mat-select-trigger>
+
+                    @for (statusOption of statusOptions; track statusOption) {
+                        <mat-option [value]="statusOption">
+                            <io-incident-status [status]="statusOption"></io-incident-status>
+                        </mat-option>
+                    }
+
+                </mat-select>
+            </mat-form-field>
+
+            <br>
+            <br>
+                
+            <io-profile-select
+                formControlName="assignedUserId"
+                label="Assigned User"
+                [items]="users"
+                idKey="userId"
+                nullLabel="Unassigned">
+            </io-profile-select>
+
+            @if (selectedUser; as user) {
+                <div class="field-helper-text">
+                    <mat-icon>mail</mat-icon>
+                    <span>{{ user.email }}</span>
+                </div>
+            } @else {
+                <div class="field-helper-text muted">
+                    <span>No User Assigned</span>
+                </div>
+            }
+            
+            <br>
+            <br>
+
+            <io-profile-select
+                formControlName="tiedSubjectId"
+                label="Tied Subject"
+                [items]="subjects"
+                idKey="subjectId"
+                nullLabel="No Subject">
+            </io-profile-select>
+
+            @if (selectedSubject; as subject) {
+                <div class="field-helper-text">
+                    <mat-icon>mail</mat-icon>
+                    <span>{{ subject.email }}</span>
+                </div>
+            } @else {
+                <div class="field-helper-text muted">
+                    <span>No Subject</span>
+                </div>
+            }
+
+            
+        } @else {
+            <p>incident Not Found</p>
+        }
+        <br>
+        <br>
+
+        *Token Section*
+
+        <br>
+        <br>
+
+        *Activity Section*
+
+    </div>
+</form>
+
+<io-action-bar 
+    [isOpen]="form.dirty" 
+    (save)="onSave()" 
+    (cancel)="onCancel()">
+</io-action-bar>

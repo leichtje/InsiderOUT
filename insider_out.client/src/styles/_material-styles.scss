@@ -3,13 +3,94 @@
 @use '@angular/material' as mat;
 
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+    @include mat.theme((
+        color: (
+            theme-type: light,
+            primary: mat.$azure-palette,
+            tertiary: mat.$blue-palette,
+        ),
+        typography: Roboto,
+        density: 0,
+    ));
+}
+
+mat-icon {
+    color: var(--color-primary-2) !important;
+}
+
+.mat-mdc-form-field {
+    --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
+    --mdc-outlined-text-field-hover-outline-color: var(--color-primary);
+    
+    .mat-mdc-select-value, 
+        .mat-mdc-input-element {
+        color: var(--color-text) !important;
+    }
+
+    .mdc-notched-outline__stroke {
+        border-width: 2px !important;
+        border-color: var(--color-gray) !important; 
+    }
+
+    &:hover .mdc-notched-outline__stroke {
+        border-color: var(--color-primary) !important; 
+    }
+
+    &.mat-focused .mdc-notched-outline__stroke {
+        border-color: var(--color-primary) !important;
+    }
+}
+
+.mdc-floating-label {
+    color: var(--color-text) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+    color: var(--color-text) !important; 
+}
+
+.mat-mdc-text-field-wrapper {
+    background-color: var(--color-back) !important; 
+    border-radius: 10px !important;
+}
+
+.mat-mdc-select-arrow {
+    color: var(--color-primary-2) !important;
+}
+
+
+.mat-mdc-select-panel {
+    background-color: var(--color-back) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 20px var(--color-back-drop) !important;
+    border: 2px solid var(--color-gray) !important;
+    max-width: 350px !important;
+
+    .mat-mdc-option {
+        border-bottom: 1px solid var(--color-gray) !important;
+        .mdc-list-item__primary-text {
+            color: var(--color-text); 
+        }
+
+        &:hover {
+            background-color: var(--color-gray) !important;
+        }
+
+        &.mdc-list-item--selected {
+            background-color: var(--color-primary-3) !important;
+        
+            .mdc-list-item__primary-text {
+                color: var(--color-text) !important;
+            }
+        }
+    }
+
+    .mat-mdc-option .mdc-list-item__primary-text {
+        width: 100%; 
+        overflow: hidden;
+    }
+}
+
+.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox {
+    --mat-option-selected-state-label-text-color: var(--color-primary-2); 
 }

@@ -11,7 +11,7 @@ import { ThemeService } from "../../services/theme.service";
 
 export class ProfileAvatarComponent {
 
-profile = input<ProfileModel | null>();
+    profile = input<ProfileModel | null>();
 
     initials = computed(() => {
         const currentUser = this.profile();
@@ -33,7 +33,7 @@ profile = input<ProfileModel | null>();
             return `var(--avatar-${colorIndex})`;
         }
 
-        return 'var(--color-gray-2)'; 
+        return 'var(--color-gray)'; 
     });
 
 

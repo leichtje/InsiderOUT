@@ -14,12 +14,12 @@ import { UserService } from "../../services/user.service";
     styleUrl:'header.component.scss',
     standalone:true,
     imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    MatIcon,
-    ProfileAvatarComponent
-],
+		CommonModule,
+		RouterLink,
+		RouterLinkActive,
+		MatIcon,
+		ProfileAvatarComponent
+	],
     host: {
         '[class.menu-is-open]': 'isAnyMenuOpen()'
     }

@@ -27,6 +27,21 @@ export class IncidentService {
         {
             incidentId: 2,
             title: 'Incident #2',
+            date: new Date("2025-11-08T04:39:00Z"),
+            token: {
+                type: TokenType.document,
+                documentId: 132,
+                name: 'Secret Business Plans',
+                location: 'Server A'
+            },
+            status: IncidentStatus.New,
+            assignedUserId: 101,
+            tiedSubjectId: 701,
+            tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/6.1.7601"
+        },
+        {
+            incidentId: 3,
+            title: 'Incident #3',
             date: new Date("2025-11-16T15:58:00Z"),
             token: {
                 type: TokenType.document,
@@ -40,18 +55,18 @@ export class IncidentService {
             tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 6.1; Microsoft Word 16.0.17126; ProPlus)"
         },
         {
-            incidentId: 3,
-            title: 'Incident #3',
+            incidentId: 4,
+            title: 'Incident #4',
             date: new Date("2025-11-17T21:05:00Z"),
             token: {
                 type: TokenType.document,
-                documentId: 123,
+                documentId: 154,
                 name: 'Budget 2026 - CFO',
                 location: 'Server C'
             },
             status: IncidentStatus.inProgress,
-            assignedUserId: 102,
-            tiedSubjectId: 703,
+            assignedUserId: null,
+            tiedSubjectId: null,
             tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/10.0.22621"
         },
     ]);

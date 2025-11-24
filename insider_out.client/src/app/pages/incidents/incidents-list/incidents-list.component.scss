@@ -1,11 +1,13 @@
-@use '../../../../../../styles/mixins' as mixins;
-
+@use '../../../../styles/mixins' as mixins;
 
 .incidents-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    // display: grid;
+    // grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    // justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     gap: 20px;
-    justify-content: center;
 
     @include mixins.phone() {
         display: flex;
@@ -24,9 +26,13 @@
     background-color: var(--color-primary-4);
     border-radius: 5px;
     cursor: pointer;
+    width: 600px;
+
+    @include mixins.mobile(){
+        width: 100%;
+    }
 
     @include mixins.phone(){
-        width: 100%;
         max-width: 100%;
         flex-direction: column;
     }
@@ -55,10 +61,6 @@
             padding: 10px;
             height: 30px;
             @include mixins.font();
-
-            mat-icon {
-                color: var(--color-primary-2)
-            }
         }
 
         .incident-card__details {

@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { SubjectModel, UserModel } from '../models/profile.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class UserService {
 
@@ -26,7 +26,7 @@ export class UserService {
             userId: 102,
             firstName: 'Freeman',
             lastName: 'Logan',
-            email: 'loganfree18@gmail.com'
+            email: 'freemanlogan@gmail.com'
         },
     ]);
 

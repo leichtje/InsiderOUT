@@ -1,0 +1,32 @@
+@use '../../../../styles/mixins' as mixins;
+
+
+.back {
+    cursor: pointer;
+    color: var(--color-primary-2);
+}
+
+.title {
+    font-size: 1.25em;
+    gap: 15px;
+    
+    mat-icon {
+        font-size: 25px;
+        height: 25px;
+        width: 25px;
+    }
+}
+
+.field-helper-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 4px;
+    margin-bottom: 16px;
+    
+    mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+    }
+}

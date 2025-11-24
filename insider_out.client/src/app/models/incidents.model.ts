@@ -7,8 +7,8 @@ export interface IncidentModel {
     date: Date;
     token: Token;
     status: IncidentStatus;
-    assignedUserId: UserModel["userId"];
-    tiedSubjectId: SubjectModel["subjectId"];
+    assignedUserId: UserModel["userId"] | null;
+    tiedSubjectId: SubjectModel["subjectId"] | null;
     tiedSubjectAgent: string;
 }
 
