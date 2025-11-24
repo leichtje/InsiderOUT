@@ -2,10 +2,10 @@
 
 <mat-dialog-content class="picker-content">
     
-    <form [formGroup]="filterForm" class="filter-grid">
+    <form [formGroup]="filterForm" class="filter-grid" (keydown)="onKeyDown($event)">
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>First Name</mat-label>
-            <input matInput formControlName="firstName">
+            <input matInput formControlName="firstName" autoFocus>
         </mat-form-field>
 
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
@@ -50,7 +50,7 @@
                 
                 <io-profile-card [profile]="current"></io-profile-card>
 
-            } @else {
+            } @else if(filteredItems().length != 0) {
                 <div class="placeholder-state">
                     <mat-icon>touch_app</mat-icon>
                     <p>Select a profile from the list to view details</p>
@@ -63,5 +63,5 @@
 
 <mat-dialog-actions>
     <button class="flat" (click)="onCancel()">Cancel</button>
-    <button [disabled]="!selectedItem()" (click)="onConfirm()">Select Profile</button>
+    <button type="button" [disabled]="!selectedItem()" (click)="onConfirm()">Select Profile</button>
 </mat-dialog-actions>

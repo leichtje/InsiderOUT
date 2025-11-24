@@ -19,6 +19,7 @@
     background: var(--color-back);
     transition: border 0.2s;
     min-height: 80px;
+    cursor: pointer;
 
     &:hover {
         border-color: var(--color-primary);

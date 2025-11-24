@@ -1,7 +1,7 @@
 <div class="picker-container">
     <label class="picker-label">{{ label() }}</label>
     
-    <div class="picker-box" [class.disabled]="isDisabled()">
+    <div class="picker-box" [class.disabled]="isDisabled()" (click)="openDialog()">
         
         @if (selectedItem(); as item) {
             <div class="current-value">
@@ -40,8 +40,7 @@
         }
 
         <button color="primary" 
-                [disabled]="isDisabled()"
-                (click)="openDialog()">
+                [disabled]="isDisabled()">
             {{ selectedItem() ? 'Change' : 'Select' }}
         </button>
         

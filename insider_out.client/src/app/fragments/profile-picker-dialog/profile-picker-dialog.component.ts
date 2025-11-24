@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal, effect } from '@angular/core';
+import { Component, inject, computed, signal, effect, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -43,6 +43,8 @@ export class ProfilePickerDialogComponent {
     public data = inject<ProfilePickerData>(MAT_DIALOG_DATA);
     private fb = inject(FormBuilder);
 
+    @ViewChildren('listItemItem') listItems!: QueryList<ElementRef>;
+
     filterForm = this.fb.group({
         firstName: [''],
         lastName: [''],
@@ -53,12 +55,23 @@ export class ProfilePickerDialogComponent {
     constructor() {
         effect(() => {
             const list = this.filteredItems();
+            const current = this.selectedItem();
+            const filters = this.filters();
 
-            if (list.length > 0) {
-                this.selectedItem.set(list[0]);
-            } else {
-                this.selectedItem.set(null);
+            const isSearching = Object.values(filters).some(val => !!val && val.toString().trim() !== '');
+
+            if (current && !list.includes(current)) {
+                if (isSearching && list.length > 0) {
+                    this.selectedItem.set(list[0]);
+                } else {
+                    this.selectedItem.set(null);
+                }
             }
+
+            if (isSearching && !current && list.length > 0) {
+                this.selectedItem.set(list[0]);
+            }
+            
         }, { allowSignalWrites: true });
     }
 
@@ -94,5 +107,43 @@ export class ProfilePickerDialogComponent {
 
     onCancel() {
         this.dialogRef.close();
+    }
+
+    onKeyDown(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); 
+            event.stopPropagation();
+            
+            if (this.selectedItem()) {
+                this.onConfirm();
+            }
+            return;
+        }
+
+        const list = this.filteredItems();
+        if (list.length === 0) return;
+
+        const current = this.selectedItem();
+        const currentIndex = list.indexOf(current);
+
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            const nextIndex = currentIndex < list.length - 1 ? currentIndex + 1 : 0;
+            this.selectItem(list[nextIndex]);
+            this.scrollToItem(nextIndex);
+        
+        } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            const prevIndex = currentIndex > 0 ? currentIndex - 1 : list.length - 1;
+            this.selectItem(list[prevIndex]);
+            this.scrollToItem(prevIndex);
+        }
+    }
+
+    scrollToItem(index: number) {
+        setTimeout(() => {
+            const item = this.listItems.get(index);
+            item?.nativeElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        });
     }
 }
