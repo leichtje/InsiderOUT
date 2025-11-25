@@ -20,7 +20,7 @@ export class IncidentService {
                 name: 'MFA Password Enrollment',
                 location: 'Server A'
             },
-            status: IncidentStatus.New,
+            status: IncidentStatus.inProgress,
             assignedUserId: 101,
             tiedSubjectId: 700,
             tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Word 16.0.17126)"
@@ -36,7 +36,7 @@ export class IncidentService {
                 name: 'Secret Business Plans',
                 location: 'Server A'
             },
-            status: IncidentStatus.New,
+            status: IncidentStatus.inProgress,
             assignedUserId: 101,
             tiedSubjectId: 701,
             tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/6.1.7601"
@@ -68,7 +68,7 @@ export class IncidentService {
                 name: 'Budget 2026 - CFO',
                 location: 'Server C'
             },
-            status: IncidentStatus.inProgress,
+            status: IncidentStatus.New,
             assignedUserId: null,
             tiedSubjectId: null,
             tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/10.0.22621"
