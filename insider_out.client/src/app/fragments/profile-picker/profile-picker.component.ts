@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ProfilePickerDialogComponent, ProfilePickerData } from '../profile-picker-dialog/profile-picker-dialog.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'io-profile-picker',
@@ -21,11 +22,14 @@ import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.compone
 })
 export class ProfilePickerComponent implements ControlValueAccessor {
     private dialog = inject(MatDialog);
+    private userService = inject(UserService);
 
     label = input.required<string>();
     items = input.required<any[]>();
     idKey = input.required<string>();
+    hideDetail = input<boolean>(false);
     nullLabel = input('Unassigned');
+    enableAssignMe = input(false);
 
     value = signal<number | null>(null);
     isDisabled = signal(false);
@@ -71,5 +75,21 @@ export class ProfilePickerComponent implements ControlValueAccessor {
         e.stopPropagation();
         this.value.set(null);
         this.onChange(null);
+    }
+
+    assignToMe(event: Event) {
+        event.stopPropagation(); 
+        
+        const currentUser = this.userService.currentUser();
+        if (!currentUser) return;
+
+        const myId = currentUser.userId; 
+
+        const exists = this.items().some(i => i[this.idKey()] === myId);
+        
+        if (exists) {
+            this.value.set(myId);
+            this.onChange(myId);
+        }
     }
 }

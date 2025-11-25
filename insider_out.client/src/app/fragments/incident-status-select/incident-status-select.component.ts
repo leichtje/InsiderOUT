@@ -27,7 +27,6 @@ import { StatusComponent } from '../incident-status/incident-status.component';
 })
 export class StatusSelectComponent implements ControlValueAccessor {
 
-    label = input.required<string>();
     options = input.required<IncidentStatus[]>();
     
     value = signal<IncidentStatus | null>(null);

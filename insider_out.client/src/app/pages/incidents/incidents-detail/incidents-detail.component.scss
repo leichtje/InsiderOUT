@@ -4,29 +4,52 @@
 .back {
     cursor: pointer;
     color: var(--color-primary-2);
+    margin-bottom: 20px;
 }
 
-.title {
-    font-size: 1.25em;
-    gap: 15px;
-    
-    mat-icon {
-        font-size: 25px;
-        height: 25px;
-        width: 25px;
-    }
-}
-
-.field-helper-text {
-    display: flex;
+.header {
+display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    gap: 5px;
-    margin-left: 4px;
-    margin-bottom: 16px;
-    
-    mat-icon {
-        font-size: 16px;
-        height: 16px;
-        width: 16px;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    &__left, &__right {
+        display: flex;
+        gap: 40px;
+
+        .title {
+            font-size: 1.25em;
+            gap: 15px;
+
+            mat-icon {
+                font-size: 25px;
+                height: 25px;
+                width: 25px;
+            }
+        }
+    }
+
+}
+
+.body {
+    display: flex;
+    gap: 30px;
+
+    &__left {
+        width: 40%;
+
+        .section {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    }
+
+    &__right {
+        width: 60%;
+        background-color: var(--color-back-gray);
+        border-radius: 10px;
     }
 }

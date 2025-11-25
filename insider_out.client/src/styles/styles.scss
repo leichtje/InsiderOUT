@@ -95,6 +95,15 @@ h1, h2, h3, h4 {
     border-bottom: 2px solid var(--global-border-color);
 }
 
+
+.label { 
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--color-gray-2);
+    height: 20px;
+}
+
 .flex-inline {
     display: flex;
     align-items: center;

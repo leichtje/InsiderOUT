@@ -14,55 +14,104 @@
         <div routerLink="/incidents/open" class="back flex-inline">
             <mat-icon>arrow_back</mat-icon> Back to List
         </div>
-        <br>
         
         @if (incident) {
 
-            <div class="title flex-inline">
-                <b>{{incident.title}}</b><mat-icon>edit</mat-icon>
+            <div class="header">
+
+                <div class="header__left">
+
+                    <div class="title flex-inline">
+                        <b>{{incident.title}}</b><mat-icon>edit</mat-icon>
+                    </div>
+
+                </div>
+
+                <div class="header__right">
+
+                    <div class="date">
+                        <span class="label">Occurred:</span>
+                        <span>{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                    </div>
+
+                    <div class="date">
+                        <span class="label">Last Updated:</span>
+                        <span>{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                    </div>
+
+                </div>
+
             </div>
 
-            <br>
-            <br>
-            
-            <io-status-select
-                formControlName="status"
-                label="Status"
-                [options]="statusOptions">
-            </io-status-select>
-            
-            <br>
-            <br>
+            <div class="body">
 
-            <io-profile-picker
-                formControlName="assignedUserId"
-                label="Assigned User"
-                [items]="users"
-                idKey="userId"
-                nullLabel="No Assignee">
-            </io-profile-picker>
+                <div class="body__left">
+                    
+                    <div class="section">
+                    
+                        <div class="select">
+                            <span class="label">Status</span>
 
-            <br>
-            <br>
+                            <io-status-select
+                                formControlName="status"
+                                [options]="statusOptions">
+                            </io-status-select>
+                        </div>
 
-            <io-profile-picker
-                formControlName="tiedSubjectId"
-                label="Tied Subject"
-                [items]="subjects"
-                idKey="subjectId"
-                nullLabel="No Subject">
-            </io-profile-picker>
+                        <div class="select">
+                            <span class="label">Assigned User</span>
 
-            <br>
-            <br>
+                            <io-profile-picker
+                                formControlName="assignedUserId"
+                                label="Assigned User"
+                                [items]="users"
+                                idKey="userId"
+                                nullLabel="No Assignee"
+                                [hideDetail]="true"
+                                [enableAssignMe]="true">
+                            </io-profile-picker>
+                        </div>
+                    </div>
 
-            *Token Section*
+                    <div class="section">
 
-            <br>
-            <br>
+                        <div class="select">
+                            
+                            <span class="label flex-inline">Tied Subject <mat-icon class="info">info</mat-icon></span>
 
-            *Activity Section*
+                            <io-profile-picker
+                                formControlName="tiedSubjectId"
+                                label="Tied Subject"
+                                [items]="subjects"
+                                idKey="subjectId"
+                                nullLabel="No Subject"
+                                [hideDetail]="false">
+                            </io-profile-picker>
 
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+
+                        <span class="label">Token</span>
+                        
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        
+                    </div>
+                
+                </div>
+                
+                <div class="body__right">
+                    *Description*
+                    <br>
+                    <br>
+                    *Activity Section*
+                    
+                </div>
+            </div>
         } @else {
             <p>incident Not Found</p>
         }

@@ -1,5 +1,4 @@
 <div class="picker-container">
-    <label class="picker-label">{{ label() }}</label>
     
     <div class="picker-box" [class.disabled]="isDisabled()" (click)="openDialog()">
         
@@ -12,42 +11,54 @@
                 <div class="text-info">
                     <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
                     
-                    <div class="metadata-row">
+                    @if (!hideDetail()) {
+                        <div class="metadata-row">
+                            
+                            <span class="meta-item"><mat-icon>email</mat-icon>{{ item.email }}</span>
+                            
+                            @if (item.phone) {
+                                <span class="meta-item">
+                                    <mat-icon>phone</mat-icon> {{ item.phone }}
+                                </span>
+                            }
+                            
+                            @if (item.department) {
+                                <span class="meta-item">
+                                    <span class="label">Dept:</span> {{ item.department }}
+                                </span>
+                            }
+                            
+                        </div>
+                    }
                         
-                        <span class="meta-item"><mat-icon>email</mat-icon>{{ item.email }}</span>
-
-                        @if (item.phone) {
-                            <span class="meta-item">
-                                <mat-icon>phone</mat-icon> {{ item.phone }}
-                            </span>
-                        }
-
-                        @if (item.department) {
-                            <span class="meta-item">
-                                <span class="label">Dept:</span> {{ item.department }}
-                            </span>
-                        }
-
-                    </div>
-
                 </div>
             </div>
-        } @else {
-            <div class="placeholder">
-                <mat-icon>person_add</mat-icon>
-                <span>{{ nullLabel() }}</span>
-            </div>
-        }
+            } @else {
+                <div class="placeholder">
+                    <mat-icon>person_add</mat-icon>
+                    <span>{{ nullLabel() }}</span>
+                </div>
+            }
 
-        <button color="primary" 
-                [disabled]="isDisabled()">
-            {{ selectedItem() ? 'Change' : 'Select' }}
-        </button>
-        
-        @if (selectedItem() && !isDisabled()) {
-            <button class="flat" (click)="clearSelection($event)">
-                <mat-icon>close</mat-icon>
-            </button>
-        }
+        <div class="actions">
+            
+            @if (enableAssignMe() && !selectedItem() && !isDisabled()) {
+                <button (click)="assignToMe($event)">
+                    Assign Me
+                </button>
+            }
+
+            @if (!selectedItem()) {
+                <button class="flat" [disabled]="isDisabled()">
+                    Select
+                </button>
+            }
+            
+            @if (selectedItem() && !isDisabled()) {
+                <button class="flat" (click)="clearSelection($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            }
+        </div>
     </div>
 </div>
