@@ -23,12 +23,12 @@
 
             ::ng-deep .mat-mdc-input-element {
                 font-size: 1.25em !important; 
-                letter-spacing: 1px !important;
+                letter-spacing: 1.5px !important;
                 font-weight: 600 !important;
                 color: var(--color-text) !important;
                 
-                resize: none; 
                 line-height: 1.2 !important;
+                resize: none; 
                 overflow: hidden; 
                 padding: 0; 
             }
@@ -41,6 +41,10 @@
                 margin-top: 8px; 
             }
             
+        }
+
+        .date {
+            font-weight: 600;
         }
     }
 
