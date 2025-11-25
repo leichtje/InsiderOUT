@@ -12,7 +12,8 @@ export class IncidentService {
         {
             incidentId: 1,
             title: 'Incident #1',
-            date: new Date("2025-11-24T09:12:00Z"),
+            date: new Date("2025-11-18T05:34:00Z"),
+            updated: new Date("2025-11-24T09:12:00Z"),
             token: {
                 type: TokenType.document,
                 documentId: 123,
@@ -28,6 +29,7 @@ export class IncidentService {
             incidentId: 2,
             title: 'Incident #2',
             date: new Date("2025-11-08T04:39:00Z"),
+            updated: new Date("2025-11-24T09:12:00Z"),
             token: {
                 type: TokenType.document,
                 documentId: 132,
@@ -43,6 +45,7 @@ export class IncidentService {
             incidentId: 3,
             title: 'Incident #3',
             date: new Date("2025-11-16T15:58:00Z"),
+            updated: new Date("2025-11-24T09:12:00Z"),
             token: {
                 type: TokenType.document,
                 documentId: 123,
@@ -58,6 +61,7 @@ export class IncidentService {
             incidentId: 4,
             title: 'Incident #4',
             date: new Date("2025-11-17T21:05:00Z"),
+            updated: new Date("2025-11-24T09:12:00Z"),
             token: {
                 type: TokenType.document,
                 documentId: 154,

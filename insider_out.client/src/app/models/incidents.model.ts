@@ -5,6 +5,7 @@ export interface IncidentModel {
     incidentId: number;
     title: string;
     date: Date;
+    updated: Date;
     token: Token;
     status: IncidentStatus;
     assignedUserId: UserModel["userId"] | null;
