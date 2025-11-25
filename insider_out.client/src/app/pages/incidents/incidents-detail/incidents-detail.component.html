@@ -17,36 +17,50 @@
         
         @if (incident) {
 
-            <div class="header">
 
-                <div class="header__left">
-
-                    <div class="title flex-inline">
-                        <b>{{incident.title}}</b><mat-icon>edit</mat-icon>
-                    </div>
-
-                </div>
-
-                <div class="header__right">
-
-                    <div class="date">
-                        <span class="label">Occurred:</span>
-                        <span>{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
-                    </div>
-
-                    <div class="date">
-                        <span class="label">Last Updated:</span>
-                        <span>{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
-                    </div>
-
-                </div>
-
-            </div>
 
             <div class="body">
 
                 <div class="body__left">
-                    
+
+                    <div class="header">
+
+                        <div class="header__top">
+
+                            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
+                                    
+                                <textarea matInput 
+                                        formControlName="title" 
+                                        cdkTextareaAutosize
+                                        cdkAutosizeMinRows="1"
+                                        placeholder="Enter Incident Title"
+                                        (keydown.enter)="$event.preventDefault()"
+                                        ></textarea>
+                                    
+                                <mat-icon matSuffix class="edit-icon">edit</mat-icon>
+                                
+                            </mat-form-field>
+
+                        </div>
+
+                        <div class="header__bottom">
+
+                            <div class="date">
+                                <span class="label">Occurred:</span>
+                                <span>{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                            </div>
+
+                            <div class="date">
+                                <span class="label">Last Updated:</span>
+                                <span>{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="divider"></div>
+
                     <div class="section">
                     
                         <div class="select">
@@ -105,11 +119,21 @@
                 </div>
                 
                 <div class="body__right">
-                    *Description*
-                    <br>
-                    <br>
-                    *Activity Section*
+                    <div class="section">
+
+                        <span class="label">Description</span>
                     
+                    </div>
+                    
+                    <br>
+                    <br>
+                    
+                    <div class="section">
+                    
+                        <span class="label">Activity</span>
+                    
+                    </div>
+
                 </div>
             </div>
         } @else {

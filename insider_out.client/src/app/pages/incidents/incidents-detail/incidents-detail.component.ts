@@ -20,6 +20,7 @@ import { ProfileAvatarComponent } from "../../../fragments/profile-avatar/profil
 import { ProfileSelectComponent } from "../../../fragments/header/profile-select/profile-select.component";
 import { StatusSelectComponent } from "../../../fragments/incident-status-select/incident-status-select.component";
 import { ProfilePickerComponent } from '../../../fragments/profile-picker/profile-picker.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -32,14 +33,15 @@ import { ProfilePickerComponent } from '../../../fragments/profile-picker/profil
     StatusComponent,
     ActionBarComponent,
     MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
     ProfileAvatarComponent,
     ProfileSelectComponent,
     StatusSelectComponent,
     ProfilePickerComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    TextFieldModule,
 ]
 })
 export class IncidentsDetailComponent { //in the future make this a base to be extended. 

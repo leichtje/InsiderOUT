@@ -8,27 +8,44 @@
 }
 
 .header {
-display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
 
-    &__left, &__right {
+    &__top, &__bottom {
         display: flex;
         gap: 40px;
 
-        .title {
-            font-size: 1.25em;
-            gap: 15px;
+        .title-input {
+            width: 100%;
+            margin-bottom: 16px; 
 
-            mat-icon {
-                font-size: 25px;
-                height: 25px;
-                width: 25px;
+            ::ng-deep .mat-mdc-input-element {
+                font-size: 1.25em !important; 
+                letter-spacing: 1px !important;
+                font-weight: 600 !important;
+                color: var(--color-text) !important;
+                
+                resize: none; 
+                line-height: 1.2 !important;
+                overflow: hidden; 
+                padding: 0; 
             }
+
+            .edit-icon {
+                color: var(--color-text-2);
+                opacity: 0.5;
+                font-size: 20px;
+                align-self: flex-start; 
+                margin-top: 8px; 
+            }
+            
         }
+    }
+
+    &__top {
+        width: 100%;
     }
 
 }
@@ -38,18 +55,36 @@ display: flex;
     gap: 30px;
 
     &__left {
-        width: 40%;
+        width: 70%;
 
         .section {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 20px;
+
+            &:not(:has(.selector)) {
+                margin-bottom: 20px;
+            }
+        }
+
+        .divider {
+            margin-bottom: 30px;
         }
     }
 
     &__right {
-        width: 60%;
-        background-color: var(--color-back-gray);
+        width: -webkit-fill-available;
+        background: var(--color-back-gray);
         border-radius: 10px;
+        padding: 20px;
+
+        .section {
+            background-color: var(--color-back);
+            border-radius: 10px;
+            padding: 20px;
+            width: -webkit-fill-available;
+        }
+        
     }
 }
