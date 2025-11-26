@@ -34,6 +34,10 @@ $light-theme: (
     status-resolved: #FFCC80,
     status-closed: #CFD8DC,
     
+    // Token Severity Colors (Light)
+    severity-high: #FFAB91,
+    severity-medium: #FFCC80,
+    severity-low: #E6EE9B,
 
     // Avatar Colors (Light)
     avatar-0: #FFAB91, // Salmon
@@ -82,10 +86,14 @@ $dark-theme: (
 
     // Incident Status Colors (Dark)
     status-new: #26602a,
-    status-in-progress: rgb(41, 90, 113),
-    status-resolved: rgb(136, 99, 44),
+    status-in-progress: #295a71,
+    status-resolved: #88632c,
     status-closed: #4e6770ff,
 
+    // Token Severity Colors (Dark)
+    severity-high: #a55f49ff,
+    severity-medium: #a87b38ff,
+    severity-low: #b0a61aff,
 
     // Avatar Colors (Dark)
     avatar-0: #a55f49ff,

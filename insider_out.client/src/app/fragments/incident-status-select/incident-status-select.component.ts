@@ -4,7 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/f
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { IncidentStatus } from '../../models/incidents.model';
-import { StatusComponent } from '../incident-status/incident-status.component';
+import { StatusComponent } from '../pill/incident-status.component';
 
 @Component({
     selector: 'io-status-select',

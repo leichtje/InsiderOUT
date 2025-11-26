@@ -75,7 +75,10 @@
                             </span>
 
                             <div class="info-grid">
-
+                                
+                                <span class="sub-label">Severity</span> 
+                                <io-token-severity [pill]="token?.severity"></io-token-severity>
+                                
                                 @if (tokenAsDocument; as doc) {
                                     <span class="sub-label">Title</span>
                                     <span>{{ doc.name }}</span>
@@ -89,11 +92,6 @@
                                     <span class="sub-label">Subject</span>
                                     <span>{{ email.subject }}</span>
                                 }
-                                
-                                
-                                <span class="sub-label">Severity</span> 
-                                <span>{{ token?.severity  }}</span>
-
                                 
                             </div>
                             

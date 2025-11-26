@@ -8,7 +8,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, forkJoin, map, of, Subject, switchMap } from 'rxjs';
 import { SubjectService } from '../../../services/subject.service';
 import { MatIcon } from "@angular/material/icon";
-import { StatusComponent } from "../../../fragments/incident-status/incident-status.component";
+import { StatusComponent } from "../../../fragments/pill/incident-status.component";
 import { BreakpointService } from '../../../services/breakpoint.service';
 import { TokenService } from '../../../services/token.service';
 

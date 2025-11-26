@@ -9,7 +9,13 @@
                     <div class="avatar">
                         <io-profile-avatar [profile]="item"></io-profile-avatar>
                     </div>
-                    <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
+                    <div>
+                        <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
+                        <br>
+                        @if (item.role) {
+                            <span class="role">{{ item.role }}</span>
+                        }
+                    </div>
                         
                 </div>
 
@@ -20,6 +26,11 @@
                                 <span class="sub-label">Risk</span>
                                 <span>{{ item.riskScore }}</span>
                             }
+
+                            @if (item.department) {
+                                <span class="sub-label">Dept</span>
+                                <span>{{ item.department }}</span>
+                            }
                             
                             @if (item.email) {
                                 <span class="sub-label">Email</span>
@@ -29,16 +40,6 @@
                             @if (item.phone) {
                                 <span class="sub-label">Phone</span>
                                 <span>{{ item.phone }}</span>
-                            }
-                            
-                            @if (item.department) {
-                                <span class="sub-label">Dept</span>
-                                <span>{{ item.department }}</span>
-                            }
-
-                            @if (item.role) {
-                                <span class="sub-label">Role</span>
-                                <span>{{ item.role }}</span>
                             }
                             
                         </div>

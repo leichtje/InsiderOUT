@@ -8,7 +8,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IncidentModel, IncidentStatus } from '../../../models/incidents.model';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { SubjectService } from '../../../services/subject.service';
-import { StatusComponent } from "../../../fragments/incident-status/incident-status.component";
+import { StatusComponent } from "../../../fragments/pill/incident-status.component";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActionBarComponent } from "../../../fragments/header/action-bar/action-bar.component";
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,6 +23,7 @@ import { ProfilePickerComponent } from '../../../fragments/profile-picker/profil
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { TokenService } from '../../../services/token.service';
 import { DocumentModel, EmailModel, Token, TokenModel, TokenType } from '../../../models/token.model';
+import { tokenComponent } from "../../../fragments/pill/token-severity.component";
 
 @Component({
     selector: 'io-incidents-detail',
@@ -44,6 +45,7 @@ import { DocumentModel, EmailModel, Token, TokenModel, TokenType } from '../../.
     MatInputModule,
     MatSelectModule,
     TextFieldModule,
+    tokenComponent
 ]
 })
 export class IncidentsDetailComponent { //in the future make this a base to be extended. 

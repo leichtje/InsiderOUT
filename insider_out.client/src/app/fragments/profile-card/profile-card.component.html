@@ -13,6 +13,11 @@
             <span class="info">{{ profile.riskScore }}</span>
         }
 
+        @if (profile.department) {
+            <span class="sub-label">Dept</span>
+            <span class="info">{{ profile.department }}</span>
+        }
+
         @if (profile.email) {
             <span class="sub-label">Email</span>
             <span class="info">{{ profile.email }}</span>
@@ -23,15 +28,6 @@
             <span class="info">{{ profile.phone }}</span>
         }
         
-        @if (profile.department) {
-        <span class="sub-label">Dept</span>
-        <span class="info">{{ profile.department }}</span>
-        }
 
-        <!-- @if (profile.role) {
-            <span class="sub-label">Role</span>
-            <span class="info">{{ profile.role }}</span>
-        } -->
-        
     </div>
 </div>
