@@ -12,20 +12,31 @@
                     <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
                     
                     @if (!hideDetail()) {
-                        <div class="metadata-row">
+                        <div class="info-grid">
+
+                            @if (item.riskScore) {
+                                <span class="sub-label">Risk Score</span>
+                                <span>{{ item.riskScore }}</span>
+                            }
                             
-                            <span class="meta-item"><mat-icon>email</mat-icon>{{ item.email }}</span>
+                            @if (item.email) {
+                                <span class="sub-label">Email</span>
+                                <span>{{ item.email }}</span>
+                            }
                             
                             @if (item.phone) {
-                                <span class="meta-item">
-                                    <mat-icon>phone</mat-icon> {{ item.phone }}
-                                </span>
+                                <span class="sub-label">Phone</span>
+                                <span>{{ item.phone }}</span>
                             }
                             
                             @if (item.department) {
-                                <span class="meta-item">
-                                    <span class="sub-label">Dept</span> {{ item.department }}
-                                </span>
+                                <span class="sub-label">Dept</span>
+                                <span>{{ item.department }}</span>
+                            }
+
+                            @if (item.role) {
+                                <span class="sub-label">Role</span>
+                                <span>{{ item.role }}</span>
                             }
                             
                         </div>

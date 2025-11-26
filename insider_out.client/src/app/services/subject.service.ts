@@ -14,8 +14,9 @@ export class SubjectService {
             lastName: "Price",
             email: "matthew@example.com",
             department: "Cybersecurity",
-            title: "Senior Data Analyst",
-            phone: '513-555-5555'
+            role: "Senior Data Analyst",
+            phone: '513-555-5555',
+            riskScore: 25,
         },
         {
             subjectId: 701,
@@ -23,7 +24,9 @@ export class SubjectService {
             lastName: "Leicht",
             email: "jonathon@example.com",
             department: "Cybersecurity",
-            phone: '513-555-5555'
+            role: "Senior Data Analyst",
+            phone: '513-555-5555',
+            riskScore: 15,
         },
         {
             subjectId: 702,
@@ -31,7 +34,9 @@ export class SubjectService {
             lastName: "Penmetsa",
             email: "nitin@example.com",
             department: 'Cybersecurity',
-            phone: '513-555-5555'
+            role: "Senior Data Analyst",
+            phone: '513-555-5555',
+            riskScore: 35,
         },
         {
             subjectId: 703,
@@ -39,7 +44,9 @@ export class SubjectService {
             lastName: "Penmetsaaaaaaa",
             email: "chetan@example.com",
             department: "Cybersecurity",
-            phone: '513-555-5555'
+            role: "Senior Data Analyst",
+            phone: '513-555-5555',
+            riskScore: 15,
         }
     ]);
 

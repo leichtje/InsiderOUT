@@ -29,7 +29,7 @@
 
 .current-value {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     flex: 1;
 }
@@ -42,6 +42,8 @@
 .text-info {
     display: flex;
     flex-direction: column;
+    height: -webkit-fill-available;
+    justify-content: center;
     min-width: 0;
     flex: 1;
     gap: 2px;
@@ -55,34 +57,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-.metadata-row {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column; 
-    gap: 8px;
-    margin-top: 8px;
-
-    font-size: 0.9em;
-    color: var(--color-text);
-    
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.meta-item {
-    display: inline-flex;
-    gap: 4px;
-    white-space: nowrap;
-
-    mat-icon {
-        width: 20px;
-        height: 20px;
-        font-size: 20px;
-    }
-}
-
 
 .placeholder { 
     display: flex;

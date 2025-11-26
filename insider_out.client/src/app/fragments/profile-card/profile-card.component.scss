@@ -28,10 +28,6 @@
     }
 
     .info-grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 12px 24px;
-        text-align: left;
         background: var(--color-back-gray);
         padding: 20px;
         border-radius: 8px;

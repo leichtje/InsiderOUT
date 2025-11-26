@@ -20,61 +20,103 @@
         
         @if (incident) {
 
-
-
             <div class="body">
 
                 <div class="body__left">
 
-                    <div class="header">
+                    <div class="section-title">
+                        <span class="label">Title</span>
 
-                        <div class="header__top">
-
-                            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
-                                    
-                                <textarea matInput 
-                                    formControlName="title" 
-                                    cdkTextareaAutosize
-                                    cdkAutosizeMinRows="1"
-                                    placeholder="Enter Incident Title"
-                                    (keydown.enter)="$event.preventDefault()">
-                                </textarea>
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
                                 
-                            </mat-form-field>
-
-                        </div>
-
-                        <div class="header__bottom">
-
-                            @if (incident.updated) {
-                                <div>
-                                    <span class="label">Occurred</span>
-                                    <span class="info">{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
-                                </div>
-                            }
-
-                            @if (incident.updated) {
-                                <div>
-                                    <span class="label">Last Updated</span>
-                                    <span class="info">{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
-                                </div>
-                            }
+                            <textarea matInput 
+                                formControlName="title" 
+                                cdkTextareaAutosize
+                                cdkAutosizeMinRows="1"
+                                placeholder="Enter Incident Title"
+                                (keydown.enter)="$event.preventDefault()">
+                            </textarea>
                             
-                            @if (incident.agent) {
-                                <div>
-                                    <span class="label">Agent</span>
-                                    <span class="info">{{ incident.agent }}</span>
-                                </div>
-                            }
+                        </mat-form-field>
 
-                        </div>
+
+                    </div>
+
+                    <div class="section-date">
+
+                        @if (incident.updated) {
+                            <div>
+                                <span class="label">Occurred</span>
+                                <span class="info">{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                            </div>
+                        }
+
+                        @if (incident.agent) {
+                            <div>
+                                <span class="label">Agent</span>
+                                <span class="info">{{ incident.agent }}</span>
+                            </div>
+                        }
 
                     </div>
 
                     <div class="divider"></div>
 
                     <div class="section">
+
+                        <div class="select">
+                            
+                            <span class="label">Tied Subject <mat-icon class="info">info</mat-icon></span>
+
+                            <io-profile-picker
+                                formControlName="tiedSubjectId"
+                                label="Tied Subject"
+                                [items]="subjects"
+                                idKey="subjectId"
+                                nullLabel="No Subject"
+                                [hideDetail]="false">
+                            </io-profile-picker>
+                        </div>
+                    </div>
                     
+                    <div class="divider"></div>
+
+                    <div class="section">
+
+                        <div>
+                            <span class="label">Token
+                                @if (tokenAsDocument; as doc) {
+                                    <mat-icon>description</mat-icon>
+                                }
+                                @if (tokenAsEmail; as email) {
+                                    <mat-icon>email</mat-icon>
+                                }
+                            </span>
+
+                            <div class="info-grid">
+
+                                @if (tokenAsDocument; as doc) {
+                                    <span class="sub-label">Title</span>
+                                    <span>{{ doc.name }}</span>
+                                    
+                                    <span class="sub-label">Location</span> 
+                                    <span>{{ doc.location }}</span>
+                                }
+                                
+                                <span class="sub-label">Severity</span> 
+                                <span>{{ token?.severity  }}</span>
+
+                            </div>
+                            
+                    </div>
+
+                    </div>
+                
+                </div>
+                
+                <div class="body__right">
+                    <div class="header">
+
                         <div class="select">
                             <span class="label">Status</span>
 
@@ -97,76 +139,40 @@
                                 [enableAssignMe]="true">
                             </io-profile-picker>
                         </div>
+
+                        @if (incident.updated) {
+                            <div class="updated">
+                                <span class="label">Last Updated</span>
+                                <span class="info">{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
+                            </div>
+                        }
+
                     </div>
 
-                    <div class="section">
+                    <div class="wrapper">
 
-                        <div class="select">
+                        <div class="section">
                             
-                            <span class="label">Tied Subject <mat-icon class="info">info</mat-icon></span>
-
-                            <io-profile-picker
-                                formControlName="tiedSubjectId"
-                                label="Tied Subject"
-                                [items]="subjects"
-                                idKey="subjectId"
-                                nullLabel="No Subject"
-                                [hideDetail]="false">
-                            </io-profile-picker>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-
-                    
-                        <div>
-                            <span class="label">Token<mat-icon>description</mat-icon></span>
-
-                            @if (tokenAsDocument; as doc) {
-                                <div class="item">
-                                    <span class="sub-label">Title:</span> {{ doc.name }}
-                                </div>
-                                
-                                <div class="item">
-                                    <span class="sub-label">Location:</span> {{ doc.location }}
-                                </div>
-                            }
-                            
-                            @if (tokenAsEmail; as email) {
-                                <mat-icon>email</mat-icon>
-                                
-                            }
-                    </div>
-
-                    </div>
-                
-                </div>
-                
-                <div class="body__right">
-                    <div class="section">
-
-                        <span class="label">Description</span>
+                            <span class="label">Description</span>
                         
-                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="desc-input">
+                            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="desc-input">
                                 
-                            <textarea matInput 
-                                formControlName="desc" 
-                                cdkTextareaAutosize
-                                placeholder="Enter description">
-                            </textarea>
-
-                        </mat-form-field>
-
-                    </div>
-                                        
-                    <div class="section">
-                    
-                        <div class="section-title">
-                            <span class="label">Activity</span>
+                                <textarea matInput 
+                                    formControlName="desc" 
+                                    cdkTextareaAutosize
+                                    placeholder="Enter description">
+                                </textarea>
+                                
+                            </mat-form-field>
                             
-                            <!-- <button>
-                                <mat-icon>add</mat-icon>
-                            </button> -->
+                        </div>
+                        
+                        <div class="section">
+                            
+                            <div class="section-title">
+                                <span class="label">Activity</span>
+                                
+                            </div>
                         </div>
                     </div>
                 </div>

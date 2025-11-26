@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { DocumentModel, EmailModel, Token, TokenType } from '../models/token.model';
+import { DocumentModel, EmailModel, Token, TokenSeverity, TokenType } from '../models/token.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,25 +12,29 @@ export class TokenService {
             type: TokenType.document,
             documentId: 123,
             name: 'MFA Password Enrollment',
-            location: 'Server A'
+            location: 'Server A',
+            severity: TokenSeverity.Medium,
         },
         {
             type: TokenType.document,
             documentId: 132,
             name: 'Secret Business Plans',
-            location: 'Server A'
+            location: 'Server A',
+            severity: TokenSeverity.High,
         },
         {
             type: TokenType.document,
             documentId: 143,
             name: 'Payroll Incentives 2026',
-            location: 'Server B'
+            location: 'Server B',
+            severity: TokenSeverity.Low,
         },
         {
             type: TokenType.document,
             documentId: 154,
             name: 'Budget 2026 - CFO',
-            location: 'Server C'
+            location: 'Server C',
+            severity: TokenSeverity.High,
         }
     ]);
 
@@ -39,6 +43,7 @@ export class TokenService {
         type: TokenType.email,
         emailId: 900,
         subject: 'Urgent Wire Transfer',
+        severity: TokenSeverity.High,
     }
     ]);
 

@@ -206,3 +206,11 @@ button {
         }
     }
 }
+
+.info-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px 24px;
+    text-align: left;
+    padding: 10px 20px;
+}
