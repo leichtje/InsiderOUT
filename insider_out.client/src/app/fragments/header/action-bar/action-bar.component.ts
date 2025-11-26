@@ -10,6 +10,8 @@ import { CommonModule } from "@angular/common";
 })
 export class ActionBarComponent {
     @Input() isOpen = false;
+    @Input() isValid = true;
+
     @Output() save = new EventEmitter<void>();
     @Output() cancel = new EventEmitter<void>();
 

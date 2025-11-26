@@ -12,66 +12,54 @@ export class IncidentService {
         {
             incidentId: 1,
             title: 'Incident #1',
+            desc: "This is the description.",
             date: new Date("2025-11-18T05:34:00Z"),
             updated: new Date("2025-11-24T09:12:00Z"),
-            token: {
-                type: TokenType.document,
-                documentId: 123,
-                name: 'MFA Password Enrollment',
-                location: 'Server A'
-            },
+            agent: "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Word 16.0.17126)",
+            tokenId: 123,
+            tokenType: TokenType.document,
             status: IncidentStatus.inProgress,
             assignedUserId: 101,
             tiedSubjectId: 700,
-            tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Word 16.0.17126)"
         },
         {
             incidentId: 2,
             title: 'Incident #2',
+            desc: "This is an incident for sure.",
             date: new Date("2025-11-08T04:39:00Z"),
             updated: new Date("2025-11-24T09:12:00Z"),
-            token: {
-                type: TokenType.document,
-                documentId: 132,
-                name: 'Secret Business Plans',
-                location: 'Server A'
-            },
+            agent: "Microsoft-WebDAV-MiniRedir/6.1.7601",
+            tokenId: 132,
+            tokenType: TokenType.document,
             status: IncidentStatus.inProgress,
             assignedUserId: 101,
             tiedSubjectId: 701,
-            tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/6.1.7601"
         },
         {
             incidentId: 3,
             title: 'Incident Incident Incident Incident #3',
+            desc: "test",
             date: new Date("2025-11-16T15:58:00Z"),
             updated: new Date("2025-11-24T09:12:00Z"),
-            token: {
-                type: TokenType.document,
-                documentId: 123,
-                name: 'Payroll Incentives 2026',
-                location: 'Server B'
-            },
+            agent: "Microsoft Office/16.0 (Windows NT 6.1; Microsoft Word 16.0.17126; ProPlus)",
+            tokenId: 143,
+            tokenType: TokenType.document,
             status: IncidentStatus.inProgress,
             assignedUserId: 102,
             tiedSubjectId: 702,
-            tiedSubjectAgent: "Microsoft Office/16.0 (Windows NT 6.1; Microsoft Word 16.0.17126; ProPlus)"
         },
         {
             incidentId: 4,
             title: 'Incident #4',
+            desc: "",
             date: new Date("2025-11-17T21:05:00Z"),
             updated: new Date("2025-11-24T09:12:00Z"),
-            token: {
-                type: TokenType.document,
-                documentId: 154,
-                name: 'Budget 2026 - CFO',
-                location: 'Server C'
-            },
+            agent: "Microsoft-WebDAV-MiniRedir/10.0.22621",
+            tokenId: 154,
+            tokenType: TokenType.document,
             status: IncidentStatus.New,
             assignedUserId: null,
             tiedSubjectId: null,
-            tiedSubjectAgent: "Microsoft-WebDAV-MiniRedir/10.0.22621"
         },
     ]);
 

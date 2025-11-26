@@ -18,7 +18,7 @@ mat-icon {
     color: var(--color-primary-2) !important;
     
     &.info {
-        color: var(--color-back-body) !important;
+        color: var(--color-gray) !important;
         width: 20px;
         height: 20px;
         font-size: 20px;
@@ -27,8 +27,12 @@ mat-icon {
 
 .mat-mdc-form-field {
     --mdc-outlined-text-field-outline-color: var(--color-gray-2);
+    
     --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
     --mdc-outlined-text-field-hover-outline-color: var(--color-primary);
+
+    --mdc-outlined-text-field-outline-color: var(--color-gray);
+    --mdc-outlined-text-field-disabled-outline-color: var(--color-gray);
     
     .mat-mdc-select-value, 
         .mat-mdc-input-element {
@@ -36,7 +40,6 @@ mat-icon {
     }
 
     .mdc-notched-outline__stroke {
-        border-width: 2px !important;
         border-color: var(--color-gray) !important; 
     }
 

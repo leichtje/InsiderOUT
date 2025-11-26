@@ -10,13 +10,16 @@
                 
                 <div class="incident-card__title">
 
-                    @switch (vm.incident.token.type) {
-                        @case (tokenType.document){
-                            <mat-icon>description</mat-icon>
-                        }
-                        @case (tokenType.email){
-                            <mat-icon>email</mat-icon>
+                    @if (vm.token; as token) {
 
+                        @switch (token.type) {
+                            @case (tokenType.document){
+                                <mat-icon>description</mat-icon>
+                            }
+                            @case (tokenType.email){
+                                <mat-icon>email</mat-icon>
+
+                            }
                         }
                     }
 
@@ -26,27 +29,38 @@
 
                 <div class="divider"></div>
 
-                <div class="incident-card__details">
+                    <div class="incident-card__details">
 
-                    @switch (vm.incident.token.type) {
-                        @case (tokenType.document){
+                        @if (vm.token; as token) {
+                            
+                            @switch (token.type) {
+                                
+                                @case (tokenType.document) {
+                                    <div class="item">
+                                        <div class="label">Doc Name</div>
+                                        {{ $any(token).name }}
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">Doc Location</div>
+                                        {{ $any(token).location }}
+                                    </div>
+                                }
+
+                                @case (tokenType.email) {
+                                    <div class="item">
+                                        <div class="label">Email Subject</div>
+                                        {{ $any(token).subject }}
+                                    </div>
+                                }
+                            }
+
+                        } @else {
                             <div class="item">
-                                <div class="label">Doc Name</div>
-                                {{vm.incident.token.name}}
-                            </div>
-                            <div class="item">
-                                <div class="label">Doc Location</div>
-                                {{vm.incident.token.location}}
+                                <span class="muted">No Token Found</span>
                             </div>
                         }
-                        @case (tokenType.email){
-                            <div>
-                                <div class="label">Email Subject</div>
-                                {{vm.incident.token.subject}}
-                            </div>
-                        }
-                    }
-                </div>
+
+                    </div>
             </div>
 
             <div class="incident-card__meta-row">

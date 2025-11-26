@@ -8,6 +8,9 @@
 @let tiedSubject = this.tiedSubject();
 @let selectedSubject = this.selectedSubject();
 
+@let token = this.token();
+@let tokenAsDocument = this.tokenAsDocument();
+@let tokenAsEmail = this.tokenAsEmail();
 
 <form [formGroup]="form" class="incident-form">
     <div class="page-container" *ngIf="incident as data">
@@ -30,14 +33,12 @@
                             <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
                                     
                                 <textarea matInput 
-                                        formControlName="title" 
-                                        cdkTextareaAutosize
-                                        cdkAutosizeMinRows="1"
-                                        placeholder="Enter Incident Title"
-                                        (keydown.enter)="$event.preventDefault()"
-                                        ></textarea>
-                                    
-                                <mat-icon matSuffix class="edit-icon">edit</mat-icon>
+                                    formControlName="title" 
+                                    cdkTextareaAutosize
+                                    cdkAutosizeMinRows="1"
+                                    placeholder="Enter Incident Title"
+                                    (keydown.enter)="$event.preventDefault()">
+                                </textarea>
                                 
                             </mat-form-field>
 
@@ -45,15 +46,26 @@
 
                         <div class="header__bottom">
 
-                            <div>
-                                <span class="label">Occurred</span>
-                                <span class="date">{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
-                            </div>
+                            @if (incident.updated) {
+                                <div>
+                                    <span class="label">Occurred</span>
+                                    <span class="info">{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                                </div>
+                            }
 
-                            <div>
-                                <span class="label">Last Updated</span>
-                                <span class="date">{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
-                            </div>
+                            @if (incident.updated) {
+                                <div>
+                                    <span class="label">Last Updated</span>
+                                    <span class="info">{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
+                                </div>
+                            }
+                            
+                            @if (incident.agent) {
+                                <div>
+                                    <span class="label">Agent</span>
+                                    <span class="info">{{ incident.agent }}</span>
+                                </div>
+                            }
 
                         </div>
 
@@ -91,7 +103,7 @@
 
                         <div class="select">
                             
-                            <span class="label flex-inline">Tied Subject <mat-icon class="info">info</mat-icon></span>
+                            <span class="label">Tied Subject <mat-icon class="info">info</mat-icon></span>
 
                             <io-profile-picker
                                 formControlName="tiedSubjectId"
@@ -101,18 +113,30 @@
                                 nullLabel="No Subject"
                                 [hideDetail]="false">
                             </io-profile-picker>
-
                         </div>
                     </div>
                     
                     <div class="section">
 
-                        <span class="label">Token</span>
-                        
-                        <br>
-                        <br>
-                        <br>
-                        <br>
+                    
+                        <div>
+                            <span class="label">Token<mat-icon>description</mat-icon></span>
+
+                            @if (tokenAsDocument; as doc) {
+                                <div class="item">
+                                    <span class="sub-label">Title:</span> {{ doc.name }}
+                                </div>
+                                
+                                <div class="item">
+                                    <span class="sub-label">Location:</span> {{ doc.location }}
+                                </div>
+                            }
+                            
+                            @if (tokenAsEmail; as email) {
+                                <mat-icon>email</mat-icon>
+                                
+                            }
+                    </div>
 
                     </div>
                 
@@ -122,18 +146,29 @@
                     <div class="section">
 
                         <span class="label">Description</span>
-                    
+                        
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="desc-input">
+                                
+                            <textarea matInput 
+                                formControlName="desc" 
+                                cdkTextareaAutosize
+                                placeholder="Enter description">
+                            </textarea>
+
+                        </mat-form-field>
+
                     </div>
-                    
-                    <br>
-                    <br>
-                    
+                                        
                     <div class="section">
                     
-                        <span class="label">Activity</span>
-                    
+                        <div class="section-title">
+                            <span class="label">Activity</span>
+                            
+                            <!-- <button>
+                                <mat-icon>add</mat-icon>
+                            </button> -->
+                        </div>
                     </div>
-
                 </div>
             </div>
         } @else {
@@ -145,6 +180,7 @@
 
 <io-action-bar 
     [isOpen]="form.dirty" 
+    [isValid]="form.valid"
     (save)="onSave()" 
     (cancel)="onCancel()">
 </io-action-bar>

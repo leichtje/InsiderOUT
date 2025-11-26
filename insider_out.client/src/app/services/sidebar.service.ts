@@ -24,10 +24,10 @@ export class NavigationService {
     { 
         title: "Tokens",
         icon: "create_new_folder",
-        route: "/create",
+        route: "/tokens",
         subpages: [
-            { title: "Documents", route: "/create/documents" },
-            { title: "Emails", route: "/create/emails" }
+            { title: "Documents", route: "/tokens/documents" },
+            { title: "Emails", route: "/tokens/emails" }
         ] 
     },
     { 

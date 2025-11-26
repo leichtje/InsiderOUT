@@ -102,6 +102,20 @@ h1, h2, h3, h4 {
     font-weight: 500;
     color: var(--color-gray-2);
     height: 20px;
+
+    &:has(mat-icon) {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+}
+
+.sub-label {
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-primary-2);
+    font-weight: 600;
 }
 
 .flex-inline {
@@ -136,11 +150,20 @@ button {
     }
 
     &:hover {
-
         background-color: var(--color-primary);
 
         &.danger {
             background-color: var(--color-danger-back);
+        }
+    }
+
+    &:disabled {
+        background-color: var(--color-back-gray);
+        color: var(--color-text-2);
+        cursor: not-allowed;
+        
+        &:hover {
+            background-color: var(--color-back-gray);
         }
     }
 

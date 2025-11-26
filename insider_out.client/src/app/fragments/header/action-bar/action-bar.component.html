@@ -1,9 +1,15 @@
 <div class="action-bar" [class.open]="isOpen">
     <div class="content">
-        <span class="message">You have unsaved changes</span>
+        <span class="message">
+            @if (!isValid) {
+                Please fix validation errors before saving.
+            } @else {
+                You have unsaved changes.
+            }
+        </span>
         <div class="actions">
             <button class="flat" (click)="cancel.emit()">Cancel</button>
-            <button (click)="save.emit()">Save</button>
+            <button (click)="save.emit()" [disabled]="!isValid">Save</button>
         </div>
     </div>
 </div>

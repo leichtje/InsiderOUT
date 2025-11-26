@@ -5,8 +5,16 @@
     <p class="role">{{ profile().title || 'No Title' }}</p>
     
     <div class="info-grid">
-        <label>Email</label>    <span>{{ profile().email }}</span>
-        <label>Dept</label>     <span>{{ profile().department || 'N/A' }}</span>
-        <label>Phone</label>    <span>{{ profile().phone || 'N/A' }}</span>
+        <span class="sub-label">Email</span>
+        <span class="info">{{ profile().email }}</span>
+        
+        <span class="sub-label">Dept</span>
+        <span class="info">{{ profile().department || 'N/A' }}</span>
+        
+        <span class="sub-label">Phone</span>
+        <span class="info">{{ profile().phone || 'N/A' }}</span>
+        
+        <span class="sub-label">Location</span>
+        <span class="info">{{ profile().location || 'N/A' }}</span>
     </div>
 </div>

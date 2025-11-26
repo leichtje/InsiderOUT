@@ -10,6 +10,7 @@ import { SubjectService } from '../../../services/subject.service';
 import { MatIcon } from "@angular/material/icon";
 import { StatusComponent } from "../../../fragments/incident-status/incident-status.component";
 import { BreakpointService } from '../../../services/breakpoint.service';
+import { TokenService } from '../../../services/token.service';
 
 @Component({
     selector: 'io-incidents-list',
@@ -22,6 +23,7 @@ export class IncidentsListComponent {
 
     protected userService = inject(UserService);
     protected subjectService = inject(SubjectService);
+    protected tokenService = inject(TokenService);
     protected tokenType = TokenType;
 
     incidents = input<IncidentModel[]>();
@@ -57,14 +59,22 @@ export class IncidentsListComponent {
                             .pipe(catchError(() => of(null)))
                         : of(null);
 
+                    const token$ = incident.tokenId
+                        ? this.tokenService
+                            .getToken(incident.tokenId, incident.tokenType)
+                            .pipe(catchError(() => of(null)))
+                        : of(null);
+
                     return forkJoin({
                         subject: subject$,
-                        user: user$
+                        user: user$,
+                        token: token$
                     }).pipe(
-                        map(({ subject, user }) => ({
+                        map(({ subject, user, token }) => ({
                             incident: incident,
                             subject: subject,
-                            user: user
+                            user: user,
+                            token: token
                         }) as IncidentViewModel)
                     );
                 });

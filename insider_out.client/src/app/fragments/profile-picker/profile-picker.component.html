@@ -24,7 +24,7 @@
                             
                             @if (item.department) {
                                 <span class="meta-item">
-                                    <span class="label">Dept:</span> {{ item.department }}
+                                    <span class="sub-label">Dept</span> {{ item.department }}
                                 </span>
                             }
                             
@@ -49,7 +49,7 @@
             }
 
             @if (!selectedItem()) {
-                <button class="flat" [disabled]="isDisabled()">
+                <button [disabled]="isDisabled()">
                     <mat-icon>add</mat-icon>
                 </button>
             }

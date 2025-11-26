@@ -7,7 +7,7 @@
     align-items: center;
     gap: 10px;
     padding: 5px 12px;
-    border: 1px solid var(--color-gray-2);
+    border: 1px solid var(--color-gray);
     border-radius: 5px;
     background: var(--color-back);
     transition: border 0.2s;
@@ -75,14 +75,6 @@
     display: inline-flex;
     gap: 4px;
     white-space: nowrap;
-
-    .label {
-        font-size: 0.9em;
-        font-weight: 600;
-        text-transform: uppercase;
-        color: var(--color-primary-2);
-        font-weight: 600;
-    }
 
     mat-icon {
         width: 20px;

@@ -21,6 +21,8 @@ import { ProfileSelectComponent } from "../../../fragments/header/profile-select
 import { StatusSelectComponent } from "../../../fragments/incident-status-select/incident-status-select.component";
 import { ProfilePickerComponent } from '../../../fragments/profile-picker/profile-picker.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { TokenService } from '../../../services/token.service';
+import { DocumentModel, EmailModel, Token, TokenModel, TokenType } from '../../../models/token.model';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -52,17 +54,22 @@ export class IncidentsDetailComponent { //in the future make this a base to be e
     protected incidentService = inject(IncidentService);
     protected userService = inject(UserService);
     protected subjectService = inject(SubjectService);
+    protected tokenService = inject(TokenService);
+
+    protected tokenType = TokenType;
 
     protected users = this.userService.users;
     protected subjects = this.subjectService.subjects;
-
+    
     statusOptions = Object.values(IncidentStatus);
 
     form = this.fb.group({
         title: ['', Validators.required],
-        status: [null as IncidentStatus | null],
+        desc: [''],
+        status: [null as IncidentStatus | null, Validators.required],
         assignedUserId: [null as number | null],
-        tiedSubjectId: [null as number | null]
+        tiedSubjectId: [null as number | null],
+        tokenId: [null as number | null]
     });
 
     constructor() {
@@ -71,9 +78,11 @@ export class IncidentsDetailComponent { //in the future make this a base to be e
         if (data) {
             this.form.patchValue({
                 title: data.title,
+                desc: data.desc,
                 status: data.status,
                 assignedUserId: data.assignedUserId,
-                tiedSubjectId: data.tiedSubjectId
+                tiedSubjectId: data.tiedSubjectId,
+                tokenId: data.tokenId
             });
 
             this.form.markAsPristine(); 
@@ -174,5 +183,29 @@ export class IncidentsDetailComponent { //in the future make this a base to be e
         { initialValue: null as SubjectModel | null }
     );
 
+    token = toSignal(
+        this.incidentSignal$.pipe(
+            filter((incident): incident is IncidentModel => !!incident),
+            switchMap(incident => {
+                const tokenId = incident.tokenId;
+                const tokenType = incident.tokenType;
+                if (tokenId) {
+                    return this.tokenService.getToken(tokenId, tokenType);
+                }
+                return of(null as Token | null); 
+            })
+        ),
+        { initialValue: null as Token | null }
+    );
+
+    tokenAsDocument = computed(() => {
+        const t = this.token();
+        return (t?.type === TokenType.document) ? (t as DocumentModel) : null;
+    });
+    
+    tokenAsEmail = computed(() => {
+        const t = this.token();
+        return (t?.type === TokenType.email) ? (t as EmailModel) : null;
+    });
 
 }
