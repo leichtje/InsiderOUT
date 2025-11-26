@@ -21,9 +21,11 @@ $light-theme: (
     color-text: #212121,
     color-text-2: #777777,
     
-    color-danger: #c26666,
-    color-danger-back: #d0141433,
+    color-danger: #9a4949,
+    color-danger-back: #d87d7d,
+    
     color-bw: white,
+    color-w: white,
 
 
     // Incident Status Colors (Light)
@@ -57,7 +59,7 @@ $dark-theme: (
     color-primary-2: #8dbbc2,
     color-primary-3: #2d3b40,
     color-primary-4: #292b2c,
-    color-primary-5: #0a697c,
+    color-primary-5: #254f56,
     
     color-back: #303030,
     color-back-body: #1c1f20,
@@ -69,11 +71,13 @@ $dark-theme: (
 
     
     color-text: #dfdfdf,
-    color-text-2: #787878,
+    color-text-2: #898989,
     
-    color-danger: #9f3f3f,
-    color-danger-back: #83171766,
+    color-danger: #8e3434,
+    color-danger-back: #ae5c5c,
+
     color-bw: black,
+    color-w: #e8e8e8,
 
 
     // Incident Status Colors (Dark)

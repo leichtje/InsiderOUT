@@ -84,12 +84,12 @@
                     <div class="section">
 
                         <div>
-                            <span class="label">Token
+                            <span class="label">Token - 
                                 @if (tokenAsDocument; as doc) {
-                                    <mat-icon>description</mat-icon>
+                                    <mat-icon>description</mat-icon><span class="sub-label">Document</span>
                                 }
                                 @if (tokenAsEmail; as email) {
-                                    <mat-icon>email</mat-icon>
+                                    <mat-icon>email</mat-icon><span class="sub-label">Email</span>
                                 }
                             </span>
 
@@ -102,16 +102,32 @@
                                     <span class="sub-label">Location</span> 
                                     <span>{{ doc.location }}</span>
                                 }
+
+                                
+                                @if (tokenAsEmail; as email) {
+                                    <span class="sub-label">Subject</span>
+                                    <span>{{ email.subject }}</span>
+                                }
+                                
                                 
                                 <span class="sub-label">Severity</span> 
                                 <span>{{ token?.severity  }}</span>
 
+                                
                             </div>
                             
-                    </div>
+                            @if (tokenAsDocument; as doc) {
+                                <button [routerLink]="['/token/document', doc.documentId ]" class="flat">View Token</button>
+                            }
+
+                            @if (tokenAsEmail; as email) {
+                                <button [routerLink]="['/token/email', email.emailId ]" class="flat">View Token</button>
+                            }
+
+                        </div>
 
                     </div>
-                
+                    
                 </div>
                 
                 <div class="body__right">

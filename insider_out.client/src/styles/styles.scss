@@ -18,12 +18,6 @@ body:has(io-header.menu-is-open) {
     overflow: hidden;
 }
 
-*,
-*::before,
-*::after {
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
 .mat-icon {
     display: inline-flex !important;
 }
@@ -125,10 +119,9 @@ h1, h2, h3, h4 {
 }
 
 button {
-    // border: 2px solid var(--color-primary);
-    border: none;
+    border: 1px solid var(--color-back-body);
     border-radius: 10px;
-    color: var(--color-bw);
+    color: var(--color-w);
     @include mixins.font();
     font-weight: 600;
     cursor: pointer;
@@ -183,7 +176,7 @@ button {
 
     &:has(mat-icon):not(.flat){
         mat-icon {
-            color: var(--color-bw) !important;
+            color: var(--color-w) !important;
         }
     }
 

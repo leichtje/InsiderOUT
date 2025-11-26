@@ -1,17 +1,19 @@
 <div class="picker-container">
     
-    <div class="picker-box" [class.disabled]="isDisabled()" (click)="openDialog()">
+    <div class="picker-box" [class.disabled]="isDisabled()" [class.hideDetail]="hideDetail()" (click)="openDialog()">
         
         @if (selectedItem(); as item) {
             <div class="current-value">
-                <div class="avatar">
-                    <io-profile-avatar [profile]="item"></io-profile-avatar>
-                </div>
                 
-                <div class="text-info">
+                <div class="profile">
+                    <div class="avatar">
+                        <io-profile-avatar [profile]="item"></io-profile-avatar>
+                    </div>
                     <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
-                    
-                    @if (!hideDetail()) {
+                        
+                </div>
+
+                @if (!hideDetail()) {
                         <div class="info-grid">
 
                             @if (item.riskScore) {
@@ -41,8 +43,6 @@
                             
                         </div>
                     }
-                        
-                </div>
             </div>
             } @else {
                 <div class="placeholder">
