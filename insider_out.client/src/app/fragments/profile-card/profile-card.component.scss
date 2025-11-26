@@ -24,13 +24,14 @@
 
     .role {
         color: var(--color-text-2);
-        margin-bottom: 24px;
+        margin: 20px 0px;
+        font-size: 1.15em;
     }
 
     .info-grid {
         background: var(--color-back-gray);
         padding: 20px;
-        border-radius: 8px;
+        border-radius: 5px;
 
         span {
             color: var(--color-text); 
