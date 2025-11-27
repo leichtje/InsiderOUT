@@ -1,0 +1,35 @@
+<div class="activity-feed">
+    
+    @if (currentActivities().length === 0) {
+        <p class="empty-state">No activity recorded.</p>
+    }
+
+    @for (activity of currentActivities(); track activity.activityId) {
+        <div class="activity">
+            <div class="activity__card">
+                <div class="connector"></div>
+                <div class="container">
+                    <div class="profile">
+                        
+                        <div class="avatar">
+                            <io-profile-avatar [profile]="getUser(activity.userId)"></io-profile-avatar>
+                        </div>
+
+                        <span class="name">
+                            {{ getUserName(activity.userId) }}
+                        </span>
+
+                        <span class="date">
+                            {{ activity.date | date:'MMM d, h:mm a' }}
+                        </span>
+                    </div>
+                    
+                    <div class="content">
+                        {{ activity.content }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

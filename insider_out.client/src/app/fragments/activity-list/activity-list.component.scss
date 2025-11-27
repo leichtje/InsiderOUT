@@ -1,0 +1,47 @@
+.activity-feed {
+        border-left: 2px solid var(--color-gray);
+
+    .activity {
+        margin-bottom: 20px;
+        
+        &__card {
+            display: flex;
+            align-items: center;
+            
+            .connector {
+                border-bottom: 2px solid var(--color-gray);
+                width: 20px;
+            }
+            
+            .container {
+                border-radius: 5px;
+                border: 2px solid var(--color-gray);
+                min-height: 100px;
+                width: 100%;
+                padding: 10px;
+                
+                .profile {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin-bottom: 10px;
+                    
+                    .avatar {
+                        width: 40px;
+                        height: 40px;
+                    }
+                    
+                    .name {
+                        font-weight: 600;
+                    }
+
+                    .date {
+                        color: var(--color-text-2);
+                    }
+
+                }
+            
+            }
+        }
+    }
+}

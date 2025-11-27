@@ -24,6 +24,8 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { TokenService } from '../../../services/token.service';
 import { DocumentModel, EmailModel, Token, TokenModel, TokenType } from '../../../models/token.model';
 import { tokenComponent } from "../../../fragments/pill/token-severity.component";
+import { ActivityListComponent } from "../../../fragments/activity-list/activity-list.component";
+import { ActivityScope } from '../../../models/activity.model';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -45,7 +47,8 @@ import { tokenComponent } from "../../../fragments/pill/token-severity.component
     MatInputModule,
     MatSelectModule,
     TextFieldModule,
-    tokenComponent
+    tokenComponent,
+    ActivityListComponent
 ]
 })
 export class IncidentsDetailComponent { //in the future make this a base to be extended. 
@@ -58,7 +61,8 @@ export class IncidentsDetailComponent { //in the future make this a base to be e
     protected subjectService = inject(SubjectService);
     protected tokenService = inject(TokenService);
 
-    protected tokenType = TokenType;
+    protected readonly tokenType = TokenType;
+    protected readonly activityScope = ActivityScope;
 
     protected users = this.userService.users;
     protected subjects = this.subjectService.subjects;

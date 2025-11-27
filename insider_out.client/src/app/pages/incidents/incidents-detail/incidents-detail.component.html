@@ -186,6 +186,24 @@
                             <div class="section-title">
                                 <span class="label">Activity</span>
                                 
+                                <button class="flat"><mat-icon>add</mat-icon></button>
+                            </div>
+
+                            <div class="activity">
+                                <div class="activity__card">
+                                    <div class="connector"></div>
+                                    <div class="container">
+                                        <div class="profile">
+                                            
+                                        </div>
+                                        <div class="content">
+                                            <io-activity-list
+                                                [entityId]="incident.incidentId"
+                                                [entityType]="activityScope.Incident"
+                                            ></io-activity-list>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
