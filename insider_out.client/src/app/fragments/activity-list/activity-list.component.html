@@ -1,7 +1,7 @@
 <div class="activity-feed">
     
     @if (currentActivities().length === 0) {
-        <p class="empty-state">No activity recorded.</p>
+        <span class="empty-state">No activity recorded.</span>
     }
 
     @for (activity of currentActivities(); track activity.activityId) {
