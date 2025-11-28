@@ -12,7 +12,7 @@ export class ActivityService {
     private activitiesSignal = signal<ActivityModel[]>([
         {
             activityId: 1,
-            content: 'Created the incident ticket.',
+            content: 'Test comment',
             date: new Date('2025-11-20T09:00:00'),
             entityId: 1,
             entityType: ActivityScope.Incident,
@@ -28,7 +28,7 @@ export class ActivityService {
         },
         {
             activityId: 3,
-            content: 'Added a comment about the firewall logs.',
+            content: 'Added a comment about logs.',
             date: new Date('2025-11-21T14:15:00'),
             entityId: 1,
             entityType: ActivityScope.Incident,

@@ -50,6 +50,8 @@ h1, h2, h3, h4 {
     display: flex;
     margin: 10px;
     gap: 10px;
+    padding-bottom: var(--action-bar-space);
+
     @include mixins.phone {
         margin: 0px;
         gap: 0px;

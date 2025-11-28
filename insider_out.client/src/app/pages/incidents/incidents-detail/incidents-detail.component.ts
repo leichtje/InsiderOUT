@@ -8,24 +8,21 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IncidentModel, IncidentStatus } from '../../../models/incidents.model';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { SubjectService } from '../../../services/subject.service';
-import { StatusComponent } from "../../../fragments/pill/incident-status.component";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActionBarComponent } from "../../../fragments/header/action-bar/action-bar.component";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ProfileAvatarComponent } from "../../../fragments/profile-avatar/profile-avatar.component";
-import { ProfileSelectComponent } from "../../../fragments/header/profile-select/profile-select.component";
 import { StatusSelectComponent } from "../../../fragments/incident-status-select/incident-status-select.component";
 import { ProfilePickerComponent } from '../../../fragments/profile-picker/profile-picker.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { TokenService } from '../../../services/token.service';
-import { DocumentModel, EmailModel, Token, TokenModel, TokenType } from '../../../models/token.model';
+import { DocumentModel, EmailModel, Token, TokenType } from '../../../models/token.model';
 import { tokenComponent } from "../../../fragments/pill/token-severity.component";
 import { ActivityListComponent } from "../../../fragments/activity-list/activity-list.component";
 import { ActivityScope } from '../../../models/activity.model';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -35,23 +32,21 @@ import { ActivityScope } from '../../../models/activity.model';
     imports: [
     CommonModule,
     RouterLink,
-    StatusComponent,
     ActionBarComponent,
     MatIconModule,
-    ProfileAvatarComponent,
-    ProfileSelectComponent,
     StatusSelectComponent,
     ProfilePickerComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatTooltipModule,
     TextFieldModule,
     tokenComponent,
     ActivityListComponent
 ]
 })
-export class IncidentsDetailComponent { //in the future make this a base to be extended. 
+export class IncidentsDetailComponent { 
 
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
@@ -70,7 +65,7 @@ export class IncidentsDetailComponent { //in the future make this a base to be e
     statusOptions = Object.values(IncidentStatus);
 
     form = this.fb.group({
-        title: ['', Validators.required],
+        title: ['', [Validators.required, Validators.maxLength(100)]],
         desc: [''],
         status: [null as IncidentStatus | null, Validators.required],
         assignedUserId: [null as number | null],

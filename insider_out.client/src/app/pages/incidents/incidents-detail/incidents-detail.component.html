@@ -28,7 +28,7 @@
                         <span class="label">Title</span>
 
                         <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
-                                
+                            
                             <textarea matInput 
                                 formControlName="title" 
                                 cdkTextareaAutosize
@@ -36,9 +36,16 @@
                                 placeholder="Enter Incident Title"
                                 (keydown.enter)="$event.preventDefault()">
                             </textarea>
-                            
-                        </mat-form-field>
 
+                            @if (form.get('title')?.hasError('required')) {
+                                <mat-error>Title is required</mat-error>
+                            }
+                            
+                            @if (form.get('title')?.hasError('maxlength')) {
+                                <mat-error>Title cannot exceed 100 characters</mat-error>
+                            }
+
+                        </mat-form-field>
 
                     </div>
 
@@ -113,7 +120,9 @@
 
                         <div class="select">
                             
-                            <span class="label">Tied Subject <mat-icon class="info">info</mat-icon></span>
+                            <span class="label">Tied Subject
+                                <mat-icon matTooltip="A Subject is the Employee which likely triggered the incident, and therefore is tied to it." class="info">info</mat-icon>
+                            </span>
 
                             <io-profile-picker
                                 formControlName="tiedSubjectId"

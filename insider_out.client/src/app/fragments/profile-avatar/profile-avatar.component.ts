@@ -13,6 +13,8 @@ export class ProfileAvatarComponent {
 
     profile = input<ProfileModel | null>();
 
+    enableHover = input(false);
+
     initials = computed(() => {
         const currentUser = this.profile();
 

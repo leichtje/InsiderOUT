@@ -170,3 +170,8 @@ mat-nav-list {
         height: 35px !important;
     }
 }
+
+.mat-mdc-tooltip .mdc-tooltip__surface {
+    background-color: var(--color-gray-2) !important;
+    color: var(--color-bw) !important;
+}

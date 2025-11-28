@@ -1,6 +1,6 @@
 @let initials = this.initials();
 
-<div class="avatar-container" [style.background-color]="backgroundColor()">
+<div class="avatar-container" [style.background-color]="backgroundColor()" [class.interactive]="enableHover()">
     @if (initials) {
         <div class="avatar-initials">
             {{initials}}
