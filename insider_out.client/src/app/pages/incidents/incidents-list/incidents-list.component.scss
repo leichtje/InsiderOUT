@@ -33,7 +33,7 @@
     }
 
     @include mixins.phone(){
-        max-width: 100%;
+        width: calc(100vw - 50px);
         flex-direction: column;
     }
 
