@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { filter, of, startWith, switchMap } from 'rxjs';
 import { IncidentService } from '../../../services/incident.service';
@@ -23,6 +23,7 @@ import { tokenComponent } from "../../../fragments/pill/token-severity.component
 import { ActivityListComponent } from "../../../fragments/activity-list/activity-list.component";
 import { ActivityScope } from '../../../models/activity.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BreakpointService } from "../../../services/breakpoint.service";
 
 @Component({
     selector: 'io-incidents-detail',
@@ -62,6 +63,8 @@ export class IncidentsDetailComponent {
     protected users = this.userService.users;
     protected subjects = this.subjectService.subjects;
     
+    protected breakpointService = inject(BreakpointService);
+
     statusOptions = Object.values(IncidentStatus);
 
     form = this.fb.group({
@@ -89,6 +92,14 @@ export class IncidentsDetailComponent {
             this.form.markAsPristine(); 
         }
         });
+    }
+
+    activeTab = signal<'left' | 'right'>('left');
+
+    isPhone = computed(() => this.breakpointService.isPhone()); 
+    
+    selectTab(tab: 'left' | 'right') {
+        this.activeTab.set(tab);
     }
 
     private assignedUserId$ = this.form.controls.assignedUserId.valueChanges.pipe(

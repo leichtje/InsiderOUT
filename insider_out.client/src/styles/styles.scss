@@ -83,6 +83,7 @@ h1, h2, h3, h4 {
 
     @include mixins.phone{
         margin: 10px 0;
+        padding: 10px;
     }
 }
 
@@ -201,4 +202,26 @@ button {
     gap: 12px 24px;
     text-align: left;
     padding: 10px 20px;
+
+    @include mixins.phone() {
+        padding: 10px 0px;
+    }
+}
+
+.tab-controls {
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-gray);
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+
+    .tab-button {
+        margin-top: 10px;
+        border-radius: 10px 10px 0px 0px;
+
+        &:has(.active) {            
+            background: var(--color-back);
+        } 
+    }
+
 }

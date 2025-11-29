@@ -11,8 +11,20 @@
     display: flex;
     gap: 40px;
 
+    @include mixins.phone(){
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
     &__left {
-        width: 60%;
+        @include mixins.non-phone(){
+            width: 60%;
+        }
+
+        @include mixins.phone(){
+            width: 100%;
+        }
 
         .section-title {
             margin-bottom: 20px;
@@ -83,6 +95,11 @@
             gap: 20px;
             width: -webkit-fill-available;
             background: var(--color-back-gray);
+
+            @include mixins.phone(){
+                padding: 10px;
+                gap: 10px;
+            }
 
             .section {
                 background-color: var(--color-back);
