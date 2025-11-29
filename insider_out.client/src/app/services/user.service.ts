@@ -12,7 +12,7 @@ export class UserService {
         userId: 101,
         firstName: 'Logan',
         lastName: 'Freeman',
-        email: 'loganfree18@gmail.com',
+        email: 'loganfreeman@gmail.com',
         phone: '513-555-5555'
     });
 
@@ -21,7 +21,7 @@ export class UserService {
             userId: 101,
             firstName: 'Logan',
             lastName: 'Freeman',
-            email: 'loganfree18@gmail.com',
+            email: 'loganfreeman@gmail.com',
             phone: '513-555-5555'
         },
         {
