@@ -25,6 +25,19 @@ mat-icon {
     }
 }
 
+.io-modal-panel {
+    
+    .mat-mdc-dialog-surface {
+        background-color: var(--color-back) !important;
+        border: 2px solid var(--color-primary) !important;
+        border-radius: 10px !important; 
+
+        .mat-mdc-dialog-title, .mdc-dialog__title {
+            color: var(--color-text);
+        }
+    }
+}
+
 .mat-mdc-form-field {
     --mdc-outlined-text-field-outline-color: var(--color-gray-2);
     
@@ -122,33 +135,6 @@ mat-nav-list {
     border-radius: 5px !important;
     display: flex !important;
     align-items: center !important;
-
-    // ::ng-deep .mdc-list-item__start {
-    //     width: 48px !important;
-    //     height: 48px !important;
-    //     margin-right: 16px !important;
-    //     align-self: center !important;
-        
-    //     flex-shrink: 0;
-
-    //     display: flex;
-    //     align-items: center;
-    // }
-
-    // ::ng-deep .mdc-list-item__content {
-    //     align-self: center !important;
-        
-    //     .mat-mdc-list-item-title {
-    //         margin-bottom: 2px !important;
-    //         font-weight: 600;
-    //         line-height: 1.2 !important;
-    //     }
-        
-    //     .mat-mdc-list-item-line {
-    //         margin: 0 !important;
-    //         line-height: 1.2 !important;
-    //     }
-    // }
 
     &:hover {
         background-color: var(--color-back-gray) !important;
