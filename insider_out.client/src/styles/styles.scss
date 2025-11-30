@@ -127,6 +127,11 @@ h1, h2, h3, h4 {
     gap: 5px;
 }
 
+.error {
+    color: var(--color-error);
+    font-weight: 600;
+}
+
 button {
     border: 1px solid var(--color-back-body);
     border-radius: 10px;

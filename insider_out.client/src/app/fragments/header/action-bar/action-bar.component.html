@@ -2,7 +2,7 @@
     <div class="content">
         <span class="message">
             @if (!isValid) {
-                Please fix validation errors before saving.
+                <span class="error">Please fix validation errors before saving.</span>
             } @else {
                 You have unsaved changes.
             }

@@ -63,6 +63,12 @@ mat-icon {
     &.mat-focused .mdc-notched-outline__stroke {
         border-color: var(--color-primary) !important;
     }
+
+    &.mat-form-field-invalid {
+        --mdc-outlined-text-field-error-outline-color: var(--color-error);
+        --mdc-outlined-text-field-error-label-text-color: var(--color-error);
+        --mat-form-field-error-text-color: var(--color-error);
+    }
 }
 
 .mdc-floating-label {
