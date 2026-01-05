@@ -1,0 +1,18 @@
+
+
+.profiles {
+    display: flex;
+    max-height: 100vh;
+    
+    .profiles-list {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: fit-content;
+        max-width: 200px;
+        padding: 0px 20px;
+        margin-right: 20px;
+        border-right: 2px solid var(--color-gray);
+        overflow: auto;
+    }
+} 

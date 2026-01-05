@@ -1,0 +1,127 @@
+@let vms = this.incidentViewModels();
+
+<div class="incidents-list">
+
+    @for (vm of vms; track vm.incident.incidentId) {
+    
+        <div class="incident-card" (click)="onSelectIncident(vm.incident)">
+
+            <div class="incident-card__info">
+                
+                <div class="incident-card__title">
+
+                    @if (vm.token; as token) {
+
+                        @switch (token.type) {
+                            @case (tokenType.document){
+                                <mat-icon>description</mat-icon>
+                            }
+                            @case (tokenType.email){
+                                <mat-icon>email</mat-icon>
+
+                            }
+                        }
+                    }
+
+                    {{vm.incident.title}}
+
+                </div>
+
+                <div class="divider"></div>
+
+                    <div class="incident-card__details">
+
+                        @if (vm.token; as token) {
+                            
+                            @switch (token.type) {
+                                
+                                @case (tokenType.document) {
+                                    <div class="item">
+                                        <div class="label">Doc Name</div>
+                                        {{ $any(token).name }}
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">Doc Location</div>
+                                        {{ $any(token).location }}
+                                    </div>
+                                }
+
+                                @case (tokenType.email) {
+                                    <div class="item">
+                                        <div class="label">Email Subject</div>
+                                        {{ $any(token).subject }}
+                                    </div>
+                                }
+                            }
+
+                        } @else {
+                            <div class="item">
+                                <span class="muted">No Token Found</span>
+                            </div>
+                        }
+
+                    </div>
+            </div>
+
+            <div class="incident-card__meta-row">
+    
+
+                <div class="incident-card__subject">
+
+                    <div class="incident-card__title">
+                        {{vm.incident.date | date:'short'}}
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="incident-card__details">
+
+                        <div class="item">
+                            <div class="label">Subject</div>
+                            @if (vm.subject) {
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]="vm.subject"></io-profile-avatar>
+                                </div>
+                                <span>{{ vm.subject.firstName }} {{ vm.subject.lastName }}</span>
+                            } @else {
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]=""></io-profile-avatar>
+                                </div>
+                                <span>No Subject</span>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="incident-card__user">
+                    <div class="incident-card__title">
+                        <io-incident-status [pill]="vm.incident.status"></io-incident-status>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="incident-card__details">
+
+                        <div class="item">
+                            <div class="label">Assignee</div>
+                            @if (vm.user) {
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]="vm.user"></io-profile-avatar>
+                                </div>
+                                <span>{{ vm.user.firstName }} {{ vm.user.lastName }}</span>
+                            } @else {
+                                <div class="avatar">
+                                    <io-profile-avatar [profile]=""></io-profile-avatar>
+                                </div>
+                                <span>No Assignee</span>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>

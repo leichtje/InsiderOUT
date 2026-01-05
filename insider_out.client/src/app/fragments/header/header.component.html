@@ -1,3 +1,5 @@
+@let user = userService.currentUser();
+
 <div class="header-container">
     <div class="header-left">
         @if (breakpointService.isPhone()) {
@@ -49,7 +51,7 @@
         
         @if (!isOpenUserMenu()){
         <div class="header-avatar">
-                <io-avatar (click)="toggleUserMenu()"></io-avatar>
+                <io-profile-avatar (click)="toggleUserMenu()" [profile]="user" [enableHover]="true"></io-profile-avatar>
             </div>
         }
     

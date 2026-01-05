@@ -1,0 +1,33 @@
+@let profiles = this.profiles();
+@let title = this.title();
+
+<div class="profiles-list">
+    <div class="profiles-list__title">
+        {{title}}
+    </div>
+
+    @for (profile of profiles; track profile) {
+        
+        <div class="profile-card" 
+            (click)="onSelectProfile(profile)" 
+            [class.profile-card--active]="isActive(profile)">
+
+            <div class="profile-card__avatar">
+                <io-profile-avatar [profile]="profile"></io-profile-avatar>
+            </div>
+            <div class="profile-card__info">
+                <div class="name">
+                    {{profile.firstName}}
+                    {{profile.lastName}}
+                </div>
+                @if (userService.isCurrentUser(profile)){
+                    <div class="current-user">
+                        Current User
+                    </div>
+                }
+            </div>
+
+        </div>
+    }
+
+</div>

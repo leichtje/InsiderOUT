@@ -28,6 +28,19 @@
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
+@mixin theme-colors($light-map, $dark-map) {
+    :root {
+        @each $key, $value in $light-map {
+            --#{$key}: #{$value};
+        }
+    }
+
+    body.dark-mode {
+        @each $key, $value in $dark-map {
+            --#{$key}: #{$value};
+        }
+    }
+}
 
 @mixin box-style($color: theme-color('primary-light')) {
 

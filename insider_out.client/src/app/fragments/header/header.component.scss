@@ -2,7 +2,7 @@
 
 .header-container {
     background-color: var(--color-back);
-    border-bottom: 2px solid var(--color-back-2);
+    border-bottom: 2px solid var(--color-gray);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -21,7 +21,7 @@
     
             .header-logo {
                 width: auto;
-                height: 7vh;
+                height: 70px;
             }
         }
 
@@ -41,8 +41,8 @@
         }
 
         .header-avatar {
-            width: 5vh;
-            height: 5vh;
+            width: 50px;
+            height: 50px;
         }
     }
     

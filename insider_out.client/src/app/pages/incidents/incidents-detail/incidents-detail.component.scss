@@ -1,0 +1,131 @@
+@use '../../../../styles/mixins' as mixins;
+
+
+.back {
+    cursor: pointer;
+    color: var(--color-primary-2);
+    margin-bottom: 20px;
+}
+
+.body {
+    display: flex;
+    gap: 40px;
+
+    @include mixins.phone(){
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    &__left {
+        @include mixins.non-phone(){
+            width: 60%;
+        }
+
+        @include mixins.phone(){
+            width: 100%;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+
+            .title-input {
+                width: 100%;
+
+                ::ng-deep .mat-mdc-input-element {
+                    font-size: 1.25em !important; 
+                    letter-spacing: 1.5px !important;
+                    font-weight: 600 !important;
+                    color: var(--color-text) !important;
+
+                    line-height: 1.2 !important;
+                    resize: none; 
+                    overflow: hidden; 
+                    padding: 0; 
+                }
+            }
+        }
+
+        .section-date {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 40px;
+        }
+
+        .section {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+
+            &:not(:has(.selector)) {
+                margin-bottom: 20px;
+            }
+
+            .item {
+                margin: 10px 0px 10px 10px;
+            }
+        }
+
+        .divider {
+            margin: 30px 0px;
+        }
+    }
+
+    &__right {
+        height: 100%;
+        width: 100%;
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0px 40px;
+            
+            .updated {
+                margin-bottom: 20px;
+            }
+        }
+
+        .wrapper {
+            
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            padding: 20px;
+            gap: 20px;
+            width: -webkit-fill-available;
+            background: var(--color-back-gray);
+
+            @include mixins.phone(){
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .section {
+                background-color: var(--color-back);
+                border-radius: 10px;
+                padding: 20px;
+                width: -webkit-fill-available;
+                height: 100%;
+                
+                .desc-input {
+                    width: 100%;
+                    height: 200px;
+                    overflow-y: auto;
+                }
+                
+                .section-title {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;                
+                }
+
+                
+            }
+        }
+        
+    }
+}
+
+
+

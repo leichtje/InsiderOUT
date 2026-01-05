@@ -1,0 +1,118 @@
+@use 'mixins' as mixins;
+
+$light-theme: (
+
+    //Colors
+    color-primary: #76a5af,
+    color-primary-2: #104651,
+    color-primary-3: #daeaf0,
+    color-primary-4: #f4fbff,
+    color-primary-5: #035869,
+
+
+    color-back: #ffffff,
+    color-back-body: #b7c0c2,
+    color-back-drop: #092430bd,
+    color-back-gray: #e9e9e9,
+    
+    color-gray: #cdcdcd,
+    color-gray-2: #555,
+
+    color-text: #212121,
+    color-text-2: #777777,
+    
+    color-danger: #9a4949,
+    color-danger-back: #d87d7d,
+    color-error: #ba1a1a,
+    
+    color-bw: white,
+    color-w: white,
+
+
+    // Incident Status Colors (Light)
+    status-new: #A5D6A7,
+    status-in-progress: #a7dbf3ff,
+    status-resolved: #FFCC80,
+    status-closed: #CFD8DC,
+    
+    // Token Severity Colors (Light)
+    severity-high: #FFAB91,
+    severity-medium: #FFCC80,
+    severity-low: #E6EE9B,
+
+    // Avatar Colors (Light)
+    avatar-0: #FFAB91, // Salmon
+    avatar-1: #FFCC80, // Orange
+    avatar-2: #E6EE9B, // Lime
+    avatar-3: #8cd1caff, // Teal
+    avatar-4: #a7dbf3ff, // Light Blue
+    avatar-5: #a8cdeaff, // Lighter Blue
+    avatar-6: #cac2d8ff, // Purple
+    avatar-7: #e9a8bdff, // Pink
+    avatar-8: #bfc7cbff, // Blue Grey
+    avatar-9: #A5D6A7,  // Green
+
+    //Global vars
+    global-border-color: var(--color-gray),
+
+);
+
+$dark-theme: (
+
+    //Colors
+    color-primary: #50767f,
+    color-primary-2: #8dbbc2,
+    color-primary-3: #2d3b40,
+    color-primary-4: #292b2c,
+    color-primary-5: #254f56,
+    
+    color-back: #303030,
+    color-back-body: #1c1f20,
+    color-back-drop: #070a0bb5,
+    color-back-gray: #424242,
+    
+    color-gray: #505050,
+    color-gray-2: #a6a6a6,
+
+    
+    color-text: #dfdfdf,
+    color-text-2: #898989,
+    
+    color-danger: #8e3434,
+    color-danger-back: #ae5c5c,
+    color-error: #e76a6a,
+
+    color-bw: black,
+    color-w: #e8e8e8,
+
+
+    // Incident Status Colors (Dark)
+    status-new: #26602a,
+    status-in-progress: #295a71,
+    status-resolved: #88632c,
+    status-closed: #4e6770ff,
+
+    // Token Severity Colors (Dark)
+    severity-high: #a55f49ff,
+    severity-medium: #a87b38ff,
+    severity-low: #b0a61aff,
+
+    // Avatar Colors (Dark)
+    avatar-0: #a55f49ff,
+    avatar-1: #a87b38ff,
+    avatar-2: #b0a61aff,
+    avatar-3: #2e968bff,
+    avatar-4: #306a84ff,
+    avatar-5: #408cc7ff,
+    avatar-6: #7a55baff,
+    avatar-7: #bb4067ff,
+    avatar-8: #4e6770ff,
+    avatar-9: #2f9232ff,
+
+
+    //Global vars
+    global-border-color: var(--color-gray),
+
+);
+
+@include mixins.theme-colors($light-theme, $dark-theme);

@@ -1,0 +1,64 @@
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+}
+
+.master-detail-container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    height: 500px;
+    border: 2px solid var(--color-gray);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.list-panel {
+    border-right: 2px solid var(--color-gray);
+    overflow-y: auto;
+    background: var(--color-back);
+    
+    display: flex;
+    flex-direction: column;
+
+    .active {
+        background-color: var(--color-primary-3) !important;
+        border: 2px solid var(--color-primary) !important;
+    }
+    
+    .no-results {
+        padding: 20px;
+        text-align: center;
+        color: var(--color-text-2);
+        font-weight: 600;
+    }
+}
+
+.detail-panel {
+    padding: 24px;
+    overflow-y: auto;
+    background: var(--color-back);
+    display: flex;
+    justify-content: center; 
+    align-items: flex-start;
+}
+
+.placeholder-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--color-text-2);
+    font-weight: 600;
+    
+    mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+    }
+}

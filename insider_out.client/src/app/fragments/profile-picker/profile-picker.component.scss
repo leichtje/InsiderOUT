@@ -1,0 +1,84 @@
+.picker-container {
+    margin-bottom: 16px;
+}
+
+.picker-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--color-gray);
+    border-radius: 5px;
+    background: var(--color-back);
+    transition: border 0.2s;
+    height: fit-content;
+    width: fit-content;
+    cursor: pointer;
+
+    &:hover {
+        border-color: var(--color-primary);
+        background-color: var(--color-primary-3);
+    }
+
+    &.disabled {
+        background: var(--color-text-2);
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    &.hideDetail{
+        padding: 5px 10px;
+    }
+}
+
+.current-value {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.profile {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+    gap: 10px;
+}
+
+.name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.role {
+    color: var(--color-text-2);
+}
+
+.placeholder { 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    color: var(--color-text-2); 
+    
+    mat-icon {
+        color: var(--color-text-2) !important;
+    }
+}
+
+.actions {
+    display: flex;
+}

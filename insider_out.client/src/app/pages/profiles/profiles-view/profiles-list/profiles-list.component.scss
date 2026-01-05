@@ -1,0 +1,55 @@
+@use '../../../../../styles/mixins' as mixins;
+
+.profiles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &__title {
+        @include mixins.font();
+    }
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    border: 2px solid var(--color-back);
+    border-radius: 5px;
+    cursor: pointer;
+
+    &__avatar {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    &__info {
+        overflow: hidden;
+
+        .name {
+            @include mixins.ellipsis();
+        }
+
+        .current-user {
+            display: flex;
+            align-items: center;
+            color: var(--color-text-2);
+            font-size: 15px;
+        }
+    }
+
+    &:hover {
+        .name {
+            text-decoration: underline !important;
+            text-decoration-color: var(--color-primary) !important;
+            text-decoration-thickness: 2px;
+        }
+    }
+
+    &--active {
+        border: 2px solid var(--color-primary) !important;
+        background-color: var(--color-primary-3);
+    }
+}

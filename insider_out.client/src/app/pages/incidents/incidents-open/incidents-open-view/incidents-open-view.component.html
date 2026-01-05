@@ -1,0 +1,14 @@
+@let incidents = this.incidents();
+
+<div class="page-container">
+    <io-incidents-filter (filterChanged)="filterChange.emit($event)"></io-incidents-filter>
+
+    <br>
+    <br>
+
+
+    <io-incidents-list
+        [incidents]="incidents"
+        (incidentSelected)="onIncidentClicked($event)"
+    ></io-incidents-list>
+</div>

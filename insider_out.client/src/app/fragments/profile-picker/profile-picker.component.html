@@ -1,0 +1,76 @@
+<div class="picker-container">
+    
+    <div class="picker-box" [class.disabled]="isDisabled()" [class.hideDetail]="hideDetail()" (click)="openDialog()">
+        
+        @if (selectedItem(); as item) {
+            <div class="current-value">
+                
+                <div class="profile">
+                    <div class="avatar">
+                        <io-profile-avatar [profile]="item"></io-profile-avatar>
+                    </div>
+                    <div>
+                        <span class="name">{{ item.firstName }} {{ item.lastName }}</span>
+                        <br>
+                        @if (item.role) {
+                            <span class="role">{{ item.role }}</span>
+                        }
+                    </div>
+                        
+                </div>
+
+                @if (!hideDetail()) {
+                        <div class="info-grid">
+
+                            @if (item.riskScore) {
+                                <span class="sub-label">Risk</span>
+                                <span>{{ item.riskScore }}%</span>
+                            }
+
+                            @if (item.department) {
+                                <span class="sub-label">Dept</span>
+                                <span>{{ item.department }}</span>
+                            }
+                            
+                            @if (item.email) {
+                                <span class="sub-label">Email</span>
+                                <span>{{ item.email }}</span>
+                            }
+                            
+                            @if (item.phone) {
+                                <span class="sub-label">Phone</span>
+                                <span>{{ item.phone }}</span>
+                            }
+                            
+                        </div>
+                    }
+            </div>
+            } @else {
+                <div class="placeholder">
+                    <mat-icon>person_add</mat-icon>
+                    <span>{{ nullLabel() }}</span>
+                </div>
+            }
+
+        <div class="actions">
+            
+            @if (enableAssignMe() && !selectedItem() && !isDisabled()) {
+                <button (click)="assignToMe($event)">
+                    Assign Me
+                </button>
+            }
+
+            @if (!selectedItem()) {
+                <button [disabled]="isDisabled()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            }
+            
+            @if (selectedItem() && !isDisabled()) {
+                <button class="flat" (click)="clearSelection($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            }
+        </div>
+    </div>
+</div>

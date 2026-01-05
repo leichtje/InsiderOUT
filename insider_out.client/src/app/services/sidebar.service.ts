@@ -18,18 +18,23 @@ export class NavigationService {
         route: "/incidents", 
         subpages: [
             { title: "Open", route: "/incidents/open" },
-            { title: "Past", route: "/incidents/past" }
+            { title: "Closed", route: "/incidents/closed" }
         ] 
     },
     { 
-        title: "Create",
+        title: "Tokens",
         icon: "create_new_folder",
-        route: "/create",
+        route: "/tokens",
         subpages: [
-            { title: "Documents", route: "/create/documents" },
-            { title: "Emails", route: "/create/emails" }
+            { title: "Documents", route: "/tokens/documents" },
+            { title: "Emails", route: "/tokens/emails" }
         ] 
-    }
+    },
+    { 
+        title: "Profiles",
+        icon: "account_box",
+        route: "/profiles"
+    },
     ];
 
     getSidebarItems(): SidebarItem[] {

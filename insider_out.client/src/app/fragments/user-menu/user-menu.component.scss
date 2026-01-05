@@ -6,7 +6,7 @@
     z-index: 100;
     display: flex;
     width: max-content;
-    box-shadow: 0px 0px 40px var(--color-backdrop);
+    box-shadow: 0px 0px 40px var(--color-back-drop);
     border-radius: 10px;
 
     @include mixins.phone() {
@@ -26,9 +26,9 @@
     @include mixins.font();
 
     @include mixins.non-phone() {
-        box-shadow: -2px 0px 0px var(--color-back-2);
+        box-shadow: -2px 0px 0px var(--color-gray);
         border: none;
-        border-bottom: 2px solid var(--color-back-2);
+        border-bottom: 2px solid var(--color-gray);
         border-radius: 0px 0px 0px 10px;
     }
 
@@ -59,10 +59,6 @@
             gap: 5px;
             width: 100%;
 
-            mat-icon {
-                color: var(--color-primary-dark);
-            }
-
             .user-menu-option-title {
                 display: flex;
                 align-items: center;
@@ -73,7 +69,7 @@
 
                 &.user-menu-option-active {
                     border: 2px solid var(--color-primary) !important;
-                    background-color: var(--color-glass-back);
+                    background-color: var(--color-primary-3);
                     font-weight: 600;
                 }
             }

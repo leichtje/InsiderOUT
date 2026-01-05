@@ -3,13 +3,167 @@
 @use '@angular/material' as mat;
 
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+    @include mat.theme((
+        color: (
+            theme-type: light,
+            primary: mat.$azure-palette,
+            tertiary: mat.$blue-palette,
+        ),
+        typography: Roboto,
+        density: 0,
+    ));
+}
+
+mat-icon {
+    color: var(--color-primary-2) !important;
+    
+    &.info {
+        color: var(--color-gray) !important;
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+    }
+}
+
+.io-modal-panel {
+    
+    .mat-mdc-dialog-surface {
+        background-color: var(--color-back) !important;
+        border: 2px solid var(--color-primary) !important;
+        border-radius: 10px !important; 
+
+        .mat-mdc-dialog-title, .mdc-dialog__title {
+            color: var(--color-text);
+        }
+    }
+}
+
+.mat-mdc-form-field {
+    --mdc-outlined-text-field-outline-color: var(--color-gray-2);
+    
+    --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
+    --mdc-outlined-text-field-hover-outline-color: var(--color-primary);
+
+    --mdc-outlined-text-field-outline-color: var(--color-gray);
+    --mdc-outlined-text-field-disabled-outline-color: var(--color-gray);
+    
+    .mat-mdc-select-value, 
+        .mat-mdc-input-element {
+        color: var(--color-text) !important;
+    }
+
+    .mdc-notched-outline__stroke {
+        border-color: var(--color-gray) !important; 
+    }
+
+    &:hover .mdc-notched-outline__stroke {
+        border-color: var(--color-primary) !important; 
+    }
+
+    &.mat-focused .mdc-notched-outline__stroke {
+        border-color: var(--color-primary) !important;
+    }
+
+    &.mat-form-field-invalid {
+        --mdc-outlined-text-field-error-outline-color: var(--color-error);
+        --mdc-outlined-text-field-error-label-text-color: var(--color-error);
+        --mat-form-field-error-text-color: var(--color-error);
+    }
+}
+
+.mdc-floating-label {
+    color: var(--color-text) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+    color: var(--color-text) !important; 
+}
+
+.mat-mdc-text-field-wrapper {
+    background-color: var(--color-back) !important; 
+    border-radius: 10px !important;
+}
+
+.mat-mdc-select-arrow {
+    color: var(--color-primary-2) !important;
+}
+
+
+.mat-mdc-select-panel {
+    background-color: var(--color-back) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 20px var(--color-back-drop) !important;
+    border: 2px solid var(--color-gray) !important;
+    max-width: 350px !important;
+
+    .mat-mdc-option {
+        border-bottom: 1px solid var(--color-gray) !important;
+        .mdc-list-item__primary-text {
+            color: var(--color-text); 
+        }
+
+        &:hover {
+            background-color: var(--color-gray) !important;
+        }
+
+        &.mdc-list-item--selected {
+            background-color: var(--color-primary-3) !important;
+        
+            .mdc-list-item__primary-text {
+                color: var(--color-text) !important;
+            }
+        }
+    }
+
+    .mat-mdc-option .mdc-list-item__primary-text {
+        width: 100%; 
+        overflow: hidden;
+    }
+}
+
+.mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox {
+    --mat-option-selected-state-label-text-color: var(--color-primary-2); 
+}
+
+mat-nav-list {
+    width: 100%;
+    padding-top: 5px;
+}
+
+.mat-mdc-list-item {
+    width: -webkit-fill-available !important;
+    height: auto !important;
+    min-height: 64px !important;
+    padding-top: 0 !important;
+    padding-bottom: 10px !important;
+    margin: 5px 10px !important;
+    border: 2px solid var(--color-back) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+
+    &:hover {
+        background-color: var(--color-back-gray) !important;
+    }
+    
+    .mat-mdc-list-item-title, 
+    .mdc-list-item__primary-text {
+        color: var(--color-text) !important;
+    }
+    
+    .mat-mdc-list-item-line, 
+    .mdc-list-item__secondary-text {
+        color: var(--color-text-2) !important;
+    }
+
+    io-profile-avatar {
+        display: block;
+        width: 35px !important;
+        height: 35px !important;
+    }
+}
+
+.mat-mdc-tooltip .mdc-tooltip__surface {
+    background-color: var(--color-gray-2) !important;
+    color: var(--color-bw) !important;
 }

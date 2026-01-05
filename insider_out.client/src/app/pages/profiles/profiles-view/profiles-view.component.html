@@ -1,0 +1,36 @@
+@let users = this.users();
+@let subjects = this.subjects();
+@let activeId = this.activeId();
+@let activeType = this.activeType();
+
+<div class="page-container profiles">
+    <div class="profiles-list">
+
+        <div class="profiles-list-users">
+            <io-profiles-list 
+                [profiles]="users" 
+                title="Users"
+                listType="user"
+                [activeId]="activeId"
+                [activeType]="activeType"
+                (profileSelected)="onProfileClicked($event)"
+            ></io-profiles-list>
+        </div>
+
+        <div class="profiles-list-subjects">
+            <io-profiles-list 
+                [profiles]="subjects" 
+                title="Employees"
+                listType="subject"
+                [activeId]="activeId"
+                [activeType]="activeType"
+                (profileSelected)="onProfileClicked($event)"
+            ></io-profiles-list>
+        </div>
+
+    </div>
+
+    <div class="profiles-detail">
+        <router-outlet></router-outlet> 
+    </div>
+</div>

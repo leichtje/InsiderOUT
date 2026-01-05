@@ -1,0 +1,27 @@
+<mat-form-field appearance="outline">
+    <mat-label>Filter Incidents</mat-label>
+    
+    <mat-select 
+        [value]="selectedFilter()" 
+        (selectionChange)="onFilterChange($event.value)">
+        
+        @for (option of filterOptions; track option.value) {
+            <mat-option [value]="option.value">
+                <mat-icon>{{ option.icon }}</mat-icon>
+                {{ option.label }}
+            </mat-option>
+        }
+
+    </mat-select>
+
+    @if (selectedFilter() !== 'all') {
+        <button 
+            class="flat"
+            matSuffix 
+            (click)="resetFilter($event)" 
+            aria-label="Clear filter">
+            <mat-icon>close</mat-icon>
+        </button>
+    }
+
+</mat-form-field>

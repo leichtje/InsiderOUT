@@ -1,0 +1,51 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+/* Your exact CSS */
+.select-value-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+
+    .text-stack {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .name, 
+    .muted,
+    span { 
+        display: block; 
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .muted {
+        color: var(--color-gray-text);
+    }
+
+    .empty-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 24px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0 !important;
+        color: var(--color-text-2) !important;
+    }
+    
+    io-profile-avatar {
+        width: 30px !important;
+        height: 30px !important;
+        flex-shrink: 0;
+    }
+}

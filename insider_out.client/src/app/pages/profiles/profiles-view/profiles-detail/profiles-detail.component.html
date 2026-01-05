@@ -1,0 +1,21 @@
+@let profile = this.profile();
+
+@if (profile) {
+
+    <io-profile-card [profile]="profile"></io-profile-card>
+
+    @if (userService.isCurrentUser(profile)) {
+
+        <button>Edit Profile</button>
+        <button class="danger">Delete Account</button>
+
+    }
+    @else if (isSubject(profile)) {
+
+        <button class="danger">Remove</button>
+
+    }
+
+} @else {
+    <p>Profile Not Found</p>
+}

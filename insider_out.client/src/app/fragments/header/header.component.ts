@@ -1,10 +1,11 @@
-import { Component, input, output, computed } from "@angular/core"; 
+import { Component, input, output, computed, inject } from "@angular/core"; 
 import { CommonModule } from "@angular/common";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { MatIcon } from "@angular/material/icon";
-import { AvatarComponent } from "../avatar/avatar.component";
+import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
+import { UserService } from "../../services/user.service";
 
 
 @Component({
@@ -13,12 +14,12 @@ import { AvatarComponent } from "../avatar/avatar.component";
     styleUrl:'header.component.scss',
     standalone:true,
     imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    MatIcon,
-    AvatarComponent
-],
+		CommonModule,
+		RouterLink,
+		RouterLinkActive,
+		MatIcon,
+		ProfileAvatarComponent
+	],
     host: {
         '[class.menu-is-open]': 'isAnyMenuOpen()'
     }
@@ -32,6 +33,8 @@ export class HeaderComponent {
 	isUserMenuOpen = output<boolean>();
 
     isAnyMenuOpen = computed(() => this.isOpenMobileSidebar() || this.isOpenUserMenu());
+
+    protected userService = inject(UserService);
 
 	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) { }
 
