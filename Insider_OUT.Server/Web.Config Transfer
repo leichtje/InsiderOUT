@@ -18,3 +18,32 @@
     </staticContent>
   </system.webServer>
 </configuration>
+
+@*
+Appsettings
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=InsiderOUT;User Id=InsiderOUTUser;Password=StrongPassword123!;TrustServerCertificate=True;"
+}
+
+Program File
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+Connection Tester
+
+[HttpGet("db-test")]
+public async Task<IActionResult> TestDb()
+{
+    try
+    {
+        using var conn = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+        await conn.OpenAsync();
+        return Ok("Database connection successful");
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, ex.Message);
+    }
+}
+
