@@ -5,6 +5,7 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
+    z-index: 1000;
     
     @include mixins.non-phone() {
         position: sticky;

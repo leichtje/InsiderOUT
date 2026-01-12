@@ -23,6 +23,7 @@
     width: 200px;
     gap: 15px;
     padding-bottom: 15px;
+    z-index: 1000;
     @include mixins.font();
 
     @include mixins.non-phone() {
