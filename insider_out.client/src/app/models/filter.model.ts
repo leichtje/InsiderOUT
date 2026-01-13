@@ -1,4 +1,4 @@
-export type FilterValue = 'mine' | 'unassigned' | 'all';
+export type FilterValue = 'mine' | 'unassigned' | 'document' | 'email' | 'all';
 
 export interface FilterOptionModel {
     label: string;

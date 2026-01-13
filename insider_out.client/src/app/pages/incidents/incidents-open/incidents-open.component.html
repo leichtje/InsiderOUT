@@ -1,5 +1,6 @@
 <io-incidents-open-view
     [incidents]="filteredIncidents()"
     (incidentSelected)="onIncidentSelected($event)"
-    (filterChange)="onFilterChange($event)"
+    (filterUserChange)="onUserFilterChange($event)"
+    (filterTypeChange)="onTypeFilterChange($event)"
 ></io-incidents-open-view>

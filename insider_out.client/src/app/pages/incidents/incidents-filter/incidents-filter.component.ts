@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,11 +15,9 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class IncidentsFilterComponent {
 
-    filterOptions: FilterOptionModel[] = [
-        { label: 'Assigned to Me', value: 'mine',       icon: 'person' },
-        { label: 'Unassigned',     value: 'unassigned', icon: 'person_off' },
-        { label: 'All Incidents',  value: 'all',        icon: 'list' }
-    ];
+    filterOptions = input<FilterOptionModel[]>([]);
+
+    filterTitle = input<string>('');
 
     filterChanged = output<FilterValue>();
 

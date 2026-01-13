@@ -7,6 +7,7 @@ import { IncidentService } from '../../../services/incident.service';
 import { IncidentModel } from '../../../models/incidents.model';
 import { FilterValue } from '../../../models/filter.model';
 import { UserService } from '../../../services/user.service';
+import { TokenType } from '../../../models/token.model';
 
 @Component({
     selector: 'io-incidents-open',
@@ -23,28 +24,50 @@ export class IncidentsOpenComponent {
 
     private allIncidents = this.incidentService.incidents;
 
-    protected currentFilter = signal<FilterValue>('all');
+    protected currentUserFilter = signal<FilterValue>('all');
+    protected currentTypeFilter = signal<FilterValue>('all');
 
-    protected filteredIncidents = computed(() => {
-        const incidents = this.allIncidents();
-        const filter = this.currentFilter();
-        const currentUser = this.userService.currentUser();
+protected filteredIncidents = computed(() => {
+    const incidents = this.allIncidents();
+    const userFilter = this.currentUserFilter();
+    const typeFilter = this.currentTypeFilter();
+    const currentUser = this.userService.currentUser();
+    
+    let result = incidents; 
 
-        switch (filter) {
-            case 'mine':
-                return incidents.filter(i => i.assignedUserId === currentUser.userId);
-            
-            case 'unassigned':
-                return incidents.filter(i => !i.assignedUserId);
-            
-            case 'all':
-            default:
-                return incidents;
-        }
-    });
+    switch (userFilter) {
+        case 'mine':
+            result = result.filter(i => i.assignedUserId === currentUser?.userId);
+            break;
+        
+        case 'unassigned':
+            result = result.filter(i => !i.assignedUserId);
+            break;            
+        
+        case 'all':
+        default:
+            break;
+    }
 
-    onFilterChange(newFilter: FilterValue) {
-        this.currentFilter.set(newFilter);
+    switch (typeFilter) {
+        case 'document':
+            return result.filter(i => i.tokenType === TokenType.document);
+        
+        case 'email':
+            return result.filter(i => i.tokenType === TokenType.email);
+        
+        case 'all':
+        default:
+            return result;
+    }
+});
+
+    onUserFilterChange(newFilter: FilterValue) {
+        this.currentUserFilter.set(newFilter);
+    }
+
+    onTypeFilterChange(newFilter: FilterValue) {
+        this.currentTypeFilter.set(newFilter);
     }
 
     onIncidentSelected(incident: IncidentModel) {

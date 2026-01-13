@@ -1,14 +1,24 @@
 @let incidents = this.incidents();
 
 <div class="page-container">
-    <io-incidents-filter (filterChanged)="filterChange.emit($event)"></io-incidents-filter>
+    <io-incidents-filter [filterOptions]="filterUserOptions" filterTitle="User" (filterChanged)="filterUserChange.emit($event)"></io-incidents-filter>
+
+    <io-incidents-filter [filterOptions]="filterTypeOptions" filterTitle="Type" (filterChanged)="filterTypeChange.emit($event)"></io-incidents-filter>
 
     <br>
     <br>
 
+    @if (incidents?.length === 0) {
+        <div class="no-results">
+            <mat-icon>info</mat-icon>
+            <p>No incidents found matching the selected filters.</p>
+        </div>
+    }
+    @else {
+        <io-incidents-list
+            [incidents]="incidents"
+            (incidentSelected)="onIncidentClicked($event)"
+        ></io-incidents-list>
+    }
 
-    <io-incidents-list
-        [incidents]="incidents"
-        (incidentSelected)="onIncidentClicked($event)"
-    ></io-incidents-list>
 </div>
