@@ -109,3 +109,37 @@ CREATE INDEX IX_Activities_Entity ON Activities(ActivityEntityId, ActivityEntity
 
 CREATE INDEX IX_Tokens_Type ON Tokens(TokenType);
 CREATE INDEX IX_Subjects_RiskScore ON Subjects(SubjectRiskScore);
+
+
+
+----------------------
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+
+[ApiController]
+[Route("api/[controller]")]
+public class HealthController : ControllerBase
+{
+    private readonly IConfiguration _config;
+
+    public HealthController(IConfiguration config)
+    {
+        _config = config;
+    }
+
+    [HttpGet("db-test")]
+    public async Task<IActionResult> TestDb()
+    {
+        try
+        {
+            using var conn = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+            return Ok("Database connection successful");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+}
