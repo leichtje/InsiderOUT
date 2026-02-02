@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, output, Output } from '@angular/core';
 import { IncidentModel } from '../../../../models/incidents.model';
 import { IncidentsListComponent } from "../../incidents-list/incidents-list.component";
-import { IncidentsFilterComponent } from "../../incidents-filter/incidents-filter.component";
 import { FilterOptionModel, FilterValue } from '../../../../models/filter.model';
 import { MatIcon } from "@angular/material/icon";
+import { FilterComponent } from '../../../../fragments/incidents-filter/filter.component';
 
 @Component({
     selector: 'io-incidents-open-view',
@@ -14,7 +14,7 @@ import { MatIcon } from "@angular/material/icon";
     imports: [
     CommonModule,
     IncidentsListComponent,
-    IncidentsFilterComponent,
+    FilterComponent,
     MatIcon
 ]
 })

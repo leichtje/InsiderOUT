@@ -1,9 +1,9 @@
 @let incidents = this.incidents();
 
 <div class="page-container">
-    <io-incidents-filter [filterOptions]="filterUserOptions" filterTitle="User" (filterChanged)="filterUserChange.emit($event)"></io-incidents-filter>
+    <io-filter [filterOptions]="filterUserOptions" filterTitle="User" (filterChanged)="filterUserChange.emit($event)"></io-filter>
 
-    <io-incidents-filter [filterOptions]="filterTypeOptions" filterTitle="Type" (filterChanged)="filterTypeChange.emit($event)"></io-incidents-filter>
+    <io-filter [filterOptions]="filterTypeOptions" filterTitle="Type" (filterChanged)="filterTypeChange.emit($event)"></io-filter>
 
     <br>
     <br>
