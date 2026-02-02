@@ -1,0 +1,111 @@
+-- Create Users 
+CREATE TABLE Users (
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserFirstName NVARCHAR(100) NOT NULL,
+    UserLastName NVARCHAR(100) NOT NULL,
+    UserEmail NVARCHAR(255) NOT NULL UNIQUE,
+    UserPhone NVARCHAR(50) NULL,
+    UserDepartment NVARCHAR(100) NULL
+);
+
+
+-- Create Subjects Table
+CREATE TABLE Subjects (
+    SubjectId INT IDENTITY(1,1) PRIMARY KEY,
+    SubjectFirstName NVARCHAR(100) NOT NULL,
+    SubjectLastName NVARCHAR(100) NOT NULL,
+    SubjectEmail NVARCHAR(255) NOT NULL,
+    SubjectPhone NVARCHAR(50) NULL,
+    SubjectDepartment NVARCHAR(100) NULL,
+    SubjectRole NVARCHAR(100) NULL,
+    SubjectRiskScore INT NOT NULL
+);
+
+
+-- Create Tokens
+CREATE TABLE Tokens (
+    TokenId INT IDENTITY(1,1) PRIMARY KEY,
+    TokenType NVARCHAR(50) NOT NULL,        -- document | email
+    TokenSeverity NVARCHAR(50) NOT NULL     -- Low | Medium | High
+);
+
+
+
+--Create Documents Table
+CREATE TABLE Documents (
+    DocumentId INT IDENTITY(1,1) PRIMARY KEY,
+    DocumentTokenId INT NOT NULL,
+    DocumentName NVARCHAR(255) NOT NULL,
+    DocumentLocation NVARCHAR(500) NOT NULL,
+
+    CONSTRAINT FK_Documents_Tokens FOREIGN KEY (DocumentTokenId)
+        REFERENCES Tokens(TokenId)
+        ON DELETE CASCADE
+);
+
+
+-- Create Email Table
+CREATE TABLE Emails (
+    EmailId INT IDENTITY(1,1) PRIMARY KEY,
+    EmailTokenId INT NOT NULL,
+    EmailSubject NVARCHAR(255) NOT NULL,
+
+    CONSTRAINT FK_Emails_Tokens FOREIGN KEY (EmailTokenId)
+        REFERENCES Tokens(TokenId)
+        ON DELETE CASCADE
+);
+
+
+
+--Create Incidents Table
+CREATE TABLE Incidents (
+    IncidentId INT IDENTITY(1,1) PRIMARY KEY,
+    IncidentTitle NVARCHAR(255) NOT NULL,
+    IncidentDescription NVARCHAR(MAX) NOT NULL,
+    IncidentCreatedDate DATETIME2 NOT NULL,
+    IncidentUpdatedDate DATETIME2 NOT NULL,
+    IncidentAgent NVARCHAR(255) NOT NULL,
+
+    IncidentTokenId INT NOT NULL,
+    IncidentTokenType NVARCHAR(50) NOT NULL,
+    IncidentStatus NVARCHAR(50) NOT NULL,
+
+    IncidentAssignedUserId INT NULL,
+    IncidentTiedSubjectId INT NULL,
+
+    CONSTRAINT FK_Incidents_Tokens FOREIGN KEY (IncidentTokenId)
+        REFERENCES Tokens(TokenId),
+
+    CONSTRAINT FK_Incidents_Users FOREIGN KEY (IncidentAssignedUserId)
+        REFERENCES Users(UserId),
+
+    CONSTRAINT FK_Incidents_Subjects FOREIGN KEY (IncidentTiedSubjectId)
+        REFERENCES Subjects(SubjectId)
+);
+
+
+-- Create Activiites 
+CREATE TABLE Activities (
+    ActivityId INT IDENTITY(1,1) PRIMARY KEY,
+    ActivityContent NVARCHAR(MAX) NOT NULL,
+    ActivityDate DATETIME2 NOT NULL,
+
+    ActivityEntityId INT NOT NULL,
+    ActivityEntityType NVARCHAR(50) NOT NULL,   -- INCIDENT, etc.
+
+    ActivityUserId INT NULL,
+
+    CONSTRAINT FK_Activities_Users FOREIGN KEY (ActivityUserId)
+        REFERENCES Users(UserId)
+);
+
+
+-- Indexes
+CREATE INDEX IX_Incidents_TokenId ON Incidents(IncidentTokenId);
+CREATE INDEX IX_Incidents_AssignedUserId ON Incidents(IncidentAssignedUserId);
+CREATE INDEX IX_Incidents_TiedSubjectId ON Incidents(IncidentTiedSubjectId);
+
+CREATE INDEX IX_Activities_Entity ON Activities(ActivityEntityId, ActivityEntityType);
+
+CREATE INDEX IX_Tokens_Type ON Tokens(TokenType);
+CREATE INDEX IX_Subjects_RiskScore ON Subjects(SubjectRiskScore);
