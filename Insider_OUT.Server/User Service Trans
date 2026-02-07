@@ -2,14 +2,14 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, map, tap, catchError } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { UserModel, UserDto } from '../models/profile.model';
+import { UserModel } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiBase = environment.apiUrl;
+  // Use relative endpoints so no environment.apiUrl is required
+  private usersEndpoint = '/api/users';
 
   private currentUserSignal = signal<UserModel | null>(null);
   private usersSignal = signal<UserModel[]>([]);
@@ -19,23 +19,22 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  // Map server DTO -> client model (adjust if your DTO differs)
-  private mapDtoToModel(dto: UserDto): UserModel {
+  // Flexible mapper: accepts either prefixed server fields or client fields
+  private mapServerToModel(server: any): UserModel {
     return {
-      userId: dto.userId,
-      firstName: dto.userFirstName,
-      lastName: dto.userLastName,
-      email: dto.userEmail,
-      phone: dto.userPhone ?? undefined,
-      department: dto.userDepartment ?? undefined
+      userId: server.userId ?? server.UserId ?? server.id ?? 0,
+      firstName: server.userFirstName ?? server.UserFirstName ?? server.firstName ?? server.FirstName ?? '',
+      lastName: server.userLastName ?? server.UserLastName ?? server.lastName ?? server.LastName ?? '',
+      email: server.userEmail ?? server.userEmail ?? server.email ?? server.Email ?? '',
+      phone: server.userPhone ?? server.userPhone ?? server.phone ?? server.Phone ?? undefined,
+      department: server.userDepartment ?? server.userDepartment ?? server.department ?? server.Department ?? undefined
     };
   }
 
   // Load all users from backend and update the signal
   public loadUsers(): Observable<UserModel[]> {
-    const url = `${this.apiBase}/api/users`;
-    return this.http.get<UserDto[]>(url).pipe(
-      map(dtos => dtos.map(d => this.mapDtoToModel(d))),
+    return this.http.get<any[]>(this.usersEndpoint).pipe(
+      map(items => items.map(i => this.mapServerToModel(i))),
       tap(users => this.usersSignal.set(users)),
       catchError(err => {
         console.error('Failed to load users', err);
@@ -49,9 +48,8 @@ export class UserService {
     const cached = this.usersSignal().find(u => u.userId === id);
     if (cached) return of(cached);
 
-    const url = `${this.apiBase}/api/users/${id}`;
-    return this.http.get<UserDto>(url).pipe(
-      map(dto => this.mapDtoToModel(dto)),
+    return this.http.get<any>(`${this.usersEndpoint}/${id}`).pipe(
+      map(item => this.mapServerToModel(item)),
       tap(user => {
         if (user) {
           const list = [...this.usersSignal()];
