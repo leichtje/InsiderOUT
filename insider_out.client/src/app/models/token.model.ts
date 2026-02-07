@@ -5,7 +5,7 @@ export enum TokenType {
 
 export interface TokenModel {
     type: TokenType;
-    severity: TokenSeverity;
+    severity: TokenSensitivity;
 }
 
 export interface DocumentModel extends TokenModel {
@@ -24,7 +24,7 @@ export interface EmailModel extends TokenModel {
 export type Token = DocumentModel | EmailModel;
 
 
-export enum TokenSeverity {
+export enum TokenSensitivity {
     Low = 'Low',
     Medium = 'Medium',
     High = 'High',

@@ -1,0 +1,45 @@
+<div class="select-container">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+
+        @if (label()) {
+            <mat-label>{{ label() }}</mat-label>
+        }
+
+        @if (labelIcon()) {
+            <mat-icon matPrefix>{{ labelIcon() }}</mat-icon>
+        }
+
+        <mat-select 
+            [value]="value()" 
+            [disabled]="isDisabled()"
+            [required]="required()"
+            [errorStateMatcher]="matcher"
+            (selectionChange)="onSelectionChange($event)"
+            (openedChange)="onTouched()" 
+            panelClass="pill-select-panel">
+
+            <mat-select-trigger>
+                <io-pill 
+                    [pill]="value()" 
+                    [varMap]="varMap()" 
+                    [textMap]="textMap()">
+                </io-pill>
+            </mat-select-trigger>
+
+            @for (option of options(); track option) {
+                <mat-option [value]="option">
+                    <io-pill 
+                        [pill]="option" 
+                        [varMap]="varMap()" 
+                        [textMap]="textMap()">
+                    </io-pill>
+                </mat-option>
+            }
+
+        </mat-select>
+
+        
+        <mat-error>{{label()}} is required</mat-error>
+
+    </mat-form-field>
+</div>

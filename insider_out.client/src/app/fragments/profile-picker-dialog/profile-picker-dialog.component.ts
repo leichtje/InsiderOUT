@@ -11,6 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
+import { IncidentsListComponent } from "../dialog/dialog-header/dialog-header.component";
 
 export interface ProfilePickerData {
     title: string;
@@ -23,17 +24,18 @@ export interface ProfilePickerData {
     selector: 'io-profile-picker-dialog',
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatDialogModule, 
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule, 
-        MatIconModule,
-        MatListModule,
-        ProfileAvatarComponent,
-        ProfileCardComponent
-    ],
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
+    ProfileAvatarComponent,
+    ProfileCardComponent,
+    IncidentsListComponent
+],
     templateUrl: './profile-picker-dialog.component.html',
     styleUrl: './profile-picker-dialog.component.scss'
 })

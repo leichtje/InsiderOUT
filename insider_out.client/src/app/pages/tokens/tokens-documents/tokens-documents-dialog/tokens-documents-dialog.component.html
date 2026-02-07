@@ -1,0 +1,55 @@
+<io-dialog-header
+    [title]="'Create Document'"
+    (close)="onCancel()"
+    >
+</io-dialog-header>
+
+<mat-dialog-content class="dialog-content">
+    
+    <form [formGroup]="documentForm" class="document-form">
+
+        <div class="document-control">
+            <mat-icon matTooltip="A Subject is the Employee which likely triggered the incident, and therefore is tied to it." class="info">info</mat-icon>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Description</mat-label>
+                <mat-icon matPrefix>description</mat-icon>
+                <textarea matInput formControlName="description" autoFocus></textarea>
+
+                <mat-error>Description is required</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="document-control">
+            <mat-icon matTooltip="A Subject is the Employee which likely triggered the incident, and therefore is tied to it." class="info">info</mat-icon>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Intended Audience</mat-label>
+                <mat-icon matPrefix>people</mat-icon>
+                <input matInput formControlName="audience">
+
+                <mat-error>Audience is required</mat-error>
+            </mat-form-field>
+        </div>
+
+
+        <div class="document-control">
+            <mat-icon matTooltip="A Subject is the Employee which likely triggered the incident, and therefore is tied to it." class="info">info</mat-icon>
+            <io-pill-select
+                [options]="sensitivityOptions"
+                [varMap]="sensitivityColors"
+                [textMap]="sensitivityText"
+                [label]="'Sensitivity Level'"
+                [labelIcon]="'assignment_late'"
+                formControlName="sensitivity">
+            </io-pill-select>
+        </div>
+
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="flat" (click)="onCancel()">Cancel</button>
+    <button type="button" (click)="onConfirm()">Generate Document</button>
+    <!-- need to disable if invalid -->
+    <!-- need to preview doc first before generating -->
+</mat-dialog-actions>

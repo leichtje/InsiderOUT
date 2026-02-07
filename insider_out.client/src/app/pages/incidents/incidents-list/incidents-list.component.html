@@ -96,7 +96,11 @@
 
                 <div class="incident-card__user">
                     <div class="incident-card__title">
-                        <io-incident-status [pill]="vm.incident.status"></io-incident-status>
+                        <io-pill 
+                            [pill]="vm.incident.status"
+                            [varMap]="statusColors"
+                            [textMap]="statusText">
+                        </io-pill>
                     </div>
 
                     <div class="divider"></div>

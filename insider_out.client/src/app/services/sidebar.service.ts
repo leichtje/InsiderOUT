@@ -15,7 +15,6 @@ export class NavigationService {
     {
         title: "Incidents",
         icon: "policy_alert",
-        route: "/incidents", 
         subpages: [
             { title: "Open", route: "/incidents/open" },
             { title: "Closed", route: "/incidents/closed" }
@@ -24,16 +23,18 @@ export class NavigationService {
     { 
         title: "Tokens",
         icon: "create_new_folder",
-        route: "/tokens",
         subpages: [
             { title: "Documents", route: "/tokens/documents" },
             { title: "Emails", route: "/tokens/emails" }
         ] 
     },
     { 
-        title: "Profiles",
-        icon: "account_box",
-        route: "/profiles"
+        title: "Settings",
+        icon: "settings",
+        subpages: [
+            { title: "Profiles", route: "/settings/profiles" },
+            { title: "Company", route: "/settings/company" }
+        ] 
     },
     ];
 

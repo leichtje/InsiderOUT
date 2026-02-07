@@ -104,8 +104,12 @@
                                 <div class="info-grid">
                                     
                                     <span class="sub-label">Severity</span> 
-                                    <io-token-severity [pill]="token?.severity"></io-token-severity>
-                                    
+                                    <io-pill 
+                                        [pill]="token?.severity"
+                                        [varMap]="sensitivityColors"
+                                        [textMap]="sensitivityText">
+                                    </io-pill>
+
                                     @if (tokenAsDocument; as doc) {
                                         <span class="sub-label">Title</span>
                                         <span>{{ doc.name }}</span>
@@ -165,10 +169,12 @@
                             <div class="select">
                                 <span class="label">Status</span>
 
-                                <io-status-select
-                                    formControlName="status"
-                                    [options]="statusOptions">
-                                </io-status-select>
+                                <io-pill-select
+                                    [options]="statusOptions"
+                                    [varMap]="statusColors"
+                                    [textMap]="statusText"
+                                    formControlName="status">
+                                </io-pill-select>
                             </div>
 
                             <div class="select">

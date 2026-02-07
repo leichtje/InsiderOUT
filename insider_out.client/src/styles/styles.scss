@@ -175,15 +175,22 @@ button {
     }
 
     &:has(mat-icon) {
-        border-radius: 50%;
         padding: 5px;
         display: flex;
         align-items: center;
+        gap: 5px;
+
+        &:not(:has(span)) {
+            border-radius: 50%;
+        }
 
         mat-icon {
             width: 20px;
             height: 20px;
             font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
     }

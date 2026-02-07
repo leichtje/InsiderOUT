@@ -5,19 +5,20 @@ import { UserService } from '../../../services/user.service';
 import { IncidentModel, IncidentViewModel } from '../../../models/incidents.model';
 import { TokenType } from '../../../models/token.model';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, forkJoin, map, of, Subject, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { SubjectService } from '../../../services/subject.service';
 import { MatIcon } from "@angular/material/icon";
-import { StatusComponent } from "../../../fragments/pill/incident-status.component";
+import { status_colors, status_text } from "../../../fragments/pill/incident-status-constants";
 import { BreakpointService } from '../../../services/breakpoint.service';
 import { TokenService } from '../../../services/token.service';
+import { PillComponent } from '../../../fragments/pill/pill.component';
 
 @Component({
     selector: 'io-incidents-list',
     templateUrl: './incidents-list.component.html',
     styleUrl: './incidents-list.component.scss',
     standalone: true,
-    imports: [CommonModule, ProfileAvatarComponent, MatIcon, StatusComponent]
+    imports: [CommonModule, ProfileAvatarComponent, MatIcon, PillComponent]
 })
 export class IncidentsListComponent {
 
@@ -27,6 +28,9 @@ export class IncidentsListComponent {
     protected tokenType = TokenType;
 
     incidents = input<IncidentModel[]>();
+
+    statusColors = status_colors;
+    statusText = status_text;
 
     @Output() incidentSelected = new EventEmitter<IncidentModel>();
 
