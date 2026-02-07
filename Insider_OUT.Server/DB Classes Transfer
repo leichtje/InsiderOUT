@@ -1,0 +1,369 @@
+--User 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InsiderOUT.Data.Models.Identity
+{
+    [Table("Users")]
+    public class User
+    {
+        [Key]
+        [Column("UserId")]
+        public int UserId { get; set; }
+
+        [Required, MaxLength(100)]
+        [Column("UserFirstName")]
+        public string UserFirstName { get; set; }
+
+        [Required, MaxLength(100)]
+        [Column("UserLastName")]
+        public string UserLastName { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("UserEmail")]
+        public string UserEmail { get; set; }
+
+        [MaxLength(50)]
+        [Column("UserPhone")]
+        public string UserPhone { get; set; }
+
+        [MaxLength(100)]
+        [Column("UserDepartment")]
+        public string UserDepartment { get; set; }
+    }
+}
+
+
+
+--Subjects 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InsiderOUT.Data.Models.Identity
+{
+    [Table("Subjects")]
+    public class Subject
+    {
+        [Key]
+        [Column("SubjectId")]
+        public int SubjectId { get; set; }
+
+        [Required, MaxLength(100)]
+        [Column("SubjectFirstName")]
+        public string SubjectFirstName { get; set; }
+
+        [Required, MaxLength(100)]
+        [Column("SubjectLastName")]
+        public string SubjectLastName { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("SubjectEmail")]
+        public string SubjectEmail { get; set; }
+
+        [MaxLength(50)]
+        [Column("SubjectPhone")]
+        public string SubjectPhone { get; set; }
+
+        [MaxLength(100)]
+        [Column("SubjectDepartment")]
+        public string SubjectDepartment { get; set; }
+
+        [MaxLength(100)]
+        [Column("SubjectRole")]
+        public string SubjectRole { get; set; }
+
+        [Column("SubjectRiskScore")]
+        public int SubjectRiskScore { get; set; }
+    }
+}
+
+
+
+
+
+--Tokens
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InsiderOUT.Data.Models.Tokens
+{
+    [Table("Tokens")]
+    public class Token
+    {
+        [Key]
+        [Column("TokenId")]
+        public int TokenId { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("TokenType")]
+        public string TokenType { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("TokenSeverity")]
+        public string TokenSeverity { get; set; }
+
+        // Navigation properties for subtypes (one-to-one)
+        public Document Document { get; set; }
+        public Email Email { get; set; }
+    }
+}
+
+
+--Document 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InsiderOUT.Data.Models.Tokens
+{
+    [Table("Documents")]
+    public class Document
+    {
+        [Key]
+        [Column("DocumentId")]
+        public int DocumentId { get; set; }
+
+        [Required]
+        [Column("DocumentTokenId")]
+        public int DocumentTokenId { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("DocumentName")]
+        public string DocumentName { get; set; }
+
+        [Required, MaxLength(500)]
+        [Column("DocumentLocation")]
+        public string DocumentLocation { get; set; }
+
+        [ForeignKey(nameof(DocumentTokenId))]
+        public Token Token { get; set; }
+    }
+}
+
+
+--Email
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InsiderOUT.Data.Models.Tokens
+{
+    [Table("Emails")]
+    public class Email
+    {
+        [Key]
+        [Column("EmailId")]
+        public int EmailId { get; set; }
+
+        [Required]
+        [Column("EmailTokenId")]
+        public int EmailTokenId { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("EmailSubject")]
+        public string EmailSubject { get; set; }
+
+        [ForeignKey(nameof(EmailTokenId))]
+        public Token Token { get; set; }
+    }
+}
+
+
+
+--Incident 
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using InsiderOUT.Data.Models.Identity;
+using InsiderOUT.Data.Models.Tokens;
+
+namespace InsiderOUT.Data.Models.Incidents
+{
+    [Table("Incidents")]
+    public class Incident
+    {
+        [Key]
+        [Column("IncidentId")]
+        public int IncidentId { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("IncidentTitle")]
+        public string IncidentTitle { get; set; }
+
+        [Required]
+        [Column("IncidentDescription")]
+        public string IncidentDescription { get; set; }
+
+        [Required]
+        [Column("IncidentCreatedDate")]
+        public DateTime IncidentCreatedDate { get; set; }
+
+        [Required]
+        [Column("IncidentUpdatedDate")]
+        public DateTime IncidentUpdatedDate { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("IncidentAgent")]
+        public string IncidentAgent { get; set; }
+
+        [Required]
+        [Column("IncidentTokenId")]
+        public int IncidentTokenId { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("IncidentTokenType")]
+        public string IncidentTokenType { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("IncidentStatus")]
+        public string IncidentStatus { get; set; }
+
+        [Column("IncidentAssignedUserId")]
+        public int? IncidentAssignedUserId { get; set; }
+
+        [Column("IncidentTiedSubjectId")]
+        public int? IncidentTiedSubjectId { get; set; }
+
+        [ForeignKey(nameof(IncidentAssignedUserId))]
+        public User AssignedUser { get; set; }
+
+        [ForeignKey(nameof(IncidentTiedSubjectId))]
+        public Subject TiedSubject { get; set; }
+
+        [ForeignKey(nameof(IncidentTokenId))]
+        public Token Token { get; set; }
+    }
+}
+
+
+--Activity
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using InsiderOUT.Data.Models.Identity;
+
+namespace InsiderOUT.Data.Models.Incidents
+{
+    [Table("Activities")]
+    public class Activity
+    {
+        [Key]
+        [Column("ActivityId")]
+        public int ActivityId { get; set; }
+
+        [Required]
+        [Column("ActivityContent")]
+        public string ActivityContent { get; set; }
+
+        [Required]
+        [Column("ActivityDate")]
+        public DateTime ActivityDate { get; set; }
+
+        [Required]
+        [Column("ActivityEntityId")]
+        public int ActivityEntityId { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("ActivityEntityType")]
+        public string ActivityEntityType { get; set; }
+
+        [Column("ActivityUserId")]
+        public int? ActivityUserId { get; set; }
+
+        [ForeignKey(nameof(ActivityUserId))]
+        public User User { get; set; }
+    }
+}
+
+
+
+--DBContext Update
+
+using Microsoft.EntityFrameworkCore;
+using InsiderOUT.Data.Models.Identity;
+using InsiderOUT.Data.Models.Tokens;
+using InsiderOUT.Data.Models.Incidents;
+
+namespace InsiderOUT.Data
+{
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Token> Tokens { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<Email> Emails { get; set; }
+        public DbSet<Incident> Incidents { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Token -> Document (one-to-one)
+            modelBuilder.Entity<Token>()
+                .HasOne(t => t.Document)
+                .WithOne(d => d.Token)
+                .HasForeignKey<Document>(d => d.DocumentTokenId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Token -> Email (one-to-one)
+            modelBuilder.Entity<Token>()
+                .HasOne(t => t.Email)
+                .WithOne(e => e.Token)
+                .HasForeignKey<Email>(e => e.EmailTokenId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Incident relationships
+            modelBuilder.Entity<Incident>()
+                .HasOne(i => i.AssignedUser)
+                .WithMany()
+                .HasForeignKey(i => i.IncidentAssignedUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Incident>()
+                .HasOne(i => i.TiedSubject)
+                .WithMany()
+                .HasForeignKey(i => i.IncidentTiedSubjectId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Incident>()
+                .HasOne(i => i.Token)
+                .WithMany()
+                .HasForeignKey(i => i.IncidentTokenId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Activity -> User
+            modelBuilder.Entity<Activity>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.ActivityUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Indexes (match existing DB)
+            modelBuilder.Entity<Incident>()
+                .HasIndex(i => i.IncidentTokenId)
+                .HasDatabaseName("IX_Incidents_TokenId");
+
+            modelBuilder.Entity<Incident>()
+                .HasIndex(i => i.IncidentAssignedUserId)
+                .HasDatabaseName("IX_Incidents_AssignedUserId");
+
+            modelBuilder.Entity<Incident>()
+                .HasIndex(i => i.IncidentTiedSubjectId)
+                .HasDatabaseName("IX_Incidents_TiedSubjectId");
+
+            modelBuilder.Entity<Activity>()
+                .HasIndex(a => new { a.ActivityEntityId, a.ActivityEntityType })
+                .HasDatabaseName("IX_Activities_Entity");
+
+            modelBuilder.Entity<Token>()
+                .HasIndex(t => t.TokenType)
+                .HasDatabaseName("IX_Tokens_Type");
+
+            modelBuilder.Entity<Subject>()
+                .HasIndex(s => s.SubjectRiskScore)
+                .HasDatabaseName("IX_Subjects_RiskScore");
+
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+}
