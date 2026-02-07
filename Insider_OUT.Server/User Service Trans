@@ -1,0 +1,78 @@
+// src/app/services/user.service.ts
+import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, map, tap, catchError } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { UserModel, UserDto } from '../models/profile.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  private apiBase = environment.apiUrl;
+
+  private currentUserSignal = signal<UserModel | null>(null);
+  private usersSignal = signal<UserModel[]>([]);
+
+  public currentUser = this.currentUserSignal.asReadonly();
+  public users = this.usersSignal.asReadonly();
+
+  constructor(private http: HttpClient) {}
+
+  // Map server DTO -> client model (adjust if your DTO differs)
+  private mapDtoToModel(dto: UserDto): UserModel {
+    return {
+      userId: dto.userId,
+      firstName: dto.userFirstName,
+      lastName: dto.userLastName,
+      email: dto.userEmail,
+      phone: dto.userPhone ?? undefined,
+      department: dto.userDepartment ?? undefined
+    };
+  }
+
+  // Load all users from backend and update the signal
+  public loadUsers(): Observable<UserModel[]> {
+    const url = `${this.apiBase}/api/users`;
+    return this.http.get<UserDto[]>(url).pipe(
+      map(dtos => dtos.map(d => this.mapDtoToModel(d))),
+      tap(users => this.usersSignal.set(users)),
+      catchError(err => {
+        console.error('Failed to load users', err);
+        return of([]);
+      })
+    );
+  }
+
+  // Get single user by id (cache-first, then backend)
+  public getUserById(id: number): Observable<UserModel | undefined> {
+    const cached = this.usersSignal().find(u => u.userId === id);
+    if (cached) return of(cached);
+
+    const url = `${this.apiBase}/api/users/${id}`;
+    return this.http.get<UserDto>(url).pipe(
+      map(dto => this.mapDtoToModel(dto)),
+      tap(user => {
+        if (user) {
+          const list = [...this.usersSignal()];
+          if (!list.some(u => u.userId === user.userId)) list.push(user);
+          this.usersSignal.set(list);
+        }
+      }),
+      catchError(err => {
+        console.error(`Failed to load user ${id}`, err);
+        return of(undefined);
+      })
+    );
+  }
+
+  public setCurrentUser(user: UserModel | null) {
+    this.currentUserSignal.set(user);
+  }
+
+  public isCurrentUser(profile: UserModel | { userId?: number }): boolean {
+    const current = this.currentUserSignal();
+    if (!current) return false;
+    return ('userId' in profile) && profile.userId === current.userId;
+  }
+}
