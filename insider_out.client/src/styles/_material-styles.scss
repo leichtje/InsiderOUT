@@ -169,9 +169,12 @@ mat-nav-list {
 }
 
 .mat-mdc-dialog-actions {
+    gap: 10px;
+
     .buttons {
         display: flex;
     }
+
     &:has(.steps) {
         justify-content: space-between !important;
     }

@@ -7,7 +7,6 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
-import { ProfilePickerDialogComponent } from "../../../../fragments/profile-picker-dialog/profile-picker-dialog.component";
 import { sensitivity_colors, sensitivity_text } from "../../../../fragments/pill/token-sensitivity-constants";
 import { TokenSensitivity } from "../../../../models/token.model";
 import { PillSelectComponent } from "../../../../fragments/pill-select/pill-select.component";
@@ -45,7 +44,7 @@ export interface TokensDocumentsDialogData {
 })
 export class TokensDocumentsDialogComponent {
     
-    private dialogRef = inject(MatDialogRef<ProfilePickerDialogComponent>);
+    private dialogRef = inject(MatDialogRef<TokensDocumentsDialogComponent>);
     public data = inject<TokensDocumentsDialogData>(MAT_DIALOG_DATA);
     private fb = inject(FormBuilder);
 
@@ -134,6 +133,10 @@ export class TokensDocumentsDialogComponent {
         setTimeout(() => {
             this.isLoading$.set(false);
         }, 10000);
+    }
+
+    onDownload() {
+        
     }
 
     onBack() {

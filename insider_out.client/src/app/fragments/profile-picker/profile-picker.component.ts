@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProfilePickerDialogComponent, ProfilePickerData } from '../profile-picker-dialog/profile-picker-dialog.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { UserService } from '../../services/user.service';
+import { ResponsiveDialogService } from '../../services/responsive-dialog.service';
 
 @Component({
     selector: 'io-profile-picker',
@@ -21,7 +22,7 @@ import { UserService } from '../../services/user.service';
     }]
 })
 export class ProfilePickerComponent implements ControlValueAccessor {
-    private dialog = inject(MatDialog);
+private dialog = inject(ResponsiveDialogService);
     private userService = inject(UserService);
 
     label = input.required<string>();
