@@ -18,10 +18,10 @@ export interface SubjectModel extends ProfileModel {
 }
 
 export interface UserDto {
-    UserId: number;
-    UserFirstName: string;
-    UserLastName: string;
-    UserEmail: string;
-    UserPhone?: string;
-    UserDepartment?: string;
+    userId: number;
+    userFirstName: string;
+    userLastName: string;
+    userEmail: string;
+    userPhone?: string;
+    userDepartment?: string;
 }

@@ -25,12 +25,12 @@ type UserState = {
 
 export function mapUser(dto: UserDto): UserModel {
     return {
-        userId: dto.UserId,
-        firstName: dto.UserFirstName,
-        lastName: dto.UserLastName,
-        email: dto.UserEmail,
-        phone: dto.UserPhone,
-        department: dto.UserDepartment
+        userId: dto.userId,
+        firstName: dto.userFirstName, 
+        lastName: dto.userLastName,
+        email: dto.userEmail,
+        phone: dto.userPhone,
+        department: dto.userDepartment
     };
 }
 
