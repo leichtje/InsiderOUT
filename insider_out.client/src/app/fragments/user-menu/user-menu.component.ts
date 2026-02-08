@@ -5,9 +5,7 @@ import { BidiModule } from "@angular/cdk/bidi";
 import { MatIcon } from "@angular/material/icon";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
-import { UserModel } from "../../models/profile.model";
-import { Observable } from "rxjs";
-import { UserService } from "../../services/user.service";
+import { UserStore } from "../../stores/user.store";
 
 @Component({
     selector:'io-user-menu',
@@ -28,8 +26,7 @@ export class UserMenuComponent {
 
     isUserMenuOpen = input<boolean>();
 
-
-    protected userService = inject(UserService);
+    protected userStore = inject(UserStore); 
     
     constructor(public breakpointService: BreakpointService) {}
     

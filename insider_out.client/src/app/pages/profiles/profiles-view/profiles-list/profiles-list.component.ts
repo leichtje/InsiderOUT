@@ -2,7 +2,7 @@
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
-import { UserService } from '../../../../services/user.service';
+import { UserStore } from '../../../../stores/user.store';
 
 @Component({
     selector: 'io-profiles-list',
@@ -12,8 +12,7 @@ import { UserService } from '../../../../services/user.service';
     imports: [ProfileAvatarComponent]
 })
 export class ProfilesListComponent {
-
-    protected userService = inject(UserService);
+    protected userStore = inject(UserStore);
 
     profiles = input<UserModel[] | SubjectModel[]>();
     title = input<string>();

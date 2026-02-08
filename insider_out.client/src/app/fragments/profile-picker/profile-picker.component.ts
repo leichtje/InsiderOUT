@@ -1,13 +1,12 @@
 import { Component, input, forwardRef, signal, computed, inject } from '@angular/core';
 
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ProfilePickerDialogComponent, ProfilePickerData } from '../profile-picker-dialog/profile-picker-dialog.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
-import { UserService } from '../../services/user.service';
 import { ResponsiveDialogService } from '../../services/responsive-dialog.service';
+import { UserStore } from '../../stores/user.store';
 
 @Component({
     selector: 'io-profile-picker',
@@ -23,7 +22,7 @@ import { ResponsiveDialogService } from '../../services/responsive-dialog.servic
 })
 export class ProfilePickerComponent implements ControlValueAccessor {
 private dialog = inject(ResponsiveDialogService);
-    private userService = inject(UserService);
+    protected userStore = inject(UserStore); 
 
     label = input.required<string>();
     items = input.required<any[]>();
@@ -64,11 +63,11 @@ private dialog = inject(ResponsiveDialogService);
         });
 
         dialogRef.afterClosed().subscribe(result => {
-        if (result !== undefined) {
-            const newId = result ? result[this.idKey()] : null;
-            this.value.set(newId);
-            this.onChange(newId);
-        }
+            if (result !== undefined) {
+                const newId = result ? result[this.idKey()] : null;
+                this.value.set(newId);
+                this.onChange(newId);
+            }
         });
     }
 
@@ -81,7 +80,7 @@ private dialog = inject(ResponsiveDialogService);
     assignToMe(event: Event) {
         event.stopPropagation(); 
         
-        const currentUser = this.userService.currentUser();
+        const currentUser = this.userStore.currentUser();
         if (!currentUser) return;
 
         const myId = currentUser.userId; 

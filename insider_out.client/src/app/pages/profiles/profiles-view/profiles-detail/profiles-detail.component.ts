@@ -1,45 +1,51 @@
-import { Component, inject } from "@angular/core";
-import { switchMap } from "rxjs";
+import { Component, computed, effect, inject } from "@angular/core";
 import { SubjectService } from "../../../../services/subject.service";
-import { UserService } from "../../../../services/user.service";
 import { ActivatedRoute } from "@angular/router";
-import { AsyncPipe } from "@angular/common";
 import { ProfileCardComponent } from "../../../../fragments/profile-card/profile-card.component";
-import { SubjectModel, UserModel } from "../../../../models/profile.model";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { UserStore } from "../../../../stores/user.store";
 
 @Component({
     selector:'io-profiles-detail',
     templateUrl:'profiles-detail.component.html',
     standalone:true,
-    imports: [AsyncPipe, ProfileCardComponent]
+    imports: [ ProfileCardComponent]
 })
 
 export class ProfilesDetailComponent {
-
     private route = inject(ActivatedRoute);
-    protected userService = inject(UserService);
+    
+    protected userStore = inject(UserStore);
     private subjectService = inject(SubjectService);
 
-    protected currentUser = this.userService.currentUser;
+    private params = toSignal(this.route.paramMap);
+    private url = toSignal(this.route.url);
 
-    profile$ = this.route.paramMap.pipe(
-        switchMap(params => {
-            const id = +params.get('id')!;
-            const type = this.route.snapshot.url[0].path; 
+    constructor() {
+        effect(() => {
+            const p = this.params();
+            const u = this.url();
+            
+            if (!p || !u) return;
+
+            const id = +p.get('id')!;
+            const type = u[0].path;
 
             if (type === 'user') {
-                return this.userService.getUserById(id);
+                this.userStore.selectUser(id);
             } else {
-                return this.subjectService.getSubjectById(id);
+                this.subjectService.getSubjectById(id).subscribe(); 
             }
-        })
-    );
-
-    profile = toSignal(this.profile$, { initialValue: null });
-
-    isSubject(profile: UserModel | SubjectModel): boolean {
-        return 'subjectId' in profile;
+        });
     }
 
+    currentProfile = computed(() => {
+        const url = this.url();
+        if (url?.[0].path === 'user') {
+            return this.userStore.selectedUser();
+        } 
+            return null; 
+    });
+
+    isLoading = this.userStore.isLoading;
 }
