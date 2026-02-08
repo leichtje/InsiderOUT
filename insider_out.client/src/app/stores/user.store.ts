@@ -33,7 +33,7 @@ export const UserStore = signalStore(
     })),
 
     withMethods((store, http = inject(HttpClient)) => {
-        const apiUrl = 'https://localhost:7000/api/users';
+        const apiUrl = 'https://localhost:7244/api/users';
 
         return {
             
@@ -59,7 +59,7 @@ export const UserStore = signalStore(
             loadAll: rxMethod<void>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
-                    switchMap(() => http.get<UserModel[]>('https://localhost:7000/api/users').pipe(
+                    switchMap(() => http.get<UserModel[]>(apiUrl).pipe(
                         tap((users) => {
                             const defaultUser = users.find(u => u.userId === 1) || null;
 
