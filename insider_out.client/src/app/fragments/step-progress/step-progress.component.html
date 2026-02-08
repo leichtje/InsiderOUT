@@ -1,20 +1,17 @@
 <div class="stepper-container">
-    <ng-container *ngFor="let step of steps; let i = index; let isLast = last">
-
+  @for (step of steps; track step; let i = $index; let isLast = $last) {
     <div class="step-node" [class.active]="step.isActive" [class.completed]="step.isCompleted">
-        
-        <span class="step-label">{{ i + 1 }}</span>
-
-        <svg class="progress-ring" width="50" height="50">
+      <span class="step-label">{{ i + 1 }}</span>
+      <svg class="progress-ring" width="50" height="50">
         <circle
-            class="track"
-            stroke-width="4"
-            fill="transparent"
-            [attr.r]="radius"
-            cx="25"
-            cy="25"
-        />
-        <circle
+          class="track"
+          stroke-width="4"
+          fill="transparent"
+          [attr.r]="radius"
+          cx="25"
+          cy="25"
+          />
+          <circle
             class="progress"
             stroke-width="4"
             fill="transparent"
@@ -23,15 +20,14 @@
             cy="25"
             [style.stroke-dasharray]="circumference"
             [style.stroke-dashoffset]="getDashOffset(step.percentage)"
-        />
-        </svg>
-        
-        <div class="step-text">{{ step.label }}</div>
+            />
+          </svg>
+          <div class="step-text">{{ step.label }}</div>
+        </div>
+        @if (!isLast) {
+          <div class="connector-line">
+            <div class="line-fill" [style.width.%]="step.isCompleted ? 100 : 0"></div>
+          </div>
+        }
+      }
     </div>
-
-    <div *ngIf="!isLast" class="connector-line">
-        <div class="line-fill" [style.width.%]="step.isCompleted ? 100 : 0"></div>
-    </div>
-
-    </ng-container>
-</div>

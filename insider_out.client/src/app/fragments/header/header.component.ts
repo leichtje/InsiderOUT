@@ -1,5 +1,5 @@
 import { Component, input, output, computed, inject } from "@angular/core"; 
-import { CommonModule } from "@angular/common";
+
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
@@ -14,12 +14,11 @@ import { UserService } from "../../services/user.service";
     styleUrl:'header.component.scss',
     standalone:true,
     imports: [
-		CommonModule,
-		RouterLink,
-		RouterLinkActive,
-		MatIcon,
-		ProfileAvatarComponent
-	],
+    RouterLink,
+    RouterLinkActive,
+    MatIcon,
+    ProfileAvatarComponent
+],
     host: {
         '[class.menu-is-open]': 'isAnyMenuOpen()'
     }

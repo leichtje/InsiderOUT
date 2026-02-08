@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
 import { FilterComponent } from '../../../../fragments/incidents-filter/filter.component';
@@ -12,9 +12,8 @@ import { ResponsiveDialogService } from '../../../../services/responsive-dialog.
     styleUrl: './tokens-documents-view.component.scss',
     standalone: true,
     imports: [
-        CommonModule,
-        FilterComponent,
-        MatIcon
+    FilterComponent,
+    MatIcon
 ]
 })
 export class TokensDocumentsViewComponent {

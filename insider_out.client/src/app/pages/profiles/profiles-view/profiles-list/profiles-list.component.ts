@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
@@ -9,7 +9,7 @@ import { UserService } from '../../../../services/user.service';
     templateUrl: './profiles-list.component.html',
     styleUrl: './profiles-list.component.scss',
     standalone: true,
-    imports: [CommonModule, ProfileAvatarComponent]
+    imports: [ProfileAvatarComponent]
 })
 export class ProfilesListComponent {
 

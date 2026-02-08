@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, effect, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -24,7 +24,6 @@ export interface TokensDocumentsDialogData {
     selector: 'io-tokens-documents-dialog',
     standalone: true,
     imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,

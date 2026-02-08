@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, input, output, OutputEmitterRef } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 
@@ -7,7 +7,7 @@ import { MatIconModule } from "@angular/material/icon";
     templateUrl: './dialog-header.component.html',
     styleUrl: './dialog-header.component.scss',
     standalone: true,
-    imports: [CommonModule, MatIconModule]
+    imports: [MatIconModule]
 })
 export class IncidentsListComponent {
     readonly title = input.required<string>();

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
@@ -6,7 +6,7 @@ import { RouterOutlet } from '@angular/router';
     selector: 'io-incidents',
     templateUrl: './incidents.component.html',
     standalone: true,
-    imports: [CommonModule, RouterOutlet]
+    imports: [RouterOutlet]
 })
 export class IncidentsComponent {
 

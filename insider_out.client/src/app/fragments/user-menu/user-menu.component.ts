@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, computed, effect, inject, input } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { BidiModule } from "@angular/cdk/bidi";
@@ -15,12 +15,11 @@ import { UserService } from "../../services/user.service";
     styleUrl:'user-menu.component.scss',
     standalone:true,
     imports: [
-    CommonModule,
     RouterLink,
     RouterLinkActive,
     BidiModule,
     MatIcon,
-    ProfileAvatarComponent,
+    ProfileAvatarComponent
 ],
 
 })

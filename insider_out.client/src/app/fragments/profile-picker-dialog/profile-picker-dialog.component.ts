@@ -1,5 +1,5 @@
 import { Component, inject, computed, signal, effect, ViewChildren, ElementRef, QueryList } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +24,6 @@ export interface ProfilePickerData {
     selector: 'io-profile-picker-dialog',
     standalone: true,
     imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,

@@ -1,5 +1,5 @@
 import { Component, input, signal, computed, Self, Optional, ChangeDetectorRef, DoCheck, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { AbstractControl, ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
@@ -11,13 +11,12 @@ import { ErrorStateMatcher } from '@angular/material/core';
     selector: 'io-pill-select',
     standalone: true,
     imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatIconModule,
-        FormsModule,
-        PillComponent
-    ],
+    MatFormFieldModule,
+    MatSelectModule,
+    MatIconModule,
+    FormsModule,
+    PillComponent
+],
     templateUrl: './pill-select.component.html',
 })
 export class PillSelectComponent<T> implements ControlValueAccessor, DoCheck { 

@@ -1,10 +1,10 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
     selector: 'io-skeleton-loader',
     standalone: true,
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './skeleton-loader.component.html',
     styleUrl: './skeleton-loader.component.scss'
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, Input } from "@angular/core";
 
 export interface StepDefinition {
@@ -11,7 +11,7 @@ export interface StepDefinition {
 @Component({
     selector: 'io-step-progress',
     standalone: true,
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './step-progress.component.html',
     styleUrl: './step-progress.component.scss'
 })

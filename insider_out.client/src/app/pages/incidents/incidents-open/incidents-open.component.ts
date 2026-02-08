@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IncidentsOpenViewComponent } from "./incidents-open-view/incidents-open-view.component";
@@ -12,7 +12,7 @@ import { TokenType } from '../../../models/token.model';
     selector: 'io-incidents-open',
     templateUrl: './incidents-open.component.html',
     standalone: true,
-    imports: [CommonModule, IncidentsOpenViewComponent]
+    imports: [IncidentsOpenViewComponent]
 })
 export class IncidentsOpenComponent {
 

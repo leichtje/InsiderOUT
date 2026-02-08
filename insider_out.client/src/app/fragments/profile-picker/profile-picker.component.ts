@@ -1,5 +1,5 @@
 import { Component, input, forwardRef, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +12,7 @@ import { ResponsiveDialogService } from '../../services/responsive-dialog.servic
 @Component({
     selector: 'io-profile-picker',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, ProfileAvatarComponent],
+    imports: [MatButtonModule, MatIconModule, ProfileAvatarComponent],
     templateUrl: './profile-picker.component.html',
     styleUrl: './profile-picker.component.scss',
     providers: [{

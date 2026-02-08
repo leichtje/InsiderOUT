@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -11,7 +11,7 @@ import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
     selector: 'io-profiles',
     templateUrl: './profiles.component.html',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, ProfilesViewComponent]
+    imports: [RouterOutlet, ProfilesViewComponent]
 })
 export class ProfilesComponent {
 

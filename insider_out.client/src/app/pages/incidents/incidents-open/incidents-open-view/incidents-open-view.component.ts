@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, input, output, Output } from '@angular/core';
 import { IncidentModel } from '../../../../models/incidents.model';
 import { IncidentsListComponent } from "../../incidents-list/incidents-list.component";
@@ -12,7 +12,6 @@ import { FilterComponent } from '../../../../fragments/incidents-filter/filter.c
     styleUrl: './incidents-open-view.component.scss',
     standalone: true,
     imports: [
-    CommonModule,
     IncidentsListComponent,
     FilterComponent,
     MatIcon

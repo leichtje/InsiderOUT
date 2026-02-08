@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
@@ -15,7 +15,7 @@ interface WeatherForecast {
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
     standalone: true,
-    imports: [CommonModule]
+    imports: []
 })
 export class HomeComponent implements OnInit {
     public forecasts: WeatherForecast[] = [];

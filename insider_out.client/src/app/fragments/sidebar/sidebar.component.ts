@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { Component, inject, input, OnDestroy, OnInit, signal, Signal } from "@angular/core";
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { BreakpointService } from "../../services/breakpoint.service";
@@ -14,7 +14,6 @@ import { NavigationService } from "../../services/sidebar.service";
     styleUrl:'sidebar.component.scss',
     standalone:true,
     imports: [
-    CommonModule,
     RouterLink,
     RouterLinkActive,
     BidiModule,
