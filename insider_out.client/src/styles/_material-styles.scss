@@ -167,3 +167,12 @@ mat-nav-list {
     background-color: var(--color-gray-2) !important;
     color: var(--color-bw) !important;
 }
+
+.mat-mdc-dialog-actions {
+    .buttons {
+        display: flex;
+    }
+    &:has(.steps) {
+        justify-content: space-between !important;
+    }
+}

@@ -8,6 +8,7 @@ $light-theme: (
     color-primary-3: #daeaf0,
     color-primary-4: #f4fbff,
     color-primary-5: #035869,
+    color-primary-6: #009dbe,
 
 
     color-back: #ffffff,
@@ -38,7 +39,7 @@ $light-theme: (
     // Token Severity Colors (Light)
     severity-high: #FFAB91,
     severity-medium: #FFCC80,
-    severity-low: #E6EE9B,
+    severity-low: #ffe77d,
 
     // Avatar Colors (Light)
     avatar-0: #FFAB91, // Salmon
@@ -65,6 +66,7 @@ $dark-theme: (
     color-primary-3: #2d3b40,
     color-primary-4: #292b2c,
     color-primary-5: #254f56,
+    color-primary-6: #009dbe,
     
     color-back: #303030,
     color-back-body: #1c1f20,
@@ -95,7 +97,7 @@ $dark-theme: (
     // Token Severity Colors (Dark)
     severity-high: #a55f49ff,
     severity-medium: #a87b38ff,
-    severity-low: #939004,
+    severity-low: #b9a100,
 
     // Avatar Colors (Dark)
     avatar-0: #a55f49ff,
@@ -116,3 +118,42 @@ $dark-theme: (
 );
 
 @include mixins.theme-colors($light-theme, $dark-theme);
+
+
+
+.io-gradient-text {
+    $color-base: var(--color-primary-2);      
+    $color-highlight: var(--color-primary-6); 
+    $color-accent: var(--color-primary);   
+
+    @include mixins.font(1.3em);
+    font-weight: bold;
+    display: inline-block;
+
+    background: linear-gradient(
+        to right, 
+        $color-base 0%, 
+        $color-highlight 20%, 
+        $color-accent 50%, 
+        $color-highlight 80%, 
+        $color-base 100%
+    );
+
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+
+    animation: wave-animation 3s linear infinite;
+}
+
+@keyframes wave-animation {
+    0% {
+        background-position: 200% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}

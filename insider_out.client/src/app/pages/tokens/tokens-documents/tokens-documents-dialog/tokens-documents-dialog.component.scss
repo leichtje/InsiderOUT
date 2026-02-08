@@ -4,16 +4,12 @@
     .document-form {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 40px;
 
         .document-control {
             display: flex;
-            align-items: center;
-            gap: 5px;
-
-            mat-form-field { 
-                flex: auto;
-            }
+            gap: 10px;
+            flex-direction: column;
         }
     }
 }

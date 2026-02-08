@@ -74,14 +74,14 @@
                             @if (incident.updated) {
                                 <div>
                                     <span class="label">Occurred</span>
-                                    <span class="info">{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                                    <span>{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
                                 </div>
                             }
 
                             @if (incident.agent) {
                                 <div>
                                     <span class="label">Agent</span>
-                                    <span class="info">{{ incident.agent }}</span>
+                                    <span>{{ incident.agent }}</span>
                                 </div>
                             }
 
@@ -194,7 +194,7 @@
                             @if (incident.updated) {
                                 <div class="updated">
                                     <span class="label">Last Updated</span>
-                                    <span class="info">{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
+                                    <span>{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
                                 </div>
                             }
 

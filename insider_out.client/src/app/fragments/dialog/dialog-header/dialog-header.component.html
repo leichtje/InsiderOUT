@@ -1,3 +1,5 @@
 <h3 mat-dialog-title>{{ title() }}</h3>
 
-<button (click)="onClose()" class="flat"><mat-icon>close</mat-icon></button>
+@if(showClose()) {
+    <button (click)="onClose()" class="flat"><mat-icon>close</mat-icon></button>
+}

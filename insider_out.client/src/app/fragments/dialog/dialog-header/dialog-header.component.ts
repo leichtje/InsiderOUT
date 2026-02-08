@@ -11,8 +11,10 @@ import { MatIconModule } from "@angular/material/icon";
 })
 export class IncidentsListComponent {
     readonly title = input.required<string>();
+    readonly showClose = input<boolean>();
     
     readonly close = output<void>();
+
 
     onClose() {
         this.close.emit();

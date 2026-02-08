@@ -1,0 +1,64 @@
+.stepper-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    width: 100%;
+    padding: 20px 0;
+}
+
+.step-node {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+
+    .step-label {
+        position: absolute;
+        font-weight: bold;
+        color: var(--color-text-2);
+        z-index: 1;
+    }
+
+    .progress-ring {
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+
+        .track {
+            stroke: var(--color-gray);
+        }
+
+        .progress {
+            stroke: var(--color-primary-6); 
+            transition: stroke-dashoffset 0.35s;
+            stroke-linecap: round;
+        }
+    }
+
+    &.active .step-label { color: var(--color-primary-2); }
+    &.completed .step-label { color: var(--color-primary-2); }
+}
+
+.connector-line {
+    flex-grow: 1;
+    height: 4px;
+    background-color: var(--color-gray);
+    margin: 0 10px;
+    position: relative;
+    min-width: 50px;
+
+    .line-fill {
+        height: 100%;
+        background-color: var(--color-primary-6);
+        width: 0%;
+        transition: width 0.3s ease-in-out;
+    }
+}
+
+.step-text {
+    position: absolute;
+    top: 55px;
+    font-size: 12px;
+    white-space: nowrap;
+}

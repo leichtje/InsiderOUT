@@ -25,7 +25,7 @@ export class TokensDocumentsViewComponent {
         const dialogRef = this.dialog.open(TokensDocumentsDialogComponent, {
         width: '900px',
         maxWidth: '95vw',
-        minHeight: '80vh',
+        minHeight: '70vh',
         panelClass: 'io-modal-panel',
         data: {
         } as TokensDocumentsDialogData

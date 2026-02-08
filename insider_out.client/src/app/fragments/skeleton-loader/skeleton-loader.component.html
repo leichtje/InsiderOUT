@@ -1,0 +1,8 @@
+<div class="skeleton-container">
+    <div class="skeleton-bar title"></div>
+    
+    <div *ngFor="let width of lineWidths" 
+        class="skeleton-bar text"
+        [style.width.%]="width">
+    </div>
+</div>

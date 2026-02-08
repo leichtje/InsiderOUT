@@ -1,0 +1,44 @@
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+
+.skeleton-container {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 0;
+}
+
+.skeleton-bar {
+    height: 12px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background: #f6f7f8;
+    background: linear-gradient(to right, var(--color-back-gray) 8%, var(--color-gray) 18%, var(--color-back-gray) 33%);
+    
+    background-size: 1000px 100%; 
+    
+    animation: shimmer 3s infinite linear;
+}
+
+.title {
+    height: 20px;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.text {
+    height: 12px;
+}
+
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
