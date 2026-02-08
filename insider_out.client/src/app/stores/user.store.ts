@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { patchState, signalStore, withMethods, withState, withComputed } from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState, withComputed, withHooks } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe } from 'rxjs';
-import { tap, switchMap, map, catchError } from 'rxjs/operators';
+import { tap, switchMap, catchError } from 'rxjs/operators';
 import { computed } from '@angular/core';
 import { SubjectModel, UserModel } from '../models/profile.model';
 
@@ -62,7 +62,7 @@ export const UserStore = signalStore(
                     switchMap(() => http.get<UserModel[]>('https://localhost:7000/api/users').pipe(
                         tap((users) => {
                             const defaultUser = users.find(u => u.userId === 1) || null;
-                            
+
                             patchState(store, { 
                                 users, 
                                 currentUser: defaultUser, 
@@ -123,6 +123,7 @@ export const UserStore = signalStore(
 
             selectUser: rxMethod<number>(
                 pipe(
+                    tap((id) => console.log('Store: selectUser called with ID:', id)), // <--- Debug Log 1
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap((id) => {
                         const existing = store.users().find(u => u.userId === id);
@@ -138,5 +139,10 @@ export const UserStore = signalStore(
                 )
             )
         };
+    }),
+    withHooks({
+        onInit(store) {
+            store.loadAll(); 
+        }
     })
 );
