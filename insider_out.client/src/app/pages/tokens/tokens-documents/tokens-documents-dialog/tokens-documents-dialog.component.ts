@@ -51,8 +51,11 @@ export class TokensDocumentsDialogComponent {
     documentForm = this.fb.group({
         description: ['', Validators.required],
         audience: ['', Validators.required],
-        location: [''],
         sensitivity: ['', Validators.required]
+    });
+
+    locationForm = this.fb.group({
+        location: [''],
     });
 
     sensitivityColors = sensitivity_colors;
@@ -130,13 +133,15 @@ export class TokensDocumentsDialogComponent {
         this.currentStepIndex$.set(2);
         this.isLoading$.set(true);
 
+        //Need to save data to db at this point, because doc is final
+
         setTimeout(() => {
             this.isLoading$.set(false);
         }, 10000);
     }
 
     onDownload() {
-        
+
     }
 
     onBack() {
@@ -148,7 +153,10 @@ export class TokensDocumentsDialogComponent {
     }
 
     onDone() {
+        //Need to save location to db if there is one, maybe auto save could be nice too? 
+
         this.dialogRef.close(this.documentForm.value);
+        
         //Navigate to doc
     }
 

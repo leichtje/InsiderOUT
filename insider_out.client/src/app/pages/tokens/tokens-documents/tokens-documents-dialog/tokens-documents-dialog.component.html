@@ -9,11 +9,11 @@
 </io-dialog-header>
 
 <mat-dialog-content class="dialog-content">
-    <form [formGroup]="documentForm" class="document-form">
-
-
-        <!-- may want to make each section a component -->
-        @if (currentStepIndex === 0) {
+    
+    
+    <!-- may want to make each section a component -->
+    @if (currentStepIndex === 0) {
+            <form [formGroup]="documentForm" class="document-form">
 
                 <div class="document-control">
                     <span class="info">Define the expected content of the generated document.</span>
@@ -48,8 +48,7 @@
                         formControlName="sensitivity">
                     </io-pill-select>
                 </div>
-
-
+            </form>
 
         }
 
@@ -91,15 +90,19 @@
                     <h3>Deploy Document</h3>
                     <p><b>The document is ready to be deployed.</b></p>
                     <p>IMPORTANT: The document may only be deployed in one location. Multiple instances of the same document can be created for different locations.</p>
+        
+                    <form [formGroup]="documentForm" class="document-form">
 
-                    <div class="document-control">
-                        <span class="info">Denote the intended location of the generated document.</span>
-                        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                            <mat-label>Document Location</mat-label>
-                            <mat-icon matPrefix>add_location</mat-icon>
-                            <input matInput formControlName="location">
-                        </mat-form-field>
-                    </div>
+                        <div class="document-control">
+                            <span class="info">Denote the intended location of the generated document.</span>
+                            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                                <mat-label>Document Location</mat-label>
+                                <mat-icon matPrefix>add_location</mat-icon>
+                                <input matInput formControlName="location">
+                            </mat-form-field>
+                        </div>
+                        
+                    </form>
 
                     <br>
                     <button (click)="onDownload()"><mat-icon>download</mat-icon><span>Download</span></button>
@@ -108,7 +111,6 @@
             </div>
         }
 
-    </form>
 
 </mat-dialog-content>
 
