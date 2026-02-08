@@ -4,7 +4,7 @@
 
     <io-profile-card [profile]="profile"></io-profile-card>
 
-    @if (userService.isCurrentUser(profile)) {
+    @if (userStore.isCurrentUser(profile)) {
 
         <button>Edit Profile</button>
         <button class="danger">Delete Account</button>

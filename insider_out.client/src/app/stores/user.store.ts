@@ -56,27 +56,27 @@ export const UserStore = signalStore(
                 return false;
             },
 
-        loadAll: rxMethod<void>(
-            pipe(
-                tap(() => patchState(store, { isLoading: true })),
-                switchMap(() => http.get<UserModel[]>('https://localhost:7000/api/users').pipe(
-                    tap((users) => {
-                        const defaultUser = users.find(u => u.userId === 1) || null;
-                        
-                        patchState(store, { 
-                            users, 
-                            currentUser: defaultUser, 
-                            isLoading: false 
-                        });
-                    }),
-                    catchError((err) => {
-                        console.error(err);
-                        patchState(store, { isLoading: false });
-                        return []; 
-                    })
-                ))
-            )
-        ),
+            loadAll: rxMethod<void>(
+                pipe(
+                    tap(() => patchState(store, { isLoading: true })),
+                    switchMap(() => http.get<UserModel[]>('https://localhost:7000/api/users').pipe(
+                        tap((users) => {
+                            const defaultUser = users.find(u => u.userId === 1) || null;
+                            
+                            patchState(store, { 
+                                users, 
+                                currentUser: defaultUser, 
+                                isLoading: false 
+                            });
+                        }),
+                        catchError((err) => {
+                            console.error(err);
+                            patchState(store, { isLoading: false });
+                            return []; 
+                        })
+                    ))
+                )
+            ),
 
             create: rxMethod<Omit<UserModel, 'userId'>>(
                 pipe(
