@@ -123,7 +123,6 @@ export const UserStore = signalStore(
 
             selectUser: rxMethod<number>(
                 pipe(
-                    tap((id) => console.log('Store: selectUser called with ID:', id)), // <--- Debug Log 1
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap((id) => {
                         const existing = store.users().find(u => u.userId === id);
@@ -132,7 +131,7 @@ export const UserStore = signalStore(
                             return [];
                         }
 
-                    return http.get<UserModel>(`https://localhost:7000/api/users/${id}`).pipe(
+                    return http.get<UserModel>(`${apiUrl}/${id}`).pipe(
                             tap(user => patchState(store, { selectedUser: user, isLoading: false }))
                         );
                     })
