@@ -1,61 +1,75 @@
 import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { SubjectModel, UserModel } from '../models/profile.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, map, tap, catchError } from 'rxjs';
+import { UserModel } from '../models/profile.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class UserService {
+  // Use relative endpoints so no environment.apiUrl is required
+  private usersEndpoint = '/api/users';
 
+  private currentUserSignal = signal<UserModel | null>(null);
+  private usersSignal = signal<UserModel[]>([]);
 
-    private currentUserSignal = signal<UserModel>({
-        userId: 101,
-        firstName: 'Logan',
-        lastName: 'Freeman',
-        email: 'loganfreeman@gmail.com',
-        phone: '513-555-5555'
-    });
+  public currentUser = this.currentUserSignal.asReadonly();
+  public users = this.usersSignal.asReadonly();
 
-    private usersSignal = signal<UserModel[]>([
-        {
-            userId: 101,
-            firstName: 'Logan',
-            lastName: 'Freeman',
-            email: 'loganfreeman@gmail.com',
-            phone: '513-555-5555'
-        },
-        {
-            userId: 102,
-            firstName: 'Freeman',
-            lastName: 'Logan',
-            email: 'freemanlogan@gmail.com',
-            phone: '513-555-5555'
-        },
-    ]);
+  constructor(private http: HttpClient) { }
 
-    public currentUser = this.currentUserSignal.asReadonly();
+  // Flexible mapper: accepts either prefixed server fields or client fields
+  private mapServerToModel(server: any): UserModel {
+    return {
+      userId: server.userId ?? server.UserId ?? server.id ?? 0,
+      firstName: server.userFirstName ?? server.UserFirstName ?? server.firstName ?? server.FirstName ?? '',
+      lastName: server.userLastName ?? server.UserLastName ?? server.lastName ?? server.LastName ?? '',
+      email: server.userEmail ?? server.userEmail ?? server.email ?? server.Email ?? '',
+      phone: server.userPhone ?? server.userPhone ?? server.phone ?? server.Phone ?? undefined,
+      department: server.userDepartment ?? server.userDepartment ?? server.department ?? server.Department ?? undefined
+    };
+  }
 
-    public users = this.usersSignal.asReadonly();
+  // Load all users from backend and update the signal
+  public loadUsers(): Observable<UserModel[]> {
+    return this.http.get<any[]>(this.usersEndpoint).pipe(
+      map(items => items.map(i => this.mapServerToModel(i))),
+      tap(users => this.usersSignal.set(users)),
+      catchError(err => {
+        console.error('Failed to load users', err);
+        return of([]);
+      })
+    );
+  }
 
-    constructor() { }
+  // Get single user by id (cache-first, then backend)
+  public getUserById(id: number): Observable<UserModel | undefined> {
+    const cached = this.usersSignal().find(u => u.userId === id);
+    if (cached) return of(cached);
 
-    public setCurrentUser(user: UserModel) {
-        this.currentUserSignal.set(user);
-    }
-
-    public getUserById(id: number): Observable<UserModel | undefined> {
-        const userList = this.usersSignal(); 
-        
-        const user = userList.find(u => u.userId === id);
-        
-        return of(user);
-    }
-
-    public isCurrentUser(profile: UserModel | SubjectModel): boolean {
-        if ('userId' in profile) {
-            return profile.userId === this.currentUser().userId;
+    return this.http.get<any>(`${this.usersEndpoint}/${id}`).pipe(
+      map(item => this.mapServerToModel(item)),
+      tap(user => {
+        if (user) {
+          const list = [...this.usersSignal()];
+          if (!list.some(u => u.userId === user.userId)) list.push(user);
+          this.usersSignal.set(list);
         }
-        return false;
-    }
+      }),
+      catchError(err => {
+        console.error(`Failed to load user ${id}`, err);
+        return of(undefined);
+      })
+    );
+  }
 
+  public setCurrentUser(user: UserModel | null) {
+    this.currentUserSignal.set(user);
+  }
+
+  public isCurrentUser(profile: UserModel | { userId?: number }): boolean {
+    const current = this.currentUserSignal();
+    if (!current) return false;
+    return ('userId' in profile) && profile.userId === current.userId;
+  }
 }
