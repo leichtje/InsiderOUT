@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { patchState, signalStore, withMethods, withState, withComputed, withHooks } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe } from 'rxjs';
-import { tap, switchMap, catchError } from 'rxjs/operators';
+import { tap, switchMap, catchError, map } from 'rxjs/operators';
 import { computed } from '@angular/core';
-import { SubjectModel, UserModel } from '../models/profile.model';
+import { SubjectModel, UserDto, UserModel } from '../models/profile.model';
 
 type UserState = {
     users: UserModel[];
@@ -22,6 +22,17 @@ type UserState = {
     isLoading: false,
     error: null,
 };
+
+export function mapUser(dto: UserDto): UserModel {
+    return {
+        userId: dto.UserId,
+        firstName: dto.UserFirstName,
+        lastName: dto.UserLastName,
+        email: dto.UserEmail,
+        phone: dto.UserPhone,
+        department: dto.UserDepartment
+    };
+}
 
 export const UserStore = signalStore(
     { providedIn: 'root' },
@@ -59,7 +70,10 @@ export const UserStore = signalStore(
             loadAll: rxMethod<void>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
-                    switchMap(() => http.get<UserModel[]>(apiUrl).pipe(
+                    switchMap(() => http.get<UserDto[]>(apiUrl).pipe(
+
+                        map((dtos) => dtos.map(dto => mapUser(dto))),
+
                         tap((users) => {
                             const defaultUser = users.find(u => u.userId === 1) || null;
 

@@ -16,3 +16,12 @@ export interface SubjectModel extends ProfileModel {
     role?: string;
     department?: string;
 }
+
+export interface UserDto {
+    UserId: number;
+    UserFirstName: string;
+    UserLastName: string;
+    UserEmail: string;
+    UserPhone?: string;
+    UserDepartment?: string;
+}
