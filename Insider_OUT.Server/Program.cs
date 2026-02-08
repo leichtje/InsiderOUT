@@ -20,16 +20,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
-builder.Services.AddCors(options =>
-{
     options.AddPolicy("AllowAngular",
         policy =>
         {
@@ -47,9 +37,9 @@ app.UseStaticFiles();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors("AllowLocalDev");
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowAngular");
 }
 
 app.UseRouting();
