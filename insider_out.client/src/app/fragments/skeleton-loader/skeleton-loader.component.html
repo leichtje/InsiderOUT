@@ -1,10 +1,12 @@
 <div class="skeleton-container">
-  <div class="skeleton-bar title"></div>
+    @if (showTitle$()) {
+        <div class="skeleton-bar title"></div>
+    }
 
-  @for (width of lineWidths; track width) {
-    <div
-      class="skeleton-bar text"
-      [style.width.%]="width">
-    </div>
-  }
+    @for (width of lineWidths; track width) {
+        <div
+            class="skeleton-bar text"
+            [style.width.%]="width">
+        </div>
+    }
 </div>

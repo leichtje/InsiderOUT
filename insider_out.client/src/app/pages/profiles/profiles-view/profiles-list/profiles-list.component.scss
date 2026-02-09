@@ -8,6 +8,10 @@
     &__title {
         @include mixins.font();
     }
+
+    io-skeleton-loader {
+        width: 200px;
+    }
 }
 
 .profile-card {
