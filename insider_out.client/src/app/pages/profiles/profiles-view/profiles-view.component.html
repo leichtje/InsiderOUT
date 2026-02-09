@@ -13,6 +13,7 @@
                 listType="user"
                 [activeId]="activeId"
                 [activeType]="activeType"
+                [isLoading]="userStore.isLoading()"
                 (profileSelected)="onProfileClicked($event)"
             ></io-profiles-list>
         </div>
@@ -24,6 +25,7 @@
                 listType="subject"
                 [activeId]="activeId"
                 [activeType]="activeType"
+                [isLoading]="subjectStore.isLoading()"
                 (profileSelected)="onProfileClicked($event)"
             ></io-profiles-list>
         </div>

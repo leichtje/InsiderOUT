@@ -1,9 +1,10 @@
 
-import { Component, EventEmitter, inject, input, output, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, input, output, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
 import { UserStore } from '../../../../stores/user.store';
 import { SkeletonLoaderComponent } from "../../../../fragments/skeleton-loader/skeleton-loader.component";
+import { SubjectStore } from '../../../../stores/subject.store';
 
 @Component({
     selector: 'io-profiles-list',
@@ -20,6 +21,7 @@ export class ProfilesListComponent {
     readonly activeId$ = input.required<number | null>({alias: 'activeId'});
     readonly activeType$ = input.required<'user' | 'subject' | null>({alias: 'activeType'});
     readonly listType$ = input.required<'user' | 'subject'>({alias: 'listType'});
+    readonly isLoading$ = input<boolean>(false, {alias: 'isLoading'});
     
     readonly profileSelected = output<UserModel | SubjectModel>();
 
@@ -37,4 +39,5 @@ export class ProfilesListComponent {
         return id === this.activeId$();
     }
 
+    
 }

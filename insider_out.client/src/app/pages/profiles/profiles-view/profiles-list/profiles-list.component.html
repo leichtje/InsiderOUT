@@ -6,6 +6,10 @@
         {{title}}
     </div>
 
+    @if (isLoading$()) {
+        <io-skeleton-loader [lines]="3"></io-skeleton-loader>
+    }
+
     @for (profile of profiles; track profile) {
         
         <div class="profile-card" 
@@ -29,7 +33,9 @@
 
         </div>
     } @empty {
-        <io-skeleton-loader [lines]="3"></io-skeleton-loader>
+        <div class="empty-state">
+            No profiles found.
+        </div>
     }
 
 </div>

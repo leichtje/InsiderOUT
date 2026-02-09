@@ -1,8 +1,10 @@
 
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { RouterOutlet } from '@angular/router';
 import { ProfilesListComponent } from './profiles-list/profiles-list.component';
+import { UserStore } from '../../../stores/user.store';
+import { SubjectStore } from '../../../stores/subject.store';
 
 @Component({
     selector: 'io-profiles-view',
@@ -12,6 +14,8 @@ import { ProfilesListComponent } from './profiles-list/profiles-list.component';
     imports: [RouterOutlet, ProfilesListComponent]
 })
 export class ProfilesViewComponent {
+    protected userStore = inject(UserStore);
+    protected subjectStore = inject(SubjectStore);
 
     readonly users$ = input.required<UserModel[]>({alias: 'users'});
     readonly subjects$ = input.required<SubjectModel[]>({alias: 'subjects'});
