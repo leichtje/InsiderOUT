@@ -20,7 +20,7 @@
                     {{profile.firstName}}
                     {{profile.lastName}}
                 </div>
-                @if (userService.isCurrentUser(profile)){
+                @if (userStore.isCurrentUser(profile)){
                     <div class="current-user">
                         Current User
                     </div>
