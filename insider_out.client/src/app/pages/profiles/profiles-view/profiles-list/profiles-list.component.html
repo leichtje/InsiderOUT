@@ -33,9 +33,11 @@
 
         </div>
     } @empty {
-        <div class="empty-state">
-            No profiles found.
-        </div>
+        @if (isLoading$()) {
+            <div class="empty-state">
+                No profiles found.
+            </div>
+        }
     }
 
 </div>
