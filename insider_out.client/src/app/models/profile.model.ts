@@ -14,7 +14,6 @@ export interface SubjectModel extends ProfileModel {
     subjectId: number;
     riskScore: number;
     role?: string;
-    department?: string;
 }
 
 export interface UserDto {
@@ -24,4 +23,15 @@ export interface UserDto {
     userEmail: string;
     userPhone?: string;
     userDepartment?: string;
+}
+
+export interface SubjectDto {
+    subjectId: number;
+    subjectFirstName: string;
+    subjectLastName: string;
+    subjectEmail: string;
+    subjectPhone?: string;
+    subjectDepartment?: string;
+    subjectRiskScore: number;
+    subjectRole: string;
 }

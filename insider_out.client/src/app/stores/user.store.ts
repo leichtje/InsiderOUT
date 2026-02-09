@@ -92,17 +92,31 @@ export const UserStore = signalStore(
                 )
             ),
 
-            create: rxMethod<Omit<UserModel, 'userId'>>(
+            create: rxMethod<Omit<UserModel, 'subjectId'>>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
-                    switchMap((newUser) => http.post<UserModel>(apiUrl, newUser).pipe(
-                        tap((createdUser) => {
-                            patchState(store, (state) => ({
-                                users: [...state.users, createdUser],
-                                isLoading: false
-                            }));
-                        })
-                    ))
+                    switchMap((newModel) => {
+                        
+                        const payload: Omit<UserDto, 'userId'> = {
+                            userFirstName: newModel.firstName,
+                            userLastName: newModel.lastName,
+                            userEmail: newModel.email,
+                            userPhone: newModel.phone,
+                            userDepartment: newModel.department,
+                        };
+
+                        return http.post<UserDto>(apiUrl, payload).pipe(
+                            
+                            map((createdDto) => mapUser(createdDto)),
+
+                            tap((createdUser) => {
+                                patchState(store, (state) => ({
+                                    subjects: [...state.users, createdUser], 
+                                    isLoading: false
+                                }));
+                            })
+                        );
+                    })
                 )
             ),
 
@@ -112,8 +126,8 @@ export const UserStore = signalStore(
                     switchMap((id) => http.delete(`${apiUrl}/${id}`).pipe(
                         tap(() => {
                             patchState(store, (state) => ({
-                            users: state.users.filter(u => u.userId !== id),
-                            isLoading: false
+                                users: state.users.filter(u => u.userId !== id),
+                                isLoading: false
                             }));
                         })
                     ))

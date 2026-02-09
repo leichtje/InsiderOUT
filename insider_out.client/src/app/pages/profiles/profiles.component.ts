@@ -7,6 +7,7 @@ import { filter, map, startWith } from 'rxjs';
 import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
 import { UserStore } from '../../stores/user.store';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SubjectStore } from '../../stores/subject.store';
 
 @Component({
     selector: 'io-profiles',
@@ -17,12 +18,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class ProfilesComponent {
     
     protected userStore = inject(UserStore);
-    protected subjectService = inject(SubjectService);
+    protected subjectStore = inject(SubjectStore);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
     protected users = this.userStore.users; 
-    protected subjects = this.subjectService.subjects; 
+    protected subjects = this.subjectStore.subjects; 
 
     private activeRouteState = toSignal(
         this.router.events.pipe(
@@ -54,6 +55,9 @@ export class ProfilesComponent {
 
         if (isUser) {
             this.userStore.selectUser(id);
+        } else {
+            this.subjectStore.selectSubject(id);
+
         }
 
         this.router.navigate([`./${type}`, id], { relativeTo: this.route });

@@ -6,6 +6,7 @@ import { ProfileCardComponent } from "../../../../fragments/profile-card/profile
 import { SubjectModel, UserModel } from "../../../../models/profile.model";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { UserStore } from "../../../../stores/user.store";
+import { SubjectStore } from "../../../../stores/subject.store";
 
 @Component({
     selector:'io-profiles-detail',
@@ -16,11 +17,9 @@ import { UserStore } from "../../../../stores/user.store";
 
 export class ProfilesDetailComponent {
     private route = inject(ActivatedRoute);
-    private subjectService = inject(SubjectService);
-
+    
     protected userStore = inject(UserStore);
-
-    private currentSubject = signal<SubjectModel | null>(null);
+    protected subjectStore = inject(SubjectStore);
 
     private params = toSignal(this.route.paramMap);
     private urlSegments = toSignal(this.route.url);
@@ -37,11 +36,8 @@ export class ProfilesDetailComponent {
 
             if (type === 'user') {
                 this.userStore.selectUser(id); 
-                this.currentSubject.set(null);
             } else {
-                this.subjectService.getSubjectById(id).subscribe(sub => {
-                    this.currentSubject.set(sub || null);
-                });
+                this.subjectStore.selectSubject(id);
             }
         });
     }
@@ -52,7 +48,7 @@ export class ProfilesDetailComponent {
         if (type === 'user') {
             return this.userStore.selectedUser();
         } else {
-            return this.currentSubject();
+            return this.subjectStore.selectedSubject();
         }
     });
 
