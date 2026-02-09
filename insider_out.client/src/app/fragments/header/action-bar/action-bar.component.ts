@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, HostListener, SimpleChanges, inject } from "@angular/core"; 
-import { CommonModule } from "@angular/common";
+
 import { ActionBarService } from "../../../services/action-bar.service";
 
 @Component({
@@ -7,7 +7,7 @@ import { ActionBarService } from "../../../services/action-bar.service";
     templateUrl: 'action-bar.component.html',
     styleUrl: 'action-bar.component.scss',
     standalone: true,
-    imports: [CommonModule],
+    imports: [],
 })
 export class ActionBarComponent {
     private actionBarService = inject(ActionBarService);

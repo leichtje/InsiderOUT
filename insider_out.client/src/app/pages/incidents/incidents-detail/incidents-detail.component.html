@@ -13,244 +13,197 @@
 @let tokenAsEmail = this.tokenAsEmail();
 
 <form [formGroup]="form" class="incident-form">
-    <div class="page-container" *ngIf="incident as data">
-        <div routerLink="/incidents/open" class="back flex-inline">
-            <mat-icon>arrow_back</mat-icon> Back to List
-        </div>
-        
-        @if (incident) {
-
-            <div class="body">
-
-                @if (breakpointService.isPhone()) {
-                    <div class="tab-controls">
-                        <div class="tab-button">
-                            <button 
-                                (click)="selectTab('left')" 
-                                [class.active]="activeTab() === 'left'">
-                                Details
-                            </button>
-                        </div>
-                        <div class="tab-button">
-                            <button 
-                                (click)="selectTab('right')" 
-                                [class.active]="activeTab() === 'right'">
-                                Activity
-                            </button>
-                        </div>
-                    </div>
-                }
-
-                @if (!breakpointService.isPhone() || activeTab() === 'left') {
-                    <div class="body__left">
-
-                        <div class="section-title">
-                            <span class="label">Title</span>
-
-                            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
-                                
-                                <textarea matInput 
-                                    formControlName="title" 
-                                    cdkTextareaAutosize
-                                    cdkAutosizeMinRows="1"
-                                    placeholder="Enter Incident Title"
-                                    (keydown.enter)="$event.preventDefault()">
-                                </textarea>
-
-                                @if (form.get('title')?.hasError('required')) {
-                                    <mat-error>Title is required</mat-error>
-                                }
-                                
-                                @if (form.get('title')?.hasError('maxlength')) {
-                                    <mat-error>Title cannot exceed 100 characters</mat-error>
-                                }
-
-                            </mat-form-field>
-
-                        </div>
-
-                        <div class="section-date">
-
-                            @if (incident.updated) {
-                                <div>
-                                    <span class="label">Occurred</span>
-                                    <span class="info">{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
-                                </div>
-                            }
-
-                            @if (incident.agent) {
-                                <div>
-                                    <span class="label">Agent</span>
-                                    <span class="info">{{ incident.agent }}</span>
-                                </div>
-                            }
-
-                        </div>
-                        
-                        <div class="divider"></div>
-
-                        <div class="section">
-
-                            <div>
-                                <span class="label">Token - 
-                                    @if (tokenAsDocument; as doc) {
-                                        <mat-icon>description</mat-icon><span class="sub-label">Document</span>
-                                    }
-                                    @if (tokenAsEmail; as email) {
-                                        <mat-icon>email</mat-icon><span class="sub-label">Email</span>
-                                    }
-                                </span>
-
-                                <div class="info-grid">
-                                    
-                                    <span class="sub-label">Severity</span> 
-                                    <io-token-severity [pill]="token?.severity"></io-token-severity>
-                                    
-                                    @if (tokenAsDocument; as doc) {
-                                        <span class="sub-label">Title</span>
-                                        <span>{{ doc.name }}</span>
-                                        
-                                        <span class="sub-label">Location</span> 
-                                        <span>{{ doc.location }}</span>
-                                    }
-
-                                    
-                                    @if (tokenAsEmail; as email) {
-                                        <span class="sub-label">Subject</span>
-                                        <span>{{ email.subject }}</span>
-                                    }
-                                    
-                                </div>
-                                
-                                @if (tokenAsDocument; as doc) {
-                                    <button [routerLink]="['/token/document', doc.documentId ]" class="flat">View Token</button>
-                                }
-
-                                @if (tokenAsEmail; as email) {
-                                    <button [routerLink]="['/token/email', email.emailId ]" class="flat">View Token</button>
-                                }
-
-                            </div>
-
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="section">
-
-                            <div class="select">
-                                
-                                <span class="label">Tied Subject
-                                    <mat-icon matTooltip="A Subject is the Employee which likely triggered the incident, and therefore is tied to it." class="info">info</mat-icon>
-                                </span>
-
-                                <io-profile-picker
-                                    formControlName="tiedSubjectId"
-                                    label="Tied Subject"
-                                    [items]="subjects"
-                                    idKey="subjectId"
-                                    nullLabel="No Subject"
-                                    [hideDetail]="false">
-                                </io-profile-picker>
-                            </div>
-                        </div>
-                        
-                    </div>
-                }
-                
-                @if (!isPhone() || activeTab() === 'right') {
-                    <div class="body__right">
-                        <div class="header">
-
-                            <div class="select">
-                                <span class="label">Status</span>
-
-                                <io-status-select
-                                    formControlName="status"
-                                    [options]="statusOptions">
-                                </io-status-select>
-                            </div>
-
-                            <div class="select">
-                                <span class="label">Assigned User</span>
-
-                                <io-profile-picker
-                                    formControlName="assignedUserId"
-                                    label="Assigned User"
-                                    [items]="users"
-                                    idKey="userId"
-                                    nullLabel="No Assignee"
-                                    [hideDetail]="true"
-                                    [enableAssignMe]="true">
-                                </io-profile-picker>
-                            </div>
-
-                            @if (incident.updated) {
-                                <div class="updated">
-                                    <span class="label">Last Updated</span>
-                                    <span class="info">{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
-                                </div>
-                            }
-
-                        </div>
-
-                        <div class="wrapper">
-
-                            <div class="section">
-                                
-                                <span class="label">Description</span>
-                            
-                                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="desc-input">
-                                    
-                                    <textarea matInput 
-                                        formControlName="desc" 
-                                        cdkTextareaAutosize
-                                        placeholder="Enter description">
-                                    </textarea>
-                                    
-                                </mat-form-field>
-                                
-                            </div>
-                            
-                            <div class="section">
-                                
-                                <div class="section-title">
-                                    <span class="label">Activity</span>
-                                    
-                                    <button class="flat"><mat-icon>add</mat-icon></button>
-                                </div>
-
-                                <div class="activity">
-                                    <div class="activity__card">
-                                        <div class="connector"></div>
-                                        <div class="container">
-                                            <div class="profile">
-                                                
-                                            </div>
-                                            <div class="content">
-                                                <io-activity-list
-                                                    [entityId]="incident.incidentId"
-                                                    [entityType]="activityScope.Incident"
-                                                ></io-activity-list>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
+  @if (incident; as data) {
+    <div class="page-container">
+      <div routerLink="/incidents/open" class="back flex-inline">
+        <mat-icon>arrow_back</mat-icon> Back to List
+      </div>
+      @if (incident) {
+        <div class="body">
+          @if (breakpointService.isPhone()) {
+            <div class="tab-controls">
+              <div class="tab-button">
+                <button
+                  (click)="selectTab('left')"
+                  [class.active]="activeTab() === 'left'">
+                  Details
+                </button>
+              </div>
+              <div class="tab-button">
+                <button
+                  (click)="selectTab('right')"
+                  [class.active]="activeTab() === 'right'">
+                  Activity
+                </button>
+              </div>
             </div>
-        } @else {
-            <p>incident Not Found</p>
-        }
-
+          }
+          @if (!breakpointService.isPhone() || activeTab() === 'left') {
+            <div class="body__left">
+              <div class="section-title">
+                <span class="label">Title</span>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
+                  <textarea matInput
+                    formControlName="title"
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="1"
+                    placeholder="Enter Incident Title"
+                    (keydown.enter)="$event.preventDefault()">
+                  </textarea>
+                  @if (form.get('title')?.hasError('required')) {
+                    <mat-error>Title is required</mat-error>
+                  }
+                  @if (form.get('title')?.hasError('maxlength')) {
+                    <mat-error>Title cannot exceed 100 characters</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="section-date">
+                @if (incident.updated) {
+                  <div>
+                    <span class="label">Occurred</span>
+                    <span>{{ incident.date | date:'MMM d, y, h:mm a' }}</span>
+                  </div>
+                }
+                @if (incident.agent) {
+                  <div>
+                    <span class="label">Agent</span>
+                    <span>{{ incident.agent }}</span>
+                  </div>
+                }
+              </div>
+              <div class="divider"></div>
+              <div class="section">
+                <div>
+                  <span class="label">Token -
+                    @if (tokenAsDocument; as doc) {
+                      <mat-icon>description</mat-icon><span class="sub-label">Document</span>
+                    }
+                    @if (tokenAsEmail; as email) {
+                      <mat-icon>email</mat-icon><span class="sub-label">Email</span>
+                    }
+                  </span>
+                  <div class="info-grid">
+                    <span class="sub-label">Severity</span>
+                    <io-pill
+                      [pill]="token?.severity"
+                      [varMap]="sensitivityColors"
+                      [textMap]="sensitivityText">
+                    </io-pill>
+                    @if (tokenAsDocument; as doc) {
+                      <span class="sub-label">Title</span>
+                      <span>{{ doc.name }}</span>
+                      <span class="sub-label">Location</span>
+                      <span>{{ doc.location }}</span>
+                    }
+                    @if (tokenAsEmail; as email) {
+                      <span class="sub-label">Subject</span>
+                      <span>{{ email.subject }}</span>
+                    }
+                  </div>
+                  @if (tokenAsDocument; as doc) {
+                    <button [routerLink]="['/token/document', doc.documentId ]" class="flat">View Token</button>
+                  }
+                  @if (tokenAsEmail; as email) {
+                    <button [routerLink]="['/token/email', email.emailId ]" class="flat">View Token</button>
+                  }
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="section">
+                <div class="select">
+                  <span class="label">Tied Subject
+                    <mat-icon matTooltip="A Subject is the Employee which likely triggered the incident, and therefore is tied to it." class="info">info</mat-icon>
+                  </span>
+                  <io-profile-picker
+                    formControlName="tiedSubjectId"
+                    label="Tied Subject"
+                    [items]="subjects"
+                    idKey="subjectId"
+                    nullLabel="No Subject"
+                    [hideDetail]="false">
+                  </io-profile-picker>
+                </div>
+              </div>
+            </div>
+          }
+          @if (!isPhone() || activeTab() === 'right') {
+            <div class="body__right">
+              <div class="header">
+                <div class="select">
+                  <span class="label">Status</span>
+                  <io-pill-select
+                    [options]="statusOptions"
+                    [varMap]="statusColors"
+                    [textMap]="statusText"
+                    formControlName="status">
+                  </io-pill-select>
+                </div>
+                <div class="select">
+                  <span class="label">Assigned User</span>
+                  <io-profile-picker
+                    formControlName="assignedUserId"
+                    label="Assigned User"
+                    [items]="users"
+                    idKey="userId"
+                    nullLabel="No Assignee"
+                    [hideDetail]="true"
+                    [enableAssignMe]="true">
+                  </io-profile-picker>
+                </div>
+                @if (incident.updated) {
+                  <div class="updated">
+                    <span class="label">Last Updated</span>
+                    <span>{{ incident.updated | date:'MMM d, y, h:mm a' }}</span>
+                  </div>
+                }
+              </div>
+              <div class="wrapper">
+                <div class="section">
+                  <span class="label">Description</span>
+                  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="desc-input">
+                    <textarea matInput
+                      formControlName="desc"
+                      cdkTextareaAutosize
+                      placeholder="Enter description">
+                    </textarea>
+                  </mat-form-field>
+                </div>
+                <div class="section">
+                  <div class="section-title">
+                    <span class="label">Activity</span>
+                    <button class="flat"><mat-icon>add</mat-icon></button>
+                  </div>
+                  <div class="activity">
+                    <div class="activity__card">
+                      <div class="connector"></div>
+                      <div class="container">
+                        <div class="profile">
+                        </div>
+                        <div class="content">
+                          <io-activity-list
+                            [entityId]="incident.incidentId"
+                            [entityType]="activityScope.Incident"
+                          ></io-activity-list>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>incident Not Found</p>
+      }
     </div>
+  }
 </form>
 
-<io-action-bar 
-    [isOpen]="form.dirty" 
-    [isValid]="form.valid"
-    (save)="onSave()" 
-    (cancel)="onCancel()">
+<io-action-bar
+  [isOpen]="form.dirty"
+  [isValid]="form.valid"
+  (save)="onSave()"
+  (cancel)="onCancel()">
 </io-action-bar>

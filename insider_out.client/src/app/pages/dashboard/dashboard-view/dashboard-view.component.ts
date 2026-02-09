@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: './dashboard-view.component.html',
     styleUrl: './dashboard-view.component.scss',
     standalone: true,
-    imports: [CommonModule]
+    imports: []
 })
 export class DashboardViewComponent {
 

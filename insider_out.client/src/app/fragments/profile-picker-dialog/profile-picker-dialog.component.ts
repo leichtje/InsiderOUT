@@ -1,5 +1,5 @@
 import { Component, inject, computed, signal, effect, ViewChildren, ElementRef, QueryList } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
+import { IncidentsListComponent } from "../dialog/dialog-header/dialog-header.component";
 
 export interface ProfilePickerData {
     title: string;
@@ -23,17 +24,17 @@ export interface ProfilePickerData {
     selector: 'io-profile-picker-dialog',
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatDialogModule, 
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule, 
-        MatIconModule,
-        MatListModule,
-        ProfileAvatarComponent,
-        ProfileCardComponent
-    ],
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
+    ProfileAvatarComponent,
+    ProfileCardComponent,
+    IncidentsListComponent
+],
     templateUrl: './profile-picker-dialog.component.html',
     styleUrl: './profile-picker-dialog.component.scss'
 })

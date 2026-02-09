@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { RouterOutlet } from '@angular/router';
@@ -9,7 +9,7 @@ import { ProfilesListComponent } from './profiles-list/profiles-list.component';
     templateUrl: './profiles-view.component.html',
     styleUrl: './profiles-view.component.scss',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, ProfilesListComponent]
+    imports: [RouterOutlet, ProfilesListComponent]
 })
 export class ProfilesViewComponent {
 

@@ -34,8 +34,44 @@ a {
     }
 }
 
-h1, h2, h3, h4 {
+
+h1, h2, h3, h4, p{
     color: var(--color-text);
+}
+
+p {
+    color: var(--color-text);
+    span {
+        &:has(mat-icon) {
+            gap: 5px;
+            display: inline-flex;
+            align-items: center;
+            
+            mat-icon {
+                color: var(--color-text) !important;
+                width: 10px !important;
+                height: 10px !important;
+                font-size: 10px !important;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+span {
+    &.info {
+        color: var(--color-text-2) !important;
+        gap: 5px;
+        display: inline-flex;
+        align-items: center;
+
+        mat-icon {
+            color: var(--color-text-2) !important;
+            width: 15px;
+            height: 15px;
+            font-size: 15px;
+        }
+    }
 }
 
 /*----------------------- General Styles -----------------------*/
@@ -164,6 +200,34 @@ button {
         }
     }
 
+    &:has(mat-icon) {
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        &:not(:has(span)) {
+            border-radius: 50%;
+            padding: 5px;
+        }
+
+        mat-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+    }
+
+    &:has(mat-icon):not(.flat, :disabled){
+        mat-icon {
+            color: var(--color-w) !important;
+        }
+    }
+
     &:disabled {
         background-color: var(--color-back-gray);
         color: var(--color-text-2);
@@ -172,25 +236,10 @@ button {
         &:hover {
             background-color: var(--color-back-gray);
         }
-    }
-
-    &:has(mat-icon) {
-        border-radius: 50%;
-        padding: 5px;
-        display: flex;
-        align-items: center;
 
         mat-icon {
-            width: 20px;
-            height: 20px;
-            font-size: 20px;
-        }
-        
-    }
-
-    &:has(mat-icon):not(.flat){
-        mat-icon {
-            color: var(--color-w) !important;
+            opacity: .5 !important;
+            color: var(--color-text-2) !important;
         }
     }
 
@@ -230,3 +279,4 @@ button {
     }
 
 }
+

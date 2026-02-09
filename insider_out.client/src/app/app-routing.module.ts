@@ -46,13 +46,16 @@ const routes: Routes = [
         ]
     },
 
-    /* Profiles */
+    /* Settings */
     {
-        path: 'profiles',
-        component: ProfilesComponent,
+        path: 'settings',
         children: [
-            { path: 'user/:id', component: ProfilesDetailComponent },
-            { path: 'subject/:id', component: ProfilesDetailComponent }
+            { path: 'profiles', component: ProfilesComponent,
+            children: [
+                { path: 'user/:id', component: ProfilesDetailComponent },
+                { path: 'subject/:id', component: ProfilesDetailComponent }
+            ] },
+            { path: 'Company', component: TokensEmailsComponent },
         ]
     },
 

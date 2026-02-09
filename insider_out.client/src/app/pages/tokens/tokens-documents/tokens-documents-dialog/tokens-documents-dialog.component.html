@@ -1,0 +1,143 @@
+@let currentStepIndex = currentStepIndex$();
+@let isLoading = isLoading$();
+
+<io-dialog-header
+    [title]="'Create Document'"
+    [showClose]="currentStepIndex === 0"
+    (close)="onCancel()"
+    >
+</io-dialog-header>
+
+<mat-dialog-content class="dialog-content">
+    
+    
+    <!-- may want to make each section a component -->
+    @if (currentStepIndex === 0) {
+            <form [formGroup]="documentForm" class="document-form">
+
+                <div class="document-control">
+                    <span class="info">Define the expected content of the generated document.</span>
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                        <mat-label>Description of Document Content</mat-label>
+                        <mat-icon matPrefix>description</mat-icon>
+                        <textarea matInput formControlName="description" autoFocus></textarea>
+
+                        <mat-error>Description is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="document-control">
+                    <span class="info">Define the group of employees intended to interact with this document.</span>
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                        <mat-label>Intended Audience</mat-label>
+                        <mat-icon matPrefix>people</mat-icon>
+                        <input matInput formControlName="audience">
+                        
+                        <mat-error>Intended Audience is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="document-control">
+                    <span class="info">Define the level of sensitive information the document is meant to represent.</span>
+                    <io-pill-select
+                        [options]="sensitivityOptions"
+                        [varMap]="sensitivityColors"
+                        [textMap]="sensitivityText"
+                        [label]="'Sensitivity Level'"
+                        [labelIcon]="'assignment_late'"
+                        formControlName="sensitivity">
+                    </io-pill-select>
+                </div>
+            </form>
+
+        }
+
+        @if (currentStepIndex === 1) {
+            <div class="preview-section">
+                
+                @if (isLoading) {
+                    <div>
+                        <p ioGradientText>Generating Preview...</p>
+                        <div>
+                            <io-skeleton-loader [lines]="5"></io-skeleton-loader>
+                        </div>
+                    </div>
+                } 
+                
+                @else {
+                    <h3>Preview Document</h3>
+                    <p>Review the generated document, if you would like to modify the content of the document, select "<span><mat-icon>arrow_back</mat-icon>Redefine</span>" and adjust the parameters.</p>
+                    <p>If the content of the document is good, select "<span><mat-icon>check</mat-icon>Finalize Document</span>" to finalize it.</p>
+                    <p>Note: This document is for preview purposes only, do not deploy this document.</p>
+
+                    <br>
+                    <p>*PDF DOCUMENT*</p>
+                }
+            </div>
+        }
+
+        @if (currentStepIndex === 2) {
+            <div class="finalize-section">
+                @if (isLoading) {
+
+                    <p ioGradientText>Finalizing Document...</p>
+                    <div>
+                        <io-skeleton-loader [lines]="5"></io-skeleton-loader>
+                    </div>
+                }
+                
+                @else {
+                    <h3>Deploy Document</h3>
+                    <p><b>The document is ready to be deployed.</b></p>
+                    <p>IMPORTANT: The document may only be deployed in one location. Multiple instances of the same document can be created for different locations.</p>
+        
+                    <form [formGroup]="documentForm" class="document-form">
+
+                        <div class="document-control">
+                            <span class="info">Denote the intended location of the generated document.</span>
+                            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                                <mat-label>Document Location</mat-label>
+                                <mat-icon matPrefix>add_location</mat-icon>
+                                <input matInput formControlName="location">
+                            </mat-form-field>
+                        </div>
+                        
+                    </form>
+
+                    <br>
+                    <button (click)="onDownload()"><mat-icon>download</mat-icon><span>Download</span></button>
+                    <p>*DOCX DOCUMENT*</p>
+                }
+            </div>
+        }
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="steps">
+        <io-step-progress [steps]="steps"></io-step-progress>
+    </div>
+
+    <div class="buttons">
+        
+        @if (currentStepIndex === 0) {
+            <button (click)="onCancel()" class="flat">Cancel</button>
+            <button 
+                color="primary" 
+                [disabled]="!documentForm.valid"
+                (click)="onPreview()">
+                Preview Document
+            </button>
+        }
+        
+        @if (currentStepIndex === 1) {
+            <button (click)="onBack()" [disabled]="isLoading" class="flat"><mat-icon>arrow_back</mat-icon><span>Redefine</span></button>
+            <button (click)="onFinalize()" [disabled]="isLoading"><mat-icon>check</mat-icon><span>Finalize Document</span></button>
+        }
+
+        @if (currentStepIndex === 2) {
+            <button (click)="onDone()" [disabled]="isLoading"><span>Done</span></button>
+        }
+    </div>
+</mat-dialog-actions>

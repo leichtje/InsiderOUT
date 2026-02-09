@@ -14,16 +14,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { StatusSelectComponent } from "../../../fragments/incident-status-select/incident-status-select.component";
+import { PillSelectComponent } from "../../../fragments/pill-select/pill-select.component";
 import { ProfilePickerComponent } from '../../../fragments/profile-picker/profile-picker.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { TokenService } from '../../../services/token.service';
 import { DocumentModel, EmailModel, Token, TokenType } from '../../../models/token.model';
-import { tokenComponent } from "../../../fragments/pill/token-severity.component";
+import { sensitivity_colors, sensitivity_text } from "../../../fragments/pill/token-sensitivity-constants";
 import { ActivityListComponent } from "../../../fragments/activity-list/activity-list.component";
 import { ActivityScope } from '../../../models/activity.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BreakpointService } from "../../../services/breakpoint.service";
+import { PillComponent } from "../../../fragments/pill/pill.component";
+import { status_colors, status_text } from '../../../fragments/pill/incident-status-constants';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -35,7 +37,6 @@ import { BreakpointService } from "../../../services/breakpoint.service";
     RouterLink,
     ActionBarComponent,
     MatIconModule,
-    StatusSelectComponent,
     ProfilePickerComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -43,8 +44,9 @@ import { BreakpointService } from "../../../services/breakpoint.service";
     MatSelectModule,
     MatTooltipModule,
     TextFieldModule,
-    tokenComponent,
-    ActivityListComponent
+    ActivityListComponent,
+    PillComponent,
+    PillSelectComponent
 ]
 })
 export class IncidentsDetailComponent { 
@@ -65,7 +67,12 @@ export class IncidentsDetailComponent {
     
     protected breakpointService = inject(BreakpointService);
 
+    statusColors = status_colors;
+    statusText = status_text;
     statusOptions = Object.values(IncidentStatus);
+
+    sensitivityColors = sensitivity_colors;
+    sensitivityText = sensitivity_text;
 
     form = this.fb.group({
         title: ['', [Validators.required, Validators.maxLength(100)]],

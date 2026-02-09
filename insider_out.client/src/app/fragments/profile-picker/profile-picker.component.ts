@@ -1,17 +1,17 @@
 import { Component, input, forwardRef, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ProfilePickerDialogComponent, ProfilePickerData } from '../profile-picker-dialog/profile-picker-dialog.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
-import { UserService } from '../../services/user.service';
+import { ResponsiveDialogService } from '../../services/responsive-dialog.service';
+import { UserStore } from '../../stores/user.store';
 
 @Component({
     selector: 'io-profile-picker',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, ProfileAvatarComponent],
+    imports: [MatButtonModule, MatIconModule, ProfileAvatarComponent],
     templateUrl: './profile-picker.component.html',
     styleUrl: './profile-picker.component.scss',
     providers: [{
@@ -21,8 +21,8 @@ import { UserService } from '../../services/user.service';
     }]
 })
 export class ProfilePickerComponent implements ControlValueAccessor {
-    private dialog = inject(MatDialog);
-    private userService = inject(UserService);
+private dialog = inject(ResponsiveDialogService);
+    protected userStore = inject(UserStore); 
 
     label = input.required<string>();
     items = input.required<any[]>();
@@ -63,11 +63,11 @@ export class ProfilePickerComponent implements ControlValueAccessor {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-        if (result !== undefined) {
-            const newId = result ? result[this.idKey()] : null;
-            this.value.set(newId);
-            this.onChange(newId);
-        }
+            if (result !== undefined) {
+                const newId = result ? result[this.idKey()] : null;
+                this.value.set(newId);
+                this.onChange(newId);
+            }
         });
     }
 
@@ -80,7 +80,7 @@ export class ProfilePickerComponent implements ControlValueAccessor {
     assignToMe(event: Event) {
         event.stopPropagation(); 
         
-        const currentUser = this.userService.currentUser();
+        const currentUser = this.userStore.currentUser();
         if (!currentUser) return;
 
         const myId = currentUser.userId; 

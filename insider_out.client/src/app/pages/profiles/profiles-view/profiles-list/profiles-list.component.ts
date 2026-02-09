@@ -1,19 +1,18 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
-import { UserService } from '../../../../services/user.service';
+import { UserStore } from '../../../../stores/user.store';
 
 @Component({
     selector: 'io-profiles-list',
     templateUrl: './profiles-list.component.html',
     styleUrl: './profiles-list.component.scss',
     standalone: true,
-    imports: [CommonModule, ProfileAvatarComponent]
+    imports: [ProfileAvatarComponent]
 })
 export class ProfilesListComponent {
-
-    protected userService = inject(UserService);
+    protected userStore = inject(UserStore);
 
     profiles = input<UserModel[] | SubjectModel[]>();
     title = input<string>();

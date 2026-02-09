@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IncidentsOpenViewComponent } from "./incidents-open-view/incidents-open-view.component";
 import { IncidentService } from '../../../services/incident.service';
 import { IncidentModel } from '../../../models/incidents.model';
@@ -13,7 +12,7 @@ import { TokenType } from '../../../models/token.model';
     selector: 'io-incidents-open',
     templateUrl: './incidents-open.component.html',
     standalone: true,
-    imports: [CommonModule, IncidentsOpenViewComponent]
+    imports: [IncidentsOpenViewComponent]
 })
 export class IncidentsOpenComponent {
 

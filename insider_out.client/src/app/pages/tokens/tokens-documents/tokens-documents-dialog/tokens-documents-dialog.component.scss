@@ -1,0 +1,15 @@
+.dialog-content {
+    padding-top: 10px;
+
+    .document-form {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+
+        .document-control {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+    }
+}

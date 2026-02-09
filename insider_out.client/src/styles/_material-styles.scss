@@ -18,7 +18,7 @@ mat-icon {
     color: var(--color-primary-2) !important;
     
     &.info {
-        color: var(--color-gray) !important;
+        color: var(--color-text-2) !important;
         width: 20px;
         height: 20px;
         font-size: 20px;
@@ -39,13 +39,13 @@ mat-icon {
 }
 
 .mat-mdc-form-field {
-    --mdc-outlined-text-field-outline-color: var(--color-gray-2);
+    --mat-form-field-outlined-outline-color: var(--color-gray-2);
     
-    --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
-    --mdc-outlined-text-field-hover-outline-color: var(--color-primary);
+    --mat-form-field-outlined-focus-outline-color: var(--color-primary);
+    --mat-form-field-outlined-hover-outline-color: var(--color-primary);
 
-    --mdc-outlined-text-field-outline-color: var(--color-gray);
-    --mdc-outlined-text-field-disabled-outline-color: var(--color-gray);
+    --mat-form-field-outlined-outline-color: var(--color-gray);
+    --mat-form-field-outlined-disabled-outline-color: var(--color-gray);
     
     .mat-mdc-select-value, 
         .mat-mdc-input-element {
@@ -65,8 +65,8 @@ mat-icon {
     }
 
     &.mat-form-field-invalid {
-        --mdc-outlined-text-field-error-outline-color: var(--color-error);
-        --mdc-outlined-text-field-error-label-text-color: var(--color-error);
+        --mat-form-field-outlined-error-outline-color: var(--color-error);
+        --mat-form-field-outlined-error-label-text-color: var(--color-error);
         --mat-form-field-error-text-color: var(--color-error);
     }
 }
@@ -166,4 +166,16 @@ mat-nav-list {
 .mat-mdc-tooltip .mdc-tooltip__surface {
     background-color: var(--color-gray-2) !important;
     color: var(--color-bw) !important;
+}
+
+.mat-mdc-dialog-actions {
+    gap: 10px;
+
+    .buttons {
+        display: flex;
+    }
+
+    &:has(.steps) {
+        justify-content: space-between !important;
+    }
 }
