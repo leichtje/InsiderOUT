@@ -7,12 +7,12 @@
     @if (userStore.isCurrentUser(profile)) {
 
         <button>Edit Profile</button>
-        <button class="danger">Delete Account</button>
+        <button class="danger" (click)="onDelete(profile)">Delete Account</button>
 
     }
     @else if (isSubject(profile)) {
 
-        <button class="danger">Remove</button>
+        <button class="danger" (click)="onDelete(profile)">Remove</button>
 
     }
 

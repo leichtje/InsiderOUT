@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, signal } from "@angular/core";
 import { SubjectService } from "../../../../services/subject.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AsyncPipe } from "@angular/common";
 import { ProfileCardComponent } from "../../../../fragments/profile-card/profile-card.component";
 import { SubjectModel, UserModel } from "../../../../models/profile.model";
@@ -17,6 +17,7 @@ import { SubjectStore } from "../../../../stores/subject.store";
 
 export class ProfilesDetailComponent {
     private route = inject(ActivatedRoute);
+    private router = inject(Router);
     
     protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
@@ -54,5 +55,19 @@ export class ProfilesDetailComponent {
 
     isSubject(profile: UserModel | SubjectModel): profile is SubjectModel {
         return 'subjectId' in profile;
+    }
+
+    onDelete(profile: UserModel | SubjectModel) {
+        if (!confirm('Are you sure you want to delete this profile?')) {
+            return;
+        }
+
+        if (this.isSubject(profile)) {
+            this.subjectStore.delete(profile.subjectId);
+        } else {
+            this.userStore.delete(profile.userId);
+        }
+
+        this.router.navigate(['../../'], { relativeTo: this.route });
     }
 }
