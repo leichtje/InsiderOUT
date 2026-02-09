@@ -21,11 +21,11 @@ import { ErrorStateMatcher } from '@angular/material/core';
 })
 export class PillSelectComponent<T> implements ControlValueAccessor, DoCheck { 
 
-    options = input.required<T[]>();
-    varMap = input.required<Map<T, string>>();
-    textMap = input.required<Map<T, string>>();
-    label = input<string>('');
-    labelIcon = input<string>('');
+    readonly options$ = input.required<T[]>({alias: 'options'});
+    readonly varMap$ = input.required<Map<T, string>>({alias: 'varMap'});
+    readonly textMap$ = input.required<Map<T, string>>({alias: 'textMap'});
+    readonly label$ = input<string>('', {alias: 'label'});
+    readonly labelIcon$ = input<string>('', {alias: 'labelIcon'});
 
     value = signal<T | null>(null);
     isDisabled = signal(false);

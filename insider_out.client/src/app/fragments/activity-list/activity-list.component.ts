@@ -18,13 +18,13 @@ export class ActivityListComponent {
     
     protected userStore = inject(UserStore); 
 
-    entityId = input.required<number>(); 
-    entityType = input.required<ActivityScope>();
+    readonly entityId$ = input.required<number>({alias: 'entityId'}); 
+    readonly entityType$ = input.required<ActivityScope>({alias: 'entityType'});
 
     currentActivities = computed(() => {
         const all = this.activityService.activities();
-        const id = this.entityId();
-        const type = this.entityType();
+        const id = this.entityId$();
+        const type = this.entityType$();
 
         return all
             .filter(a => a.entityId === id && a.entityType === type)

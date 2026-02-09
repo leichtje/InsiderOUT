@@ -15,9 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class FilterComponent {
 
-    filterOptions = input<FilterOptionModel[]>([]);
-
-    filterTitle = input<string>('');
+    readonly filterOptions$ = input<FilterOptionModel[]>([], {alias: 'filterOptions'});
+    readonly filterTitle$ = input<string>('', {alias: 'filterTitle'});
 
     filterChanged = output<FilterValue>();
 

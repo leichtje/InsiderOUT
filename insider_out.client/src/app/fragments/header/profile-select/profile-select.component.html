@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
-    <mat-label>{{ label() }}</mat-label>
+    <mat-label>{{ label$() }}</mat-label>
 
     <mat-select 
         [value]="value()" 
@@ -20,7 +20,7 @@
             } @else {
                 <div class="select-value-row">
                     <mat-icon class="empty-icon">person_off</mat-icon>
-                    <span class="muted">{{ nullLabel() }}</span>
+                    <span class="muted">{{ nullLabel$() }}</span>
                 </div>
             }
         </mat-select-trigger>
@@ -28,12 +28,12 @@
         <mat-option [value]="null">
             <div class="select-value-row">
                 <mat-icon class="empty-icon">person_off</mat-icon>
-                <span class="muted">{{ nullLabel() }}</span>
+                <span class="muted">{{ nullLabel$() }}</span>
             </div>
         </mat-option>
 
-        @for (item of items(); track item[idKey()]) {
-            <mat-option [value]="item[idKey()]">
+        @for (item of items$(); track item[idKey$()]) {
+            <mat-option [value]="item[idKey$()]">
                 <div class="select-value-row">
                     <io-profile-avatar [profile]="item"></io-profile-avatar>
                     <div class="text-stack">

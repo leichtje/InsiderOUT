@@ -24,7 +24,7 @@ import { UserStore } from "../../stores/user.store";
 
 export class UserMenuComponent {
 
-    isUserMenuOpen = input<boolean>();
+    readonly isUserMenuOpen$ = input.required<boolean>({alias: 'isUserMenuOpen'});
 
     protected userStore = inject(UserStore); 
     

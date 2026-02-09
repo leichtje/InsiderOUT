@@ -1,6 +1,6 @@
 <div class="picker-container">
     
-    <div class="picker-box" [class.disabled]="isDisabled()" [class.hideDetail]="hideDetail()" (click)="openDialog()">
+    <div class="picker-box" [class.disabled]="isDisabled()" [class.hideDetail]="hideDetail$()" (click)="openDialog()">
         
         @if (selectedItem(); as item) {
             <div class="current-value">
@@ -19,7 +19,7 @@
                         
                 </div>
 
-                @if (!hideDetail()) {
+                @if (!hideDetail$()) {
                         <div class="info-grid">
 
                             @if (item.riskScore) {
@@ -48,13 +48,13 @@
             } @else {
                 <div class="placeholder">
                     <mat-icon>person_add</mat-icon>
-                    <span>{{ nullLabel() }}</span>
+                    <span>{{ nullLabel$() }}</span>
                 </div>
             }
 
         <div class="actions">
             
-            @if (enableAssignMe() && !selectedItem() && !isDisabled()) {
+            @if (enableAssignMe$() && !selectedItem() && !isDisabled()) {
                 <button (click)="assignToMe($event)">
                     Assign Me
                 </button>

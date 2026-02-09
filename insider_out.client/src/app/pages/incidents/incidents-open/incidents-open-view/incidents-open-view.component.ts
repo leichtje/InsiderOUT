@@ -31,14 +31,11 @@ export class IncidentsOpenViewComponent {
         { label: 'All Types', value: 'all', icon: 'list' }
     ];
 
-    incidents = input<IncidentModel[]>();
-    activeId = input<number | null>();
+    readonly incidents$ = input.required<IncidentModel[]>({alias: 'incidents'});
     
-    selectedIncident = input<IncidentModel | null>();
-    filterUserChange = output<FilterValue>();
-    filterTypeChange = output<FilterValue>();
-
-    @Output() incidentSelected = new EventEmitter<IncidentModel>();
+    readonly filterUserChange = output<FilterValue>();
+    readonly filterTypeChange = output<FilterValue>();
+    readonly incidentSelected = output<IncidentModel>()
 
     onIncidentClicked(incident: IncidentModel) {
         this.incidentSelected.emit(incident);

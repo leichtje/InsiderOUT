@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
+import { ProfileModel, SubjectModel, UserModel } from '../../models/profile.model';
 
 @Component({
     selector: 'io-profile-card',
@@ -10,5 +11,5 @@ import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.compone
     styleUrl: './profile-card.component.scss'
 })
 export class ProfileCardComponent {
-    profile = input.required<any>();
+    readonly profile$ = input.required<any>({alias: 'profile'});
 }

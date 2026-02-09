@@ -1,5 +1,5 @@
 
-import { Component, inject, input, OnDestroy, OnInit, signal, Signal } from "@angular/core";
+import { Component, inject, input, OnDestroy, OnInit, signal } from "@angular/core";
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { BidiModule } from "@angular/cdk/bidi";
@@ -24,7 +24,7 @@ import { NavigationService } from "../../services/sidebar.service";
 
 export class SidebarComponent implements OnInit, OnDestroy {
     
-    isMobileSidebarOpen = input<boolean>();
+    readonly isMobileSidebarOpen$ = input.required<boolean>({alias: 'isMobileSidebarOpen'});
     public openItem = signal<string | null>(null);
 
     private router = inject(Router);

@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, output, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
 import { UserStore } from '../../../../stores/user.store';
@@ -15,13 +15,13 @@ import { SkeletonLoaderComponent } from "../../../../fragments/skeleton-loader/s
 export class ProfilesListComponent {
     protected userStore = inject(UserStore);
 
-    profiles = input<UserModel[] | SubjectModel[]>();
-    title = input<string>();
-    @Output() profileSelected = new EventEmitter<UserModel | SubjectModel>();
-
-    activeId = input<number | null>();
-    activeType = input<'user' | 'subject' | null>();
-    listType = input<'user' | 'subject'>();
+    readonly profiles$ = input.required<UserModel[] | SubjectModel[]>({alias: 'profiles'});
+    readonly title$ = input.required<string>({alias: 'title'});
+    readonly activeId$ = input.required<number | null>({alias: 'activeId'});
+    readonly activeType$ = input.required<'user' | 'subject' | null>({alias: 'activeType'});
+    readonly listType$ = input.required<'user' | 'subject'>({alias: 'listType'});
+    
+    readonly profileSelected = output<UserModel | SubjectModel>();
 
     onSelectProfile(profile: UserModel | SubjectModel) {
         this.profileSelected.emit(profile);
@@ -29,12 +29,12 @@ export class ProfilesListComponent {
 
     isActive(profile: UserModel | SubjectModel): boolean {
         
-        if (this.activeType() !== this.listType()) {
+        if (this.activeType$() !== this.listType$()) {
             return false;
         }
 
         const id = ('userId' in profile) ? profile.userId : profile.subjectId;
-        return id === this.activeId();
+        return id === this.activeId$();
     }
 
 }

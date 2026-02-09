@@ -27,7 +27,7 @@ export class IncidentsListComponent {
     protected tokenService = inject(TokenService);
     protected tokenType = TokenType;
 
-    incidents = input<IncidentModel[]>();
+    readonly incidents$ = input.required<IncidentModel[]>({alias: 'incidents'});
 
     statusColors = status_colors;
     statusText = status_text;
@@ -40,10 +40,10 @@ export class IncidentsListComponent {
         this.incidentSelected.emit(incident);
     }
 
-    private incidents$ = toObservable(this.incidents);
+    private incidents = toObservable(this.incidents$);
 
     public incidentViewModels = toSignal(
-        this.incidents$.pipe(
+        this.incidents.pipe(
             switchMap(incidents => {
                 if (!incidents || incidents.length === 0) {
                     return of([]);

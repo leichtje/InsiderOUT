@@ -1,4 +1,4 @@
-@let incidents = this.incidents();
+@let incidents = this.incidents$();
 
 <div class="page-container">
     <io-filter [filterOptions]="filterUserOptions" filterTitle="User" (filterChanged)="filterUserChange.emit($event)"></io-filter>

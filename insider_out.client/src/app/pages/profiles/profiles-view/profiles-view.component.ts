@@ -13,10 +13,10 @@ import { ProfilesListComponent } from './profiles-list/profiles-list.component';
 })
 export class ProfilesViewComponent {
 
-    users = input<UserModel[]>();
-    subjects = input<SubjectModel[]>();
-    activeId = input<number | null>();
-    activeType = input<'user' | 'subject' | null>();
+    readonly users$ = input.required<UserModel[]>({alias: 'users'});
+    readonly subjects$ = input.required<SubjectModel[]>({alias: 'subjects'});
+    readonly activeId$ = input.required<number | null>({alias: 'activeId'});
+    readonly activeType$ = input.required<'user' | 'subject' | null>({alias: 'activeType'});
     
     selectedProfile = input<UserModel | SubjectModel | null>();
 

@@ -1,6 +1,5 @@
-import { Component, computed, inject, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 import { ProfileModel } from "../../models/profile.model";
-import { ThemeService } from "../../services/theme.service";
 
 @Component({
     selector:'io-profile-avatar',
@@ -11,7 +10,7 @@ import { ThemeService } from "../../services/theme.service";
 
 export class ProfileAvatarComponent {
 
-    profile = input<ProfileModel | null>();
+    readonly profile = input<ProfileModel | null>();
 
     enableHover = input(false);
 

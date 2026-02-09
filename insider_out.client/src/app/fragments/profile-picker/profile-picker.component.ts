@@ -24,19 +24,19 @@ export class ProfilePickerComponent implements ControlValueAccessor {
 private dialog = inject(ResponsiveDialogService);
     protected userStore = inject(UserStore); 
 
-    label = input.required<string>();
-    items = input.required<any[]>();
-    idKey = input.required<string>();
-    hideDetail = input<boolean>(false);
-    nullLabel = input('Unassigned');
-    enableAssignMe = input(false);
+    readonly label$ = input.required<string>({alias: 'label'});
+    readonly items$ = input.required<any[]>({alias: 'items'});
+    readonly idKey$ = input.required<string>({alias: 'idKey'});
+    readonly hideDetail$ = input<boolean>(false, {alias: 'hideDetail'});
+    readonly nullLabel$ = input('Unassigned', {alias: 'nullLabel'});
+    readonly enableAssignMe$ = input(false, {alias: 'enableAssignMe'});
 
     value = signal<number | null>(null);
     isDisabled = signal(false);
 
     selectedItem = computed(() => {
         const id = this.value();
-        return this.items().find(i => i[this.idKey()] === id) || null;
+        return this.items$().find(i => i[this.idKey$()] === id) || null;
     });
 
     onChange = (_: any) => {};
@@ -55,16 +55,16 @@ private dialog = inject(ResponsiveDialogService);
         maxWidth: '95vw',
         panelClass: 'io-modal-panel',
         data: {
-            title: `Select ${this.label()}`,
-            items: this.items(),
+            title: `Select ${this.label$()}`,
+            items: this.items$(),
             selectedId: this.value(),
-            idKey: this.idKey()
+            idKey: this.idKey$()
         } as ProfilePickerData
         });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result !== undefined) {
-                const newId = result ? result[this.idKey()] : null;
+                const newId = result ? result[this.idKey$()] : null;
                 this.value.set(newId);
                 this.onChange(newId);
             }
@@ -85,7 +85,7 @@ private dialog = inject(ResponsiveDialogService);
 
         const myId = currentUser.userId; 
 
-        const exists = this.items().some(i => i[this.idKey()] === myId);
+        const exists = this.items$().some(i => i[this.idKey$()] === myId);
         
         if (exists) {
             this.value.set(myId);

@@ -1,11 +1,11 @@
 <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>{{ filterTitle() }}</mat-label>
+    <mat-label>{{ filterTitle$() }}</mat-label>
     
     <mat-select 
         [value]="selectedFilter()" 
         (selectionChange)="onFilterChange($event.value)">
         
-        @for (option of filterOptions(); track option.value) {
+        @for (option of filterOptions$(); track option.value) {
             <mat-option [value]="option.value">
                 <mat-icon>{{ option.icon }}</mat-icon>
                 {{ option.label }}

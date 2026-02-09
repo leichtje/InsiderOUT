@@ -29,18 +29,18 @@ import { ProfileAvatarComponent } from '../../profile-avatar/profile-avatar.comp
 })
 export class ProfileSelectComponent implements ControlValueAccessor {
 
-    label = input.required<string>();
-    items = input.required<any[]>();
-    idKey = input.required<string>();
-    nullLabel = input('Unassigned');
+    readonly label$ = input.required<string>({alias: 'label'});
+    readonly items$ = input.required<any[]>({alias: 'items'});
+    readonly idKey$ = input.required<string>({alias: 'idKey'});
+    readonly nullLabel$ = input<string>('Unassigned', {alias: 'nullLabel'});
 
     value = signal<number | null>(null);
     isDisabled = signal(false);
 
     selectedItem = computed(() => {
         const currentId = this.value();
-        const list = this.items();
-        const key = this.idKey();
+        const list = this.items$();
+        const key = this.idKey$();
         
         if (!currentId || !list) return null;
         return list.find(item => item[key] === currentId) || null;

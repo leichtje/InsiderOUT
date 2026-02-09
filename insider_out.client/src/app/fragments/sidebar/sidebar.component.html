@@ -1,4 +1,4 @@
-@if (!breakpointService.isPhone() || (breakpointService.isPhone() && isMobileSidebarOpen())) {
+@if (!breakpointService.isPhone() || (breakpointService.isPhone() && isMobileSidebarOpen$())) {
     <div class="page-container sidebar-container"> 
         
         @for (item of sidebarItems; track item) {
