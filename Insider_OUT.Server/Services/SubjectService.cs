@@ -1,6 +1,6 @@
+using Insider_OUT.Server.Data.Models.Profiles;
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
-using InsiderOUT.Server.Data.Models.Profiles;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ namespace InsiderOUT.Server.Services
 {
     public class SubjectService : ISubjectService
     {
-        private readonly AppDbContext _db;
+        private readonly DBContext _db;
 
-        public SubjectService(AppDbContext db)
+        public SubjectService(DBContext db)
         {
             _db = db;
         }
