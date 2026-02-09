@@ -8,7 +8,7 @@
     
     <div class="info-grid">
 
-        @if (profile.riskScore) {
+        @if (profile.riskScore !== undefined && profile.riskScore !== null) {
             <span class="sub-label">Risk</span>
             <span>{{ profile.riskScore }}%</span>
         }

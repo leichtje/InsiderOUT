@@ -102,7 +102,7 @@ export const SubjectStore = signalStore(
                     switchMap((id) => http.delete(`${apiUrl}/${id}`).pipe(
                         tap(() => {
                             patchState(store, (state) => ({
-                                users: state.subjects.filter(u => u.subjectId !== id),
+                                subjects: state.subjects.filter(u => u.subjectId !== id),
                                 isLoading: false
                             }));
                         })
@@ -116,7 +116,7 @@ export const SubjectStore = signalStore(
                     switchMap(({ id, data }) => http.put(`${apiUrl}/${id}`, data).pipe(
                         tap(() => {
                             patchState(store, (state) => ({
-                                users: state.subjects.map(u => u.subjectId === id ? data : u),
+                                subjects: state.subjects.map(u => u.subjectId === id ? data : u),
                                 isLoading: false
                             }));
                         })
