@@ -27,20 +27,19 @@ export class ProfilesComponent {
 
     private activeRouteState = toSignal(
         this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(null), 
-        map(() => {
-            const child = this.route.firstChild;
-            if (child) {
-            const id = child.snapshot.paramMap.get('id');
-            const type = child.snapshot.url[0]?.path; 
-            return { 
-                id: id ? +id : null, 
-                type: type as 'user' | 'subject' | null 
-            };
-            }
-            return { id: null, type: null };
-        })
+            filter(event => event instanceof NavigationEnd),
+            startWith(null), 
+            map(() => {
+                const child = this.route.firstChild;
+                
+                const id = child?.snapshot?.paramMap?.get('id');
+                const type = child?.snapshot?.url?.[0]?.path; 
+
+                return { 
+                    id: id ? +id : null, 
+                    type: type as 'user' | 'subject' | null 
+                };
+            })
         ),
         { initialValue: { id: null, type: null } }
     );
