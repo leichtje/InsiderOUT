@@ -7,6 +7,13 @@
 
     &__title {
         @include mixins.font();
+        display: flex;
+        align-items: center;
+
+        button { 
+            width: 25px;
+            height: 25px;
+        }
     }
 
     io-skeleton-loader {

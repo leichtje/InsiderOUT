@@ -21,7 +21,7 @@ import { UserStore } from '../../stores/user.store';
     }]
 })
 export class ProfilePickerComponent implements ControlValueAccessor {
-private dialog = inject(ResponsiveDialogService);
+    private dialog = inject(ResponsiveDialogService);
     protected userStore = inject(UserStore); 
 
     readonly label$ = input.required<string>({alias: 'label'});

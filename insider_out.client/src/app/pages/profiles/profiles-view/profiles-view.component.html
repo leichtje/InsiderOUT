@@ -15,7 +15,6 @@
                 [activeType]="activeType"
                 [isLoading]="userStore.isLoading()"
                 (profileSelected)="onProfileClicked($event)"
-                (create)="onCreate()"
             ></io-profiles-list>
         </div>
 
@@ -28,6 +27,7 @@
                 [activeType]="activeType"
                 [isLoading]="subjectStore.isLoading()"
                 (profileSelected)="onProfileClicked($event)"
+                (create)="onCreate('subject')"
             ></io-profiles-list>
         </div>
 

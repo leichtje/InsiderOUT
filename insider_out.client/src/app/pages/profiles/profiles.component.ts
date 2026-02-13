@@ -9,6 +9,7 @@ import { UserStore } from '../../stores/user.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SubjectStore } from '../../stores/subject.store';
 import { ProfileDialogComponent } from './profiles-add-dialog/profiles-dialog.component';
+import { ResponsiveDialogService } from '../../services/responsive-dialog.service';
 
 @Component({
     selector: 'io-profiles',
@@ -17,15 +18,11 @@ import { ProfileDialogComponent } from './profiles-add-dialog/profiles-dialog.co
     imports: [ProfilesViewComponent, ProfileDialogComponent]
 })
 export class ProfilesComponent {
-    readonly dialog = viewChild.required(ProfileDialogComponent);
-
-    readonly dialogType = signal<'user' | 'subject'>('user');
-    readonly dialogData = signal<UserModel | SubjectModel | null>(null);
-
     protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
+    private dialog = inject(ResponsiveDialogService);
 
     protected users = this.userStore.users; 
     protected subjects = this.subjectStore.subjects; 
@@ -67,10 +64,11 @@ export class ProfilesComponent {
         this.router.navigate([`./${type}`, id], { relativeTo: this.route });
     }
 
-    openCreate() {
-        this.dialogType.set('subject');
-        this.dialogData.set(null); 
-        this.dialog().open();
+
+    openCreate(type: 'user' | 'subject') {
+        this.dialog.open(ProfileDialogComponent, {
+            data: { type: type, profile: null }
+        });
     }
 
 }

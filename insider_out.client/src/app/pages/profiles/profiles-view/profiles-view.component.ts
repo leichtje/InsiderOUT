@@ -24,14 +24,14 @@ export class ProfilesViewComponent {
     readonly selectedProfile = input<UserModel | SubjectModel | null>();
     
     readonly profileSelected = output<UserModel | SubjectModel>();
-    readonly create = output<void>();
+    readonly create = output<'user' | 'subject'>();
     
     onProfileClicked(profile: UserModel | SubjectModel) {
         this.profileSelected.emit(profile);
     }
 
-    onCreate() {
-        this.create.emit();
+    onCreate(type: 'user' | 'subject') {
+        this.create.emit(type);
     }
 
 }

@@ -5,13 +5,14 @@ import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/pro
 import { UserStore } from '../../../../stores/user.store';
 import { SkeletonLoaderComponent } from "../../../../fragments/skeleton-loader/skeleton-loader.component";
 import { SubjectStore } from '../../../../stores/subject.store';
+import { MatIcon, MatIconModule } from "@angular/material/icon";
 
 @Component({
     selector: 'io-profiles-list',
     templateUrl: './profiles-list.component.html',
     styleUrl: './profiles-list.component.scss',
     standalone: true,
-    imports: [ProfileAvatarComponent, SkeletonLoaderComponent]
+    imports: [ProfileAvatarComponent, SkeletonLoaderComponent, MatIconModule]
 })
 export class ProfilesListComponent {
     protected userStore = inject(UserStore);
