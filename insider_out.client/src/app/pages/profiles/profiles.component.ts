@@ -1,5 +1,5 @@
 
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SubjectService } from '../../services/subject.service';
 import { SubjectModel, UserModel } from '../../models/profile.model';
@@ -8,15 +8,20 @@ import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
 import { UserStore } from '../../stores/user.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SubjectStore } from '../../stores/subject.store';
+import { ProfileDialogComponent } from './profiles-add-dialog/profiles-dialog.component';
 
 @Component({
     selector: 'io-profiles',
     templateUrl: './profiles.component.html',
     standalone: true,
-    imports: [ProfilesViewComponent]
+    imports: [ProfilesViewComponent, ProfileDialogComponent]
 })
 export class ProfilesComponent {
-    
+    readonly dialog = viewChild.required(ProfileDialogComponent);
+
+    readonly dialogType = signal<'user' | 'subject'>('user');
+    readonly dialogData = signal<UserModel | SubjectModel | null>(null);
+
     protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
     private router = inject(Router);
@@ -44,8 +49,8 @@ export class ProfilesComponent {
         { initialValue: { id: null, type: null } }
     );
 
-    activeId = computed(() => this.activeRouteState()?.id);
-    activeType = computed(() => this.activeRouteState()?.type);
+    readonly activeId = computed(() => this.activeRouteState()?.id);
+    readonly activeType = computed(() => this.activeRouteState()?.type);
 
     onProfileSelected(profile: UserModel | SubjectModel) {
         const isUser = 'userId' in profile;
@@ -61,4 +66,17 @@ export class ProfilesComponent {
 
         this.router.navigate([`./${type}`, id], { relativeTo: this.route });
     }
+
+    openCreate(type: 'user' | 'subject') {
+        this.dialogType.set(type);
+        this.dialogData.set(null); 
+        this.dialog().open();
+    }
+
+    onEdit(profile: UserModel | SubjectModel) {
+        const isUser = 'userId' in profile;
+        this.dialogType.set(isUser ? 'user' : 'subject');
+        this.dialogData.set(profile);
+        this.dialog().open();
+	}
 }

@@ -4,4 +4,11 @@
     [activeId]="activeId()"
     [activeType]="activeType()"
     (profileSelected)="onProfileSelected($event)"
+    (edit)="onEdit($event)"
 ></io-profiles-view>
+
+<io-profile-dialog 
+    [type]="dialogType()" 
+    [profileToEdit]="dialogData()" 
+    (close)="dialogData.set(null)">
+</io-profile-dialog>

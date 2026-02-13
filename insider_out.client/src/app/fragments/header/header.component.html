@@ -5,7 +5,7 @@
         @if (breakpointService.isPhone()) {
             <div class="header-mobile-sidebar-button">
                 <mat-icon (click)="toggleMobileSidebar()">
-                    {{ isOpenMobileSidebar() ? 'close' : 'menu' }}
+                    {{ isOpenMobileSidebar$() ? 'close' : 'menu' }}
                 </mat-icon>
             </div>
         }
@@ -49,7 +49,7 @@
             {{ themeService.isDark() ? 'light_mode' : 'bedtime' }}
         </mat-icon>
         
-        @if (!isOpenUserMenu()){
+        @if (!isOpenUserMenu$()){
         <div class="header-avatar">
                 <io-profile-avatar (click)="toggleUserMenu()" [profile]="user" [enableHover]="true"></io-profile-avatar>
             </div>
@@ -61,6 +61,6 @@
 </div>
 
 
-@if (isOpenMobileSidebar() || isOpenUserMenu()){
+@if (isOpenMobileSidebar$() || isOpenUserMenu$()){
     <div class="page-backdrop" (click)="handleBackdrop()"></div>
 }

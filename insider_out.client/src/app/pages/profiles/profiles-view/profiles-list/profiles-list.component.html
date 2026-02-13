@@ -9,35 +9,37 @@
     @if (isLoading$()) {
         <io-skeleton-loader [lines]="3"></io-skeleton-loader>
     }
-
-    @for (profile of profiles; track profile) {
-        
-        <div class="profile-card" 
-            (click)="onSelectProfile(profile)" 
-            [class.profile-card--active]="isActive(profile)">
-
-            <div class="profile-card__avatar">
-                <io-profile-avatar [profile]="profile"></io-profile-avatar>
-            </div>
-            <div class="profile-card__info">
-                <div class="name">
-                    {{profile.firstName}}
-                    {{profile.lastName}}
+    @else {
+        @for (profile of profiles; track profile) {
+            
+            <div class="profile-card" 
+                (click)="onSelectProfile(profile)" 
+                [class.profile-card--active]="isActive(profile)">
+    
+                <div class="profile-card__avatar">
+                    <io-profile-avatar [profile]="profile"></io-profile-avatar>
                 </div>
-                @if (userStore.isCurrentUser(profile)){
-                    <div class="current-user">
-                        Current User
+                <div class="profile-card__info">
+                    <div class="name">
+                        {{profile.firstName}}
+                        {{profile.lastName}}
                     </div>
-                }
+                    @if (userStore.isCurrentUser(profile)){
+                        <div class="current-user">
+                            Current User
+                        </div>
+                    }
+                </div>
+    
+                <button (click)="openEdit(profile)">Edit</button>
+    
             </div>
-
-        </div>
-    } @empty {
-        @if (!isLoading$()) {
+        } @empty {
             <div class="empty-state">
                 No profiles found.
             </div>
         }
     }
+
 
 </div>

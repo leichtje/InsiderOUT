@@ -24,6 +24,8 @@ export class ProfilesListComponent {
     readonly isLoading$ = input<boolean>(false, {alias: 'isLoading'});
     
     readonly profileSelected = output<UserModel | SubjectModel>();
+	readonly edit = output<UserModel | SubjectModel>();
+
 
     onSelectProfile(profile: UserModel | SubjectModel) {
         this.profileSelected.emit(profile);
@@ -37,6 +39,10 @@ export class ProfilesListComponent {
 
         const id = ('userId' in profile) ? profile.userId : profile.subjectId;
         return id === this.activeId$();
+    }
+
+    openEdit(profile: UserModel | SubjectModel) {
+        this.edit.emit(profile); 
     }
 
     

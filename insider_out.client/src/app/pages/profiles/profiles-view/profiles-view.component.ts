@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, output, Output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { RouterOutlet } from '@angular/router';
 import { ProfilesListComponent } from './profiles-list/profiles-list.component';
@@ -21,13 +21,17 @@ export class ProfilesViewComponent {
     readonly subjects$ = input.required<SubjectModel[]>({alias: 'subjects'});
     readonly activeId$ = input.required<number | null>({alias: 'activeId'});
     readonly activeType$ = input.required<'user' | 'subject' | null>({alias: 'activeType'});
+    readonly selectedProfile = input<UserModel | SubjectModel | null>();
     
-    selectedProfile = input<UserModel | SubjectModel | null>();
-
-    @Output() profileSelected = new EventEmitter<UserModel | SubjectModel>();
-
+    readonly profileSelected = output<UserModel | SubjectModel>();
+    readonly edit = output<UserModel | SubjectModel>();
+    
     onProfileClicked(profile: UserModel | SubjectModel) {
         this.profileSelected.emit(profile);
+    }
+
+    onEdit(profile: UserModel | SubjectModel) {
+        this.edit.emit(profile);
     }
 
 }

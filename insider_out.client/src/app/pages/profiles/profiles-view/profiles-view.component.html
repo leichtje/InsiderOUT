@@ -15,6 +15,7 @@
                 [activeType]="activeType"
                 [isLoading]="userStore.isLoading()"
                 (profileSelected)="onProfileClicked($event)"
+                (edit)="onEdit($event)"
             ></io-profiles-list>
         </div>
 
@@ -27,6 +28,7 @@
                 [activeType]="activeType"
                 [isLoading]="subjectStore.isLoading()"
                 (profileSelected)="onProfileClicked($event)"
+                (edit)="onEdit($event)"
             ></io-profiles-list>
         </div>
 

@@ -6,6 +6,7 @@ import { BreakpointService } from "../../services/breakpoint.service";
 import { MatIcon } from "@angular/material/icon";
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { UserStore } from "../../stores/user.store";
+import { SubjectModel, UserModel } from "../../models/profile.model";
 
 
 @Component({
@@ -25,13 +26,13 @@ export class HeaderComponent {
 
 	protected userStore = inject(UserStore); 
 
-	isOpenMobileSidebar = input<boolean>(false); 
-	isOpenUserMenu = input<boolean>(false); 
+	readonly isOpenMobileSidebar$ = input<boolean>(false, {alias: 'isOpenMobileSidebar'}); 
+	readonly isOpenUserMenu$ = input<boolean>(false, {alias: 'isOpenUserMenu'}); 
 
-	isMobileSidebarOpen = output<boolean>();
-	isUserMenuOpen = output<boolean>();
+	readonly isMobileSidebarOpen = output<boolean>();
+	readonly isUserMenuOpen = output<boolean>();
 
-    isAnyMenuOpen = computed(() => this.isOpenMobileSidebar() || this.isOpenUserMenu());
+    isAnyMenuOpen = computed(() => this.isOpenMobileSidebar$() || this.isOpenUserMenu$());
 
 	constructor(public themeService: ThemeService, public breakpointService: BreakpointService) { }
 
@@ -40,25 +41,25 @@ export class HeaderComponent {
 	}
 
 	toggleMobileSidebar() {
-		this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar());
-		if (this.isOpenUserMenu()) {
-			this.isUserMenuOpen.emit(!this.isOpenUserMenu());
+		this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar$());
+		if (this.isOpenUserMenu$()) {
+			this.isUserMenuOpen.emit(!this.isOpenUserMenu$());
 		}
 	}
 
 	toggleUserMenu() {
-		this.isUserMenuOpen.emit(!this.isOpenUserMenu());
-		if (this.isOpenMobileSidebar()) {
-			this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar());
+		this.isUserMenuOpen.emit(!this.isOpenUserMenu$());
+		if (this.isOpenMobileSidebar$()) {
+			this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar$());
 		}
 	}
 
 	handleBackdrop() {
-		if (this.isOpenMobileSidebar()) {
-			this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar());
+		if (this.isOpenMobileSidebar$()) {
+			this.isMobileSidebarOpen.emit(!this.isOpenMobileSidebar$());
 		}
 		else {
-			this.isUserMenuOpen.emit(!this.isOpenUserMenu());
+			this.isUserMenuOpen.emit(!this.isOpenUserMenu$());
 		}
 	}
 }
