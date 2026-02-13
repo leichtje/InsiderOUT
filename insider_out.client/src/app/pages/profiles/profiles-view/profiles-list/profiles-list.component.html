@@ -4,6 +4,10 @@
 <div class="profiles-list">
     <div class="profiles-list__title">
         {{title}}
+
+        @if (listType$() === 'subject'){
+            <button (click)="onCreate()">Create</button>
+        }
     </div>
 
     @if (isLoading$()) {
@@ -29,10 +33,7 @@
                             Current User
                         </div>
                     }
-                </div>
-    
-                <button (click)="openEdit(profile)">Edit</button>
-    
+                </div>    
             </div>
         } @empty {
             <div class="empty-state">

@@ -67,16 +67,10 @@ export class ProfilesComponent {
         this.router.navigate([`./${type}`, id], { relativeTo: this.route });
     }
 
-    openCreate(type: 'user' | 'subject') {
-        this.dialogType.set(type);
+    openCreate() {
+        this.dialogType.set('subject');
         this.dialogData.set(null); 
         this.dialog().open();
     }
 
-    onEdit(profile: UserModel | SubjectModel) {
-        const isUser = 'userId' in profile;
-        this.dialogType.set(isUser ? 'user' : 'subject');
-        this.dialogData.set(profile);
-        this.dialog().open();
-	}
 }

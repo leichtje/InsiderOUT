@@ -36,7 +36,7 @@ export function toUserModel(dto: UserDto): UserModel {
 
 export function toUserDto(model: Partial<UserModel>): UserDto {
     return {
-        userId: model.userId ?? 0, // Default to 0 if missing
+        userId: model.userId ?? 0,
         userFirstName: model.firstName || '',
         userLastName: model.lastName || '',
         userEmail: model.email || '',

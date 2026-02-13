@@ -21,7 +21,7 @@ type SubjectState = {
     error: null,
 };
 
-export function mapSubject(dto: SubjectDto): SubjectModel {
+export function toSubjectModel(dto: SubjectDto): SubjectModel {
     return {
         subjectId: dto.subjectId,
         firstName: dto.subjectFirstName, 
@@ -31,6 +31,19 @@ export function mapSubject(dto: SubjectDto): SubjectModel {
         department: dto.subjectDepartment,
         riskScore: dto.subjectRiskScore,
         role: dto.subjectRole,
+    };
+}
+
+export function toSubjectDto(model: Partial<SubjectModel>): SubjectDto {
+    return {
+        subjectId: model.subjectId || 0,
+        subjectFirstName: model.firstName || '',
+        subjectLastName: model.lastName || '',
+        subjectEmail: model.email || '',
+        subjectPhone: model.phone,
+        subjectDepartment: model.department,
+        subjectRiskScore: model.riskScore || 0,
+        subjectRole: model.role || '',
     };
 }
 
@@ -47,11 +60,8 @@ export const SubjectStore = signalStore(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap(() => http.get<SubjectDto[]>(apiUrl).pipe(
-
-                        map((dtos) => dtos.map(dto => mapSubject(dto))),
-
+                        map((dtos) => dtos.map(toSubjectModel)),
                         tap((subjects) => {
-
                             patchState(store, { 
                                 subjects, 
                                 isLoading: false 
@@ -70,21 +80,10 @@ export const SubjectStore = signalStore(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
                     switchMap((newModel) => {
-                        
-                        const payload: Omit<SubjectDto, 'subjectId'> = {
-                            subjectFirstName: newModel.firstName,
-                            subjectLastName: newModel.lastName,
-                            subjectEmail: newModel.email,
-                            subjectPhone: newModel.phone,
-                            subjectDepartment: newModel.department,
-                            subjectRiskScore: newModel.riskScore,
-                            subjectRole: newModel.role ?? '',
-                        };
+                        const payload = toSubjectDto(newModel); 
 
                         return http.post<SubjectDto>(apiUrl, payload).pipe(
-                            
-                            map((createdDto) => mapSubject(createdDto)),
-
+                            map(toSubjectModel),
                             tap((createdSubject) => {
                                 patchState(store, (state) => ({
                                     subjects: [...state.subjects, createdSubject], 
@@ -113,14 +112,18 @@ export const SubjectStore = signalStore(
             update: rxMethod<{ id: number; data: SubjectModel }>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
-                    switchMap(({ id, data }) => http.put(`${apiUrl}/${id}`, data).pipe(
-                        tap(() => {
-                            patchState(store, (state) => ({
-                                subjects: state.subjects.map(u => u.subjectId === id ? data : u),
-                                isLoading: false
-                            }));
-                        })
-                    ))
+                    switchMap(({ id, data }) => {
+                        const payload = toSubjectDto(data);
+                        
+                        return http.put(`${apiUrl}/${id}`, data).pipe(
+                            tap(() => {
+                                patchState(store, (state) => ({
+                                    subjects: state.subjects.map(u => u.subjectId === id ? data : u),
+                                    isLoading: false
+                                }));
+                            })
+                        )
+                    })
                 )
             ),
 
