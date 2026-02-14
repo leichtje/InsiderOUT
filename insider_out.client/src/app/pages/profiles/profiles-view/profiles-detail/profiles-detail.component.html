@@ -6,7 +6,7 @@
 
     @if (userStore.isCurrentUser(profile)) {
 
-        <button>Edit Profile</button>
+        <button (click)="onEdit(profile)">Edit</button>
         <button class="danger" (click)="onDelete(profile)">Delete Account</button>
 
     }
