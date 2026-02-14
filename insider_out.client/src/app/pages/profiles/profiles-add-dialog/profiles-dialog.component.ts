@@ -38,7 +38,7 @@ export class ProfileDialogComponent {
         phone: [''],
         department: [''],
         role: [''],
-        riskScore: [0, [Validators.min(0), Validators.max(100)]]
+        riskScore: [0]
     });
 
     ngOnInit() {
