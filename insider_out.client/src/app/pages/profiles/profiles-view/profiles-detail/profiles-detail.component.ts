@@ -7,6 +7,8 @@ import { SubjectModel, UserModel } from "../../../../models/profile.model";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { UserStore } from "../../../../stores/user.store";
 import { SubjectStore } from "../../../../stores/subject.store";
+import { ResponsiveDialogService } from "../../../../services/responsive-dialog.service";
+import { ProfileDialogComponent } from "../../profiles-add-dialog/profiles-dialog.component";
 
 @Component({
     selector:'io-profiles-detail',
@@ -24,6 +26,7 @@ export class ProfilesDetailComponent {
 
     private params = toSignal(this.route.paramMap);
     private urlSegments = toSignal(this.route.url);
+    private dialog = inject(ResponsiveDialogService);
 
     constructor() {
         effect(() => {
@@ -69,5 +72,14 @@ export class ProfilesDetailComponent {
         }
 
         this.router.navigate(['../../'], { relativeTo: this.route });
+    }
+
+    onEdit(profile: UserModel | SubjectModel) {
+        const isUser = 'userId' in profile;
+        const type = isUser ? 'user' : 'subject';
+
+        this.dialog.open(ProfileDialogComponent, {
+            data: { type, profile }
+        });
     }
 }
