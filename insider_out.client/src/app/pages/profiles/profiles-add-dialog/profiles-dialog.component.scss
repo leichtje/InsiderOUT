@@ -18,6 +18,7 @@ form {
 input {
     width: 100%;
     padding: 0.5rem;
+    background-color: var(--color-back);
     border: 1px solid var(--color-gray-2);
     border-radius: 4px;
     outline: none;
@@ -28,9 +29,12 @@ input {
     }
 }
 
+label {
+    color: var(--color-text)
+}
+
 input.ng-invalid.ng-touched {
     border-color: var(--color-error);
-    background-color: var(--color-back);
 }
 
 .error-message {
