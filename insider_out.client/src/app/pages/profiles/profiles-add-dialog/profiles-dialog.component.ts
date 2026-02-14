@@ -32,12 +32,13 @@ export class ProfileDialogComponent {
     profileToEdit: UserModel | SubjectModel | null = null;
 
     form = this.fb.group({
-    firstName: ['', Validators.required],
+        firstName: ['', Validators.required],
         lastName: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         phone: [''],
         department: [''],
         role: [''],
+        riskScore: [0, [Validators.min(0), Validators.max(100)]]
     });
 
     ngOnInit() {

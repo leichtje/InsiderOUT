@@ -69,7 +69,15 @@
             <div class="form-group">
                 <label>Risk Score</label>
                 <div class="input-wrapper">
-                    <input formControlName="riskScore" type="number" min="0" max="100"/>
+                    <input formControlName="riskScore" type="number" />
+                    
+                    @if (form.controls.riskScore.invalid && form.controls.riskScore.touched) {
+                        <div class="error-message">
+                            @if (form.controls.riskScore.errors?.['min'] || form.controls.riskScore.errors?.['max']) {
+                                <span>Score must be between 0 and 100</span>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
         }
