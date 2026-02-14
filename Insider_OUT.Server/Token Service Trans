@@ -1,0 +1,295 @@
+--Token DTO
+namespace InsiderOUT.Server.Models.Dto
+{
+    public class TokenDto
+    {
+        public int TokenId { get; set; }          // DocumentId or EmailId
+        public string TokenType { get; set; }     // "document" or "email"
+        public string Severity { get; set; }      // Low, Medium, High
+
+        // Document fields
+        public string? Name { get; set; }
+        public string? Location { get; set; }
+
+        // Email fields
+        public string? Subject { get; set; }
+    }
+}
+
+
+-- ITokenService
+using InsiderOUT.Server.Models.Dto;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace InsiderOUT.Server.Services
+{
+    public interface ITokenService
+    {
+        Task<IEnumerable<TokenDto>> GetAllAsync();
+        Task<TokenDto?> GetByIdAsync(int id, string type);
+        Task<TokenDto> CreateAsync(TokenDto dto);
+        Task<bool> UpdateAsync(int id, string type, TokenDto dto);
+        Task<bool> DeleteAsync(int id, string type);
+    }
+}
+
+
+--TokenService
+using InsiderOUT.Server.Data;
+using InsiderOUT.Server.Models.Dto;
+using InsiderOUT.Server.Data.Models.Tokens;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace InsiderOUT.Server.Services
+{
+    public class TokenService : ITokenService
+    {
+        private readonly AppDbContext _db;
+
+        public TokenService(AppDbContext db)
+        {
+            _db = db;
+        }
+
+        public async Task<IEnumerable<TokenDto>> GetAllAsync()
+        {
+            var documents = await _db.Documents
+                .AsNoTracking()
+                .Select(d => new TokenDto
+                {
+                    TokenId = d.DocumentId,
+                    TokenType = "document",
+                    Severity = d.Severity.ToString(),
+                    Name = d.Name,
+                    Location = d.Location
+                })
+                .ToListAsync();
+
+            var emails = await _db.Emails
+                .AsNoTracking()
+                .Select(e => new TokenDto
+                {
+                    TokenId = e.EmailId,
+                    TokenType = "email",
+                    Severity = e.Severity.ToString(),
+                    Subject = e.Subject
+                })
+                .ToListAsync();
+
+            return documents.Concat(emails);
+        }
+
+        public async Task<TokenDto?> GetByIdAsync(int id, string type)
+        {
+            if (type == "document")
+            {
+                var d = await _db.Documents.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.DocumentId == id);
+
+                if (d == null) return null;
+
+                return new TokenDto
+                {
+                    TokenId = d.DocumentId,
+                    TokenType = "document",
+                    Severity = d.Severity.ToString(),
+                    Name = d.Name,
+                    Location = d.Location
+                };
+            }
+
+            if (type == "email")
+            {
+                var e = await _db.Emails.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.EmailId == id);
+
+                if (e == null) return null;
+
+                return new TokenDto
+                {
+                    TokenId = e.EmailId,
+                    TokenType = "email",
+                    Severity = e.Severity.ToString(),
+                    Subject = e.Subject
+                };
+            }
+
+            return null;
+        }
+
+        public async Task<TokenDto> CreateAsync(TokenDto dto)
+        {
+            if (dto.TokenType == "document")
+            {
+                var entity = new Document
+                {
+                    Name = dto.Name!,
+                    Location = dto.Location!,
+                    Severity = Enum.Parse<TokenSeverity>(dto.Severity)
+                };
+
+                _db.Documents.Add(entity);
+                await _db.SaveChangesAsync();
+
+                dto.TokenId = entity.DocumentId;
+                return dto;
+            }
+
+            if (dto.TokenType == "email")
+            {
+                var entity = new Email
+                {
+                    Subject = dto.Subject!,
+                    Severity = Enum.Parse<TokenSeverity>(dto.Severity)
+                };
+
+                _db.Emails.Add(entity);
+                await _db.SaveChangesAsync();
+
+                dto.TokenId = entity.EmailId;
+                return dto;
+            }
+
+            throw new InvalidOperationException("Invalid token type.");
+        }
+
+        public async Task<bool> UpdateAsync(int id, string type, TokenDto dto)
+        {
+            if (type == "document")
+            {
+                var entity = await _db.Documents.FindAsync(id);
+                if (entity == null) return false;
+
+                entity.Name = dto.Name!;
+                entity.Location = dto.Location!;
+                entity.Severity = Enum.Parse<TokenSeverity>(dto.Severity);
+
+                _db.Documents.Update(entity);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+
+            if (type == "email")
+            {
+                var entity = await _db.Emails.FindAsync(id);
+                if (entity == null) return false;
+
+                entity.Subject = dto.Subject!;
+                entity.Severity = Enum.Parse<TokenSeverity>(dto.Severity);
+
+                _db.Emails.Update(entity);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> DeleteAsync(int id, string type)
+        {
+            if (type == "document")
+            {
+                var entity = await _db.Documents.FindAsync(id);
+                if (entity == null) return false;
+
+                _db.Documents.Remove(entity);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+
+            if (type == "email")
+            {
+                var entity = await _db.Emails.FindAsync(id);
+                if (entity == null) return false;
+
+                _db.Emails.Remove(entity);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+
+
+-- Token Controller
+
+using Microsoft.AspNetCore.Mvc;
+using InsiderOUT.Server.Services;
+using InsiderOUT.Server.Models.Dto;
+using System.Threading.Tasks;
+
+namespace InsiderOUT.Server.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TokensController : ControllerBase
+    {
+        private readonly ITokenService _service;
+
+        public TokensController(ITokenService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var tokens = await _service.GetAllAsync();
+            return Ok(tokens);
+        }
+
+        [HttpGet("{type}/{id:int}")]
+        public async Task<IActionResult> GetById(string type, int id)
+        {
+            var token = await _service.GetByIdAsync(id, type);
+            if (token == null)
+                return NotFound();
+
+            return Ok(token);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] TokenDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var created = await _service.CreateAsync(dto);
+
+            return CreatedAtAction(nameof(GetById),
+                new { type = created.TokenType, id = created.TokenId },
+                created);
+        }
+
+        [HttpPut("{type}/{id:int}")]
+        public async Task<IActionResult> Update(string type, int id, [FromBody] TokenDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updated = await _service.UpdateAsync(id, type, dto);
+
+            if (!updated)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{type}/{id:int}")]
+        public async Task<IActionResult> Delete(string type, int id)
+        {
+            var deleted = await _service.DeleteAsync(id, type);
+
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+        }
+    }
+}
