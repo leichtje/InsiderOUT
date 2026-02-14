@@ -115,7 +115,7 @@ export const SubjectStore = signalStore(
                     switchMap(({ id, data }) => {
                         const payload = toSubjectDto(data);
                         
-                        return http.put(`${apiUrl}/${id}`, data).pipe(
+                        return http.put(`${apiUrl}/${id}`, payload).pipe(
                             tap(() => {
                                 patchState(store, (state) => ({
                                     subjects: state.subjects.map(u => u.subjectId === id ? data : u),
