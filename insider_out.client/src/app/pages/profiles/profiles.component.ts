@@ -3,7 +3,7 @@ import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SubjectService } from '../../services/subject.service';
 import { SubjectModel, UserModel } from '../../models/profile.model';
-import { filter, map, startWith } from 'rxjs';
+import { debounce, filter, map, startWith } from 'rxjs';
 import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
 import { UserStore } from '../../stores/user.store';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -99,9 +99,8 @@ export class ProfilesComponent {
         });
     }
 
-    onSearch(event: Event) {
-        const input = event.target as HTMLInputElement;
-        this.searchQuery.set(input.value);
+    onSearch(searchQuery: string) {
+        this.searchQuery.set(searchQuery);
     }
 
 }
