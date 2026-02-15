@@ -15,7 +15,7 @@ import { ResponsiveDialogService } from '../../services/responsive-dialog.servic
     selector: 'io-profiles',
     templateUrl: './profiles.component.html',
     standalone: true,
-    imports: [ProfilesViewComponent, ProfileDialogComponent]
+    imports: [ProfilesViewComponent]
 })
 export class ProfilesComponent {
     protected userStore = inject(UserStore);
@@ -49,6 +49,34 @@ export class ProfilesComponent {
     readonly activeId = computed(() => this.activeRouteState()?.id);
     readonly activeType = computed(() => this.activeRouteState()?.type);
 
+    readonly searchQuery = signal<string>('');
+
+    filteredUsers = computed(() => {
+        const query = this.searchQuery().toLowerCase();
+        const users = this.userStore.users();
+
+        if (!query) return users;
+
+        return users.filter(u => 
+            u.firstName.toLowerCase().includes(query) ||
+            u.lastName.toLowerCase().includes(query) ||
+            u.email.toLowerCase().includes(query)
+        );
+    });
+
+    filteredSubjects = computed(() => {
+        const query = this.searchQuery().toLowerCase();
+        const subjects = this.subjectStore.subjects();
+
+        if (!query) return subjects;
+
+        return subjects.filter(s => 
+            s.firstName.toLowerCase().includes(query) ||
+            s.lastName.toLowerCase().includes(query) ||
+            s.email.toLowerCase().includes(query)
+        );
+    });
+
     onProfileSelected(profile: UserModel | SubjectModel) {
         const isUser = 'userId' in profile;
         const type = isUser ? 'user' : 'subject';
@@ -69,6 +97,11 @@ export class ProfilesComponent {
         this.dialog.open(ProfileDialogComponent, {
             data: { type: type, profile: null }
         });
+    }
+
+    onSearch(event: Event) {
+        const input = event.target as HTMLInputElement;
+        this.searchQuery.set(input.value);
     }
 
 }

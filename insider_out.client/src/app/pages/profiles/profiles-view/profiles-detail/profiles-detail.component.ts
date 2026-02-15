@@ -14,7 +14,7 @@ import { ProfileDialogComponent } from "../../profiles-add-dialog/profiles-dialo
     selector:'io-profiles-detail',
     templateUrl:'profiles-detail.component.html',
     standalone:true,
-    imports: [AsyncPipe, ProfileCardComponent]
+    imports: [ProfileCardComponent]
 })
 
 export class ProfilesDetailComponent {

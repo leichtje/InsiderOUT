@@ -12,9 +12,8 @@ import { ResponsiveDialogService } from '../../../../services/responsive-dialog.
     styleUrl: './tokens-documents-view.component.scss',
     standalone: true,
     imports: [
-    FilterComponent,
-    MatIcon
-]
+        MatIcon
+    ]
 })
 export class TokensDocumentsViewComponent {
 
@@ -26,14 +25,6 @@ export class TokensDocumentsViewComponent {
             data: {
             } as TokensDocumentsDialogData
         });
-
-        // dialogRef.afterClosed().subscribe(result => {
-        // if (result !== undefined) {
-        //     const newId = result ? result[this.idKey()] : null;
-        //     this.value.set(newId);
-        //     this.onChange(newId);
-        // }
-        // });
     }
 
 

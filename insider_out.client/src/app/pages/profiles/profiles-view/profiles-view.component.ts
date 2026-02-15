@@ -5,6 +5,9 @@ import { RouterOutlet } from '@angular/router';
 import { ProfilesListComponent } from './profiles-list/profiles-list.component';
 import { UserStore } from '../../../stores/user.store';
 import { SubjectStore } from '../../../stores/subject.store';
+import { MatFormField, MatLabel } from "@angular/material/select";
+import { MatIcon } from "@angular/material/icon";
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'io-profiles-view',
@@ -26,6 +29,9 @@ export class ProfilesViewComponent {
     readonly profileSelected = output<UserModel | SubjectModel>();
     readonly create = output<'user' | 'subject'>();
     
+    readonly searchQuery = input<string>(''); 
+    readonly searchQueryChange = output<string>();
+
     onProfileClicked(profile: UserModel | SubjectModel) {
         this.profileSelected.emit(profile);
     }

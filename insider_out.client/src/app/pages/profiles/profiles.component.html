@@ -1,8 +1,10 @@
 <io-profiles-view
-    [users]="users()"
-    [subjects]="subjects()"
+    [users]="filteredUsers()"
+    [subjects]="filteredSubjects()"
     [activeId]="activeId()"
     [activeType]="activeType()"
+    [searchQuery]="searchQuery()"
     (profileSelected)="onProfileSelected($event)"
     (create)="openCreate($event)"
+    (onSearch)="onSearch($event)"
 ></io-profiles-view>

@@ -4,7 +4,19 @@
 @let activeType = this.activeType$();
 
 <div class="page-container profiles">
+
+    
     <div class="profiles-list">
+
+        <div class="search-bar">
+            <input 
+                type="text" 
+                #searchInput
+                placeholder="Search Profiles..." 
+                (input)="searchQueryChange.emit(searchInput.value)"
+                [value]="searchQuery()"
+            />
+        </div>
 
         <div class="profiles-list-users">
             <io-profiles-list 

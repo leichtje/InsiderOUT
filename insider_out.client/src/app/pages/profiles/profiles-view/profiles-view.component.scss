@@ -14,5 +14,9 @@
         margin-right: 20px;
         border-right: 2px solid var(--color-gray);
         overflow: auto;
+
+        .search-bar {
+            padding-right: 10px;
+        }
     }
 } 
