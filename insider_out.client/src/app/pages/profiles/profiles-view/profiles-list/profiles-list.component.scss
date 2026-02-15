@@ -9,6 +9,18 @@
         @include mixins.font();
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+
+        .title-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .collapse-icon { 
+                transition: transform 0.2s ease;
+            }
+        }
 
         button { 
             width: 25px;

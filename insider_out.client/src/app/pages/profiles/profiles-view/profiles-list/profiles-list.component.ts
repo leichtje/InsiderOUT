@@ -1,5 +1,5 @@
 
-import { Component, computed, EventEmitter, inject, input, output, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, input, output, Output, signal } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../../models/profile.model';
 import { ProfileAvatarComponent } from '../../../../fragments/profile-avatar/profile-avatar.component';
 import { UserStore } from '../../../../stores/user.store';
@@ -27,6 +27,7 @@ export class ProfilesListComponent {
     readonly profileSelected = output<UserModel | SubjectModel>();
 	readonly create = output<void>();
 
+    readonly isCollapsed$ = signal(false);
 
     onSelectProfile(profile: UserModel | SubjectModel) {
         this.profileSelected.emit(profile);
@@ -46,5 +47,8 @@ export class ProfilesListComponent {
         this.create.emit(); 
     }
 
+    toggleCollapse() {
+        this.isCollapsed$.update(state => !state);
+    }
     
 }
