@@ -1,6 +1,6 @@
 
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { IncidentsOpenViewComponent } from "./incidents-open-view/incidents-open-view.component";
 import { IncidentService } from '../../../services/incident.service';
 import { IncidentModel } from '../../../models/incidents.model';
@@ -26,40 +26,42 @@ export class IncidentsOpenComponent {
     protected currentUserFilter = signal<FilterValue>('all');
     protected currentTypeFilter = signal<FilterValue>('all');
 
-protected filteredIncidents = computed(() => {
-    const incidents = this.allIncidents();
-    const userFilter = this.currentUserFilter();
-    const typeFilter = this.currentTypeFilter();
-    const currentUser = this.userService.currentUser();
-    
-    let result = incidents; 
+    protected filteredIncidents = computed(() => {
+        const incidents = this.allIncidents();
+        const userFilter = this.currentUserFilter();
+        const typeFilter = this.currentTypeFilter();
+        const currentUser = this.userService.currentUser();
+        
+        let result = incidents; 
 
-    switch (userFilter) {
-        case 'mine':
-            result = result.filter(i => i.assignedUserId === currentUser?.userId);
-            break;
-        
-        case 'unassigned':
-            result = result.filter(i => !i.assignedUserId);
-            break;            
-        
-        case 'all':
-        default:
-            break;
-    }
+        return result;
 
-    switch (typeFilter) {
-        case 'document':
-            return result.filter(i => i.tokenType === TokenType.document);
-        
-        case 'email':
-            return result.filter(i => i.tokenType === TokenType.email);
-        
-        case 'all':
-        default:
-            return result;
-    }
-});
+        // switch (userFilter) {
+        //     case 'mine':
+        //         result = result.filter(i => i.assignedUserId === currentUser?.userId);
+        //         break;
+            
+        //     case 'unassigned':
+        //         result = result.filter(i => !i.assignedUserId);
+        //         break;            
+            
+        //     case 'all':
+        //     default:
+        //         break;
+        // }
+
+        // switch (typeFilter) {
+        //     case 'document':
+        //         return result.filter(i => i.tokenType === TokenType.document);
+            
+        //     case 'email':
+        //         return result.filter(i => i.tokenType === TokenType.email);
+            
+        //     case 'all':
+        //     default:
+        //         return result;
+        // }
+    });
 
     onUserFilterChange(newFilter: FilterValue) {
         this.currentUserFilter.set(newFilter);

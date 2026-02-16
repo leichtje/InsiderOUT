@@ -4,7 +4,7 @@ import { IncidentModel } from '../../../../models/incidents.model';
 import { IncidentsListComponent } from "../../incidents-list/incidents-list.component";
 import { FilterOptionModel, FilterValue } from '../../../../models/filter.model';
 import { MatIcon } from "@angular/material/icon";
-import { FilterComponent } from '../../../../fragments/incidents-filter/filter.component';
+import { FilterComponent } from '../../../../fragments/filter/filter.component';
 
 @Component({
     selector: 'io-incidents-open-view',

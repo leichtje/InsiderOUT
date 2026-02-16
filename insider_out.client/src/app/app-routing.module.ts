@@ -12,6 +12,7 @@ import { IncidentsDetailComponent } from './pages/incidents/incidents-detail/inc
 import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 import { TokensDocumentsComponent } from './pages/tokens/tokens-documents/tokens-documents.component';
 import { TokensEmailsComponent } from './pages/tokens/tokens-emails/tokens-emails.component';
+import { TokensDocumentsDetailComponent } from './pages/tokens/tokens-documents/tokens-documents-detail/tokens-documents-detail.component';
 
 const routes: Routes = [
     /* Home */
@@ -40,7 +41,7 @@ const routes: Routes = [
         component: IncidentsComponent,
         children: [
             { path: 'documents', component: TokensDocumentsComponent},
-            // { path: 'documents/:id', component: TokensDocumentsDetailComponent, canDeactivate: [unsavedChangesGuard]},
+            { path: 'documents/:id', component: TokensDocumentsDetailComponent, canDeactivate: [unsavedChangesGuard]},
             { path: 'emails', component: TokensEmailsComponent },
             // { path: 'emails/:id', component: TokensEmailsDetailComponent, canDeactivate: [unsavedChangesGuard]}
         ]

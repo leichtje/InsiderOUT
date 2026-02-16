@@ -4,6 +4,8 @@ export enum TokenType {
 }
 
 export interface TokenModel {
+    tokenId: number;
+    updated: Date;
     type: TokenType;
     severity: TokenSensitivity;
 }

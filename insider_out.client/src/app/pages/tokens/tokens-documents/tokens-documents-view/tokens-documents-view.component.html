@@ -1,5 +1,25 @@
+<!-- @let documents = this.filteredDocuments$(); -->
+
 <div class="page-container">
     *Find / Search for Doc*
     *Department filter*
     <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
+
+    <!-- <br>
+    <br>
+
+    @if (documents?.length === 0) {
+        <div class="no-results">
+            <mat-icon>info</mat-icon>
+            <p>No documents found matching the selected filters.</p>
+        </div>
+    }
+    @else {
+        <io-tokens-list
+            [tokens]="documents"
+            (tokenSelected)="onTokenClicked($event)"
+        ></io-tokens-list>
+    } -->
+
+
 </div>

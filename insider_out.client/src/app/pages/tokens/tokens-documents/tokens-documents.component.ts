@@ -1,6 +1,11 @@
-
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
 import { TokensDocumentsViewComponent } from "./tokens-documents-view/tokens-documents-view.component";
+import { TokenService } from '../../../services/token.service';
+import { UserService } from '../../../services/user.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FilterValue } from '../../../models/filter.model';
+import { TokenModel } from '../../../models/token.model';
 
 @Component({
     selector: 'io-tokens-documents',
@@ -9,5 +14,66 @@ import { TokensDocumentsViewComponent } from "./tokens-documents-view/tokens-doc
     imports: [TokensDocumentsViewComponent]
 })
 export class TokensDocumentsComponent {
+
+    protected tokenService = inject(TokenService);
+    protected userService = inject(UserService);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+
+    private allDocumentTokens = this.tokenService.documents;
+
+    protected currentUserFilter = signal<FilterValue>('all');
+    protected currentTypeFilter = signal<FilterValue>('all');
+
+    protected filteredDocuments = computed(() => {
+        const tokens = this.allDocumentTokens();
+        const userFilter = this.currentUserFilter();
+        const typeFilter = this.currentTypeFilter();
+        const currentUser = this.userService.currentUser();
+        
+        let result = tokens; 
+
+        // switch (userFilter) {
+        //     case 'mine':
+        //         result = result.filter(i => i.assignedUserId === currentUser?.userId);
+        //         break;
+            
+        //     case 'unassigned':
+        //         result = result.filter(i => !i.assignedUserId);
+        //         break;            
+            
+        //     case 'all':
+        //     default:
+        //         break;
+        // }
+
+        // switch (typeFilter) {
+        //     case 'document':
+        //         return result.filter(i => i.tokenType === TokenType.document);
+            
+        //     case 'email':
+        //         return result.filter(i => i.tokenType === TokenType.email);
+            
+        //     case 'all':
+        //     default:
+        //         return result;
+        // }
+        return result;
+    });
+
+    onUserFilterChange(newFilter: FilterValue) {
+        this.currentUserFilter.set(newFilter);
+    }
+
+    onTypeFilterChange(newFilter: FilterValue) {
+        this.currentTypeFilter.set(newFilter);
+    }
+
+    onIncidentSelected(token: TokenModel) {
+        const id = token.tokenId;
+
+        this.router.navigate([id], { relativeTo: this.route });
+    }
+
 
 }
