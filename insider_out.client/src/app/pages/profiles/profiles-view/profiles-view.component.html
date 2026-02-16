@@ -12,7 +12,7 @@
             <input 
                 type="text" 
                 #searchInput
-                placeholder="Search Profiles..." 
+                placeholder="Search Profiles" 
                 (input)="searchQueryChange.emit(searchInput.value)"
                 [value]="searchQuery()"
             />

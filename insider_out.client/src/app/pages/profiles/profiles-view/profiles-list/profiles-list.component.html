@@ -12,7 +12,7 @@
             {{title}}
         </div>
 
-        @if (listType$() === 'subject'){
+        @if (listType$() === 'subject' && !isLoading$()){
             <button (click)="onCreate(); $event.stopPropagation()">
                 <mat-icon>add</mat-icon>
             </button>

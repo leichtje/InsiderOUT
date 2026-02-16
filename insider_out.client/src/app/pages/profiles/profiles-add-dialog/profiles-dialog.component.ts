@@ -9,6 +9,7 @@ import { IncidentsListComponent } from "../../../fragments/dialog/dialog-header/
 
 export interface ProfileDialogData {
     type: 'user' | 'subject',
+    title: string;
     profile: UserModel | SubjectModel | null
 }
 

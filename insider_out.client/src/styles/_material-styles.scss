@@ -179,3 +179,9 @@ mat-nav-list {
         justify-content: space-between !important;
     }
 }
+
+
+.cdk-overlay-backdrop {
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+}

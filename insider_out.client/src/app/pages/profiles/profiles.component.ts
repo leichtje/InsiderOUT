@@ -1,9 +1,7 @@
-
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { SubjectService } from '../../services/subject.service';
+import { Component, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { SubjectModel, UserModel } from '../../models/profile.model';
-import { debounce, filter, map, startWith } from 'rxjs';
+import { filter, map, startWith } from 'rxjs';
 import { ProfilesViewComponent } from './profiles-view/profiles-view.component';
 import { UserStore } from '../../stores/user.store';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -95,7 +93,7 @@ export class ProfilesComponent {
 
     openCreate(type: 'user' | 'subject') {
         this.dialog.open(ProfileDialogComponent, {
-            data: { type: type, profile: null }
+            data: { type: type, title: 'Employee', profile: null }
         });
     }
 

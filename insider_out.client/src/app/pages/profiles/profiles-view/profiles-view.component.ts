@@ -1,13 +1,9 @@
-
-import { Component, EventEmitter, inject, input, output, Output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { SubjectModel, UserModel } from '../../../models/profile.model';
 import { RouterOutlet } from '@angular/router';
 import { ProfilesListComponent } from './profiles-list/profiles-list.component';
 import { UserStore } from '../../../stores/user.store';
 import { SubjectStore } from '../../../stores/subject.store';
-import { MatFormField, MatLabel } from "@angular/material/select";
-import { MatIcon } from "@angular/material/icon";
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'io-profiles-view',

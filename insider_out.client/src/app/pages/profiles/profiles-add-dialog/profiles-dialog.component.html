@@ -1,5 +1,5 @@
 <io-dialog-header
-    [title]="profileToEdit ? 'Edit' : 'Create' "
+    [title]="profileToEdit ? 'Edit ' + data.title : 'Add ' + data.title "
     (close)="closeDialog()"
     >
 </io-dialog-header>
@@ -73,6 +73,6 @@
 <mat-dialog-actions>
     <button class="flat" (click)="closeDialog()">Cancel</button>
     <button (click)="save()" [disabled]="form.invalid">
-        {{ profileToEdit ? 'Save Changes' : 'Create' }}
+        {{ profileToEdit ? 'Save Changes' : 'Add' }}
     </button>
 </mat-dialog-actions>

@@ -77,9 +77,10 @@ export class ProfilesDetailComponent {
     onEdit(profile: UserModel | SubjectModel) {
         const isUser = 'userId' in profile;
         const type = isUser ? 'user' : 'subject';
+        const title = isUser ? 'User' : 'Employee';
 
         this.dialog.open(ProfileDialogComponent, {
-            data: { type, profile }
+            data: { type, title,profile }
         });
     }
 }

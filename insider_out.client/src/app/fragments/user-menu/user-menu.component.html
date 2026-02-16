@@ -7,25 +7,28 @@
             <div class="user-menu-avatar">
                 <io-profile-avatar [profile]="user"></io-profile-avatar>
             </div>
-            <div class="user-menu-name">Welcome, {{ user?.firstName }}</div>
+            @if (user) {
+                <div class="user-menu-name">Welcome, {{ user?.firstName }}</div>
+            }
         </div>
 
         <div class="divider"></div>
 
         <div class="user-menu-options">
 
-            <!-- Will need to be current user -->
-            <a class="user-menu-item" [routerLink]="['/settings/profiles/user', user?.userId]">
-                <div class="user-menu-option-title" routerLinkActive="user-menu-option-active">
-                    <mat-icon>settings</mat-icon> Settings
-                </div>
-            </a>
-
-            <a class="user-menu-item" routerLink="/logout">
-                <div class="user-menu-option-title">
-                    <mat-icon>logout</mat-icon> Logout
-                </div>
-            </a>
+            @if (user) {
+                <a class="user-menu-item" [routerLink]="['/settings/profiles/user', user?.userId]">
+                    <div class="user-menu-option-title" routerLinkActive="user-menu-option-active">
+                        <mat-icon>settings</mat-icon> Settings
+                    </div>
+                </a>
+                
+                <a class="user-menu-item" routerLink="/logout">
+                    <div class="user-menu-option-title">
+                        <mat-icon>logout</mat-icon> Logout
+                    </div>
+                </a>
+            }
 
         </div>
             
