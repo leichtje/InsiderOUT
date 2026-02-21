@@ -39,5 +39,5 @@ export interface DocumentDto {
     name: string;
     location: string;
     tokenType: string; 
-    tokenSensitivity: string;
+    tokenSeverity: string;
 }

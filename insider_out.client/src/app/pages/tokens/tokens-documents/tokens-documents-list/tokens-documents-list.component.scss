@@ -23,7 +23,7 @@
     background-color: var(--color-primary-4);
     border-radius: 5px;
     cursor: pointer;
-    width: 600px;
+    width: 400px;
 
     @include mixins.mobile(){
         width: 100%;
@@ -50,17 +50,17 @@
             }
         }
 
-        .document-card__title {
+        .documents-card__title {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
             font-weight: 600;
             padding: 10px;
             height: 30px;
             @include mixins.font();
         }
 
-        .document-card__details {
+        .documents-card__details {
             padding: 10px;
             display: flex;
             flex-direction: column;
