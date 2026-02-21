@@ -1,267 +1,5 @@
---Token DTO
-namespace InsiderOUT.Server.Models.Dto
-{
-    public class TokenDto
-    {
-        public int TokenId { get; set; }
-        public string TokenType { get; set; }      // "document", "email", etc.
-        public string TokenSeverity { get; set; }  // "Low", "Medium", "High"
-    }
-}
+--- DTO
 
-
-
--- ITokenService
-using InsiderOUT.Server.Models.Dto;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace InsiderOUT.Server.Services
-{
-    public interface ITokenService
-    {
-        Task<IEnumerable<TokenDto>> GetAllAsync();
-        Task<TokenDto?> GetByIdAsync(int id);
-        Task<TokenDto> CreateAsync(TokenDto dto);
-        Task<bool> UpdateAsync(int id, TokenDto dto);
-        Task<bool> DeleteAsync(int id);
-    }
-}
-
-
-
---TokenService
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models.Dto;
-using InsiderOUT.Server.Data.Models.Tokens;
-using Microsoft.EntityFrameworkCore;
-
-namespace InsiderOUT.Server.Services
-{
-    public class TokenService : ITokenService
-    {
-        private readonly AppDbContext _db;
-
-        public TokenService(AppDbContext db)
-        {
-            _db = db;
-        }
-
-        public async Task<IEnumerable<TokenDto>> GetAllAsync()
-        {
-            return await _db.Tokens
-                .AsNoTracking()
-                .Select(t => new TokenDto
-                {
-                    TokenId = t.TokenId,
-                    TokenType = t.TokenType,
-                    TokenSeverity = t.TokenSeverity
-                })
-                .ToListAsync();
-        }
-
-        public async Task<TokenDto?> GetByIdAsync(int id)
-        {
-            var t = await _db.Tokens.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.TokenId == id);
-
-            if (t == null) return null;
-
-            return new TokenDto
-            {
-                TokenId = t.TokenId,
-                TokenType = t.TokenType,
-                TokenSeverity = t.TokenSeverity
-            };
-        }
-
-        public async Task<TokenDto> CreateAsync(TokenDto dto)
-        {
-            var entity = new Token
-            {
-                TokenType = dto.TokenType,
-                TokenSeverity = dto.TokenSeverity
-            };
-
-            _db.Tokens.Add(entity);
-            await _db.SaveChangesAsync();
-
-            dto.TokenId = entity.TokenId;
-            return dto;
-        }
-
-        public async Task<bool> UpdateAsync(int id, TokenDto dto)
-        {
-            var entity = await _db.Tokens.FindAsync(id);
-            if (entity == null) return false;
-
-            entity.TokenType = dto.TokenType;
-            entity.TokenSeverity = dto.TokenSeverity;
-
-            await _db.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var entity = await _db.Tokens.FindAsync(id);
-            if (entity == null) return false;
-
-            _db.Tokens.Remove(entity);
-            await _db.SaveChangesAsync();
-            return true;
-        }
-    }
-}
-
--- Token Controller
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models.Dto;
-using InsiderOUT.Server.Data.Models.Tokens;
-using Microsoft.EntityFrameworkCore;
-
-namespace InsiderOUT.Server.Services
-{
-    public class TokenService : ITokenService
-    {
-        private readonly AppDbContext _db;
-
-        public TokenService(AppDbContext db)
-        {
-            _db = db;
-        }
-
-        public async Task<IEnumerable<TokenDto>> GetAllAsync()
-        {
-            return await _db.Tokens
-                .AsNoTracking()
-                .Select(t => new TokenDto
-                {
-                    TokenId = t.TokenId,
-                    TokenType = t.TokenType,
-                    TokenSeverity = t.TokenSeverity
-                })
-                .ToListAsync();
-        }
-
-        public async Task<TokenDto?> GetByIdAsync(int id)
-        {
-            var t = await _db.Tokens.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.TokenId == id);
-
-            if (t == null) return null;
-
-            return new TokenDto
-            {
-                TokenId = t.TokenId,
-                TokenType = t.TokenType,
-                TokenSeverity = t.TokenSeverity
-            };
-        }
-
-        public async Task<TokenDto> CreateAsync(TokenDto dto)
-        {
-            var entity = new Token
-            {
-                TokenType = dto.TokenType,
-                TokenSeverity = dto.TokenSeverity
-            };
-
-            _db.Tokens.Add(entity);
-            await _db.SaveChangesAsync();
-
-            dto.TokenId = entity.TokenId;
-            return dto;
-        }
-
-        public async Task<bool> UpdateAsync(int id, TokenDto dto)
-        {
-            var entity = await _db.Tokens.FindAsync(id);
-            if (entity == null) return false;
-
-            entity.TokenType = dto.TokenType;
-            entity.TokenSeverity = dto.TokenSeverity;
-
-            await _db.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var entity = await _db.Tokens.FindAsync(id);
-            if (entity == null) return false;
-
-            _db.Tokens.Remove(entity);
-            await _db.SaveChangesAsync();
-            return true;
-        }
-    }
-}
-
-
--- TokensController
-using Microsoft.AspNetCore.Mvc;
-using InsiderOUT.Server.Services;
-using InsiderOUT.Server.Models.Dto;
-
-namespace InsiderOUT.Server.Controllers
-{
-    [ApiController]
-    [Route("api/[controller]")]
-    public class TokensController : ControllerBase
-    {
-        private readonly ITokenService _service;
-
-        public TokensController(ITokenService service)
-        {
-            _service = service;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-            => Ok(await _service.GetAllAsync());
-
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var token = await _service.GetByIdAsync(id);
-            return token == null ? NotFound() : Ok(token);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TokenDto dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.TokenId }, created);
-        }
-
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] TokenDto dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var ok = await _service.UpdateAsync(id, dto);
-            return ok ? NoContent() : NotFound();
-        }
-
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var ok = await _service.DeleteAsync(id);
-            return ok ? NoContent() : NotFound();
-        }
-    }
-}
-
-
-
-
-
-
-
---Document Dto
 namespace InsiderOUT.Server.Models.Dto
 {
     public class DocumentDto
@@ -269,15 +7,17 @@ namespace InsiderOUT.Server.Models.Dto
         public int DocumentId { get; set; }
         public int TokenId { get; set; }
 
-        public string Name { get; set; }           // DocumentName
-        public string? Location { get; set; }      // frontend-only for now
+        public string Name { get; set; }              // DocumentName
+        public string Location { get; set; }          // DocumentLocation (NOT NULL)
 
-        public string TokenType { get; set; }      // always "document"
-        public string TokenSeverity { get; set; }
+        public string TokenType { get; set; }         // from Tokens table
+        public string TokenSeverity { get; set; }     // from Tokens table
     }
 }
 
---IDocumentService
+
+---IDocSer
+
 using InsiderOUT.Server.Models.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -295,7 +35,8 @@ namespace InsiderOUT.Server.Services
 }
 
 
---Document Service
+---DocSer
+
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
 using InsiderOUT.Server.Data.Models.Tokens;
@@ -324,7 +65,7 @@ namespace InsiderOUT.Server.Services
                         DocumentId = d.DocumentId,
                         TokenId = t.TokenId,
                         Name = d.DocumentName,
-                        Location = null,
+                        Location = d.DocumentLocation,
                         TokenType = t.TokenType,
                         TokenSeverity = t.TokenSeverity
                     })
@@ -345,7 +86,7 @@ namespace InsiderOUT.Server.Services
                         DocumentId = d.DocumentId,
                         TokenId = t.TokenId,
                         Name = d.DocumentName,
-                        Location = null,
+                        Location = d.DocumentLocation,
                         TokenType = t.TokenType,
                         TokenSeverity = t.TokenSeverity
                     })
@@ -355,6 +96,7 @@ namespace InsiderOUT.Server.Services
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
+            // Create Token first
             var token = new Token
             {
                 TokenType = dto.TokenType,
@@ -364,10 +106,12 @@ namespace InsiderOUT.Server.Services
             _db.Tokens.Add(token);
             await _db.SaveChangesAsync();
 
+            // Create Document linked to Token
             var document = new Document
             {
                 DocumentTokenId = token.TokenId,
-                DocumentName = dto.Name
+                DocumentName = dto.Name,
+                DocumentLocation = dto.Location   // REQUIRED (NOT NULL)
             };
 
             _db.Documents.Add(document);
@@ -388,6 +132,8 @@ namespace InsiderOUT.Server.Services
             if (token == null) return false;
 
             document.DocumentName = dto.Name;
+            document.DocumentLocation = dto.Location;
+
             token.TokenType = dto.TokenType;
             token.TokenSeverity = dto.TokenSeverity;
 
@@ -414,7 +160,8 @@ namespace InsiderOUT.Server.Services
 
 
 
---DocumentsController
+
+---DocCont
 
 using Microsoft.AspNetCore.Mvc;
 using InsiderOUT.Server.Services;
@@ -472,10 +219,3 @@ namespace InsiderOUT.Server.Controllers
         }
     }
 }
-
-
-
-
---Registration
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IDocumentService, DocumentService>();
