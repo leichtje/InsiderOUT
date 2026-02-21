@@ -6,6 +6,7 @@ import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterValue } from '../../../models/filter.model';
 import { TokenModel } from '../../../models/token.model';
+import { DocumentStore } from '../../../stores/documents.store';
 
 @Component({
     selector: 'io-tokens-documents',
@@ -15,23 +16,22 @@ import { TokenModel } from '../../../models/token.model';
 })
 export class TokensDocumentsComponent {
 
-    protected tokenService = inject(TokenService);
+    protected documentStore = inject(DocumentStore);
     protected userService = inject(UserService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
-    private allDocumentTokens = this.tokenService.documents;
+    private allDocumentTokens = this.documentStore.documents;
 
     protected currentUserFilter = signal<FilterValue>('all');
     protected currentTypeFilter = signal<FilterValue>('all');
 
     protected filteredDocuments = computed(() => {
-        const tokens = this.allDocumentTokens();
-        const userFilter = this.currentUserFilter();
-        const typeFilter = this.currentTypeFilter();
-        const currentUser = this.userService.currentUser();
+        const documents = this.allDocumentTokens();
+        // const userFilter = this.currentUserFilter();
+        // const typeFilter = this.currentTypeFilter();
         
-        let result = tokens; 
+        let result = documents; 
 
         // switch (userFilter) {
         //     case 'mine':

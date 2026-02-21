@@ -5,6 +5,15 @@
     *Department filter*
     <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
 
+    @for (document of filteredDocuments$(); track document.tokenId) {
+        <div>{{ document.name }}</div>
+        <div>{{ document.severity }}</div>
+        <div>{{ document.location }}</div>
+        <div>{{ document.tokenId }}</div>
+
+
+    }
+
     <!-- <br>
     <br>
 

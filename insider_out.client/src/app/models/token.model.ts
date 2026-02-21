@@ -31,3 +31,13 @@ export enum TokenSensitivity {
     Medium = 'Medium',
     High = 'High',
 }
+
+
+export interface DocumentDto {
+    documentId: number;
+    tokenId: number;
+    name: string;
+    location: string;
+    tokenType: string; 
+    tokenSeverity: string;
+}
