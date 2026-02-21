@@ -15,7 +15,7 @@ type UserState = {
     error: string | null;
 };
 
-    const initialState: UserState = {
+const initialState: UserState = {
     users: [],
     currentUser: null,
     selectedUser: null,

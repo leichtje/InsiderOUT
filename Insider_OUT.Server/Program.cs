@@ -17,6 +17,8 @@ builder.Services.AddDbContext<DBContext>(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 builder.Services.AddCors(options =>
 {
