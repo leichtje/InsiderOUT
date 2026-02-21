@@ -34,76 +34,64 @@
         flex-direction: column;
     }
 
-//     &__info, &__subject, &__user {
-//         width: fit-content;
-//         height: -webkit-fill-available;
+    &__info, &__date {
+        width: fit-content;
+        height: -webkit-fill-available;
         
-//         @include mixins.non-phone(){
-//             padding-right: 5px;
-//         }
+        @include mixins.non-phone(){
+            padding-right: 5px;
+        }
 
-//         @include mixins.phone(){
-//             width: 100%;
+        @include mixins.phone(){
+            width: 100%;
 
-//             .divider {
-//                 display: none;
-//             }
-//         }
+            .divider {
+                display: none;
+            }
+        }
 
-//         .incident-card__title {
-//             display: inline-flex;
-//             align-items: center;
-//             gap: 5px;
-//             font-weight: 600;
-//             padding: 10px;
-//             height: 30px;
-//             @include mixins.font();
-//         }
+        .document-card__title {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            padding: 10px;
+            height: 30px;
+            @include mixins.font();
+        }
 
-//         .incident-card__details {
-//             padding: 10px;
-//             display: flex;
-//             flex-direction: column;
-//             gap: 10px;
+        .document-card__details {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
 
-//             .avatar {
-//                 width: 40px;
-//                 height: 40px;
-//                 min-width: 40px;
-//             }
+            .item {
+                .label {
+                    font-weight: 600;
+                    @include mixins.font(0.8rem);
+                    color: var(--color-gray-2);
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
 
-//             .item {
-//                 .label {
-//                     font-weight: 600;
-//                     @include mixins.font(0.8rem);
-//                     color: var(--color-gray-2);
-//                     margin-bottom: 5px;
-//                 }
-//             }
-//         }
-//     }
+    &__info {
+        @include mixins.non-phone(){
+            border-right: 2px solid var(--global-border-color);
+        }
+    }
 
-//     &__info, &__subject {
-//         @include mixins.non-phone(){
-//             border-right: 2px solid var(--global-border-color);
-//         }
-//     }
+    &__info {
+        @include mixins.phone(){
+            border-bottom: 2px solid var(--global-border-color);
+        }
+    }
 
-//     &__info {
-//         @include mixins.phone(){
-//             border-bottom: 2px solid var(--global-border-color);
-//         }
-//     }
-
-//     &__subject {
-//         @include mixins.phone(){
-//             border-right: 2px solid var(--global-border-color);
-//         }
-//     }
-
-//     &__user {
-//         margin-left: 5px;
-//     }
+    &__date {
+        margin-left: 5px;
+    }
 
     &__meta-row {
         display: flex;

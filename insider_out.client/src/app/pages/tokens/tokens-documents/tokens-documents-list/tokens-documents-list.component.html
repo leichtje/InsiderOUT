@@ -31,7 +31,7 @@
             <div class="documents-card__meta-row">
     
 
-                <div class="documents-card__subject">
+                <div class="documents-card__date">
 
                     <div class="documents-card__title">
                         {{ document.updated | date:'short' }}
@@ -41,54 +41,17 @@
 
                     <div class="documents-card__details">
 
-                        <!-- <div class="item">
-                            <div class="label">Subject</div>
-                            @if (vm.subject) {
-                                <div class="avatar">
-                                    <io-profile-avatar [profile]="vm.subject"></io-profile-avatar>
-                                </div>
-                                <span>{{ vm.subject.firstName }} {{ vm.subject.lastName }}</span>
-                            } @else {
-                                <div class="avatar">
-                                    <io-profile-avatar [profile]=""></io-profile-avatar>
-                                </div>
-                                <span>No Subject</span>
-                            }
-                        </div> -->
-
-                    </div>
-                </div>
-
-                <div class="documents-card__user">
-                    <div class="documents-card__title">
-                        <io-pill 
-                            [pill]="document.sensitivity"
-                            [varMap]="sensitivityColors"
-                            [textMap]="sensitivityText">
-                        </io-pill>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="documents-card__details">
-                        <!-- 
                         <div class="item">
-                            <div class="label">Assignee</div>
-                            @if (vm.user) {
-                                <div class="avatar">
-                                    <io-profile-avatar [profile]="vm.user"></io-profile-avatar>
-                                </div>
-                                <span>{{ vm.user.firstName }} {{ vm.user.lastName }}</span>
-                            } @else {
-                                <div class="avatar">
-                                    <io-profile-avatar [profile]=""></io-profile-avatar>
-                                </div>
-                                <span>No Assignee</span>
-                            }
-                        </div> -->
+                            <io-pill 
+                                [pill]="document.sensitivity"
+                                [varMap]="sensitivityColors"
+                                [textMap]="sensitivityText">
+                            </io-pill>
+                        </div>
 
                     </div>
                 </div>
+
             </div>
 
         </div>
