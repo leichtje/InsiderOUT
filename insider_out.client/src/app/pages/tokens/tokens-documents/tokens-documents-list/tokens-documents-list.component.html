@@ -1,60 +1,82 @@
 @let documents = documents$();        
+@let loading = isLoading();
         
 <div class="documents-list">
 
-    @for (document of documents; track document.tokenId) {
+    @if (loading) {
+        @for (i of [1, 2, 3]; track i) {
+            <ng-container *ngTemplateOutlet="cardLayout; context: { isSkeleton: true }"></ng-container>
+        }
+    } @else {
+        @for (document of documents; track document.tokenId) {
+            <ng-container *ngTemplateOutlet="cardLayout; context: { doc: document, isSkeleton: false }"></ng-container>
+        } @empty {
+            <div class="empty-state">No documents available.</div>
+        }
+    }       
+</div>
+
+<ng-template #cardLayout let-doc="doc" let-isSkeleton="isSkeleton">
     
-        <div class="documents-card" (click)="onDocumentClicked(document)">
+    <div class="documents-card" 
+        [class.skeleton-card]="isSkeleton" 
+        (click)="!isSkeleton && doc ? onDocumentClicked(doc) : null">
 
-            <div class="documents-card__info">
-                
-                <div class="documents-card__title">
-
+        <div class="documents-card__info">
+            
+            <div class="documents-card__title">
+                @if (isSkeleton) {
+                    <div class="skeleton-bar skeleton-icon"></div>
+                    <div class="skeleton-bar skeleton-title"></div>
+                } @else {
                     <mat-icon>description</mat-icon>
+                    {{doc.name}}
+                }
+            </div>
 
-                    {{document.name}}
+            <div class="divider"></div>
 
+            <div class="documents-card__details">
+                <div class="item">
+                    @if (isSkeleton) {
+                        <div class="skeleton-bar skeleton-label"></div>
+                        <div class="skeleton-bar skeleton-text"></div>
+                    } @else {
+                        <div class="label">Doc Location</div>
+                        {{ doc.location }}
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="documents-card__meta-row">
+
+            <div class="documents-card__date">
+                <div class="documents-card__title">
+                    @if (isSkeleton) {
+                        <div class="skeleton-bar skeleton-date"></div>
+                    } @else {
+                        {{ doc.updated | date:'short' }}
+                    }
                 </div>
 
                 <div class="divider"></div>
 
-                    <div class="documents-card__details">
-
-                        <div class="item">
-                            <div class="label">Doc Location</div>
-                            {{ document.location }}
-                        </div>
-
-                    </div>
-            </div>
-
-            <div class="documents-card__meta-row">
-    
-
-                <div class="documents-card__date">
-
-                    <div class="documents-card__title">
-                        {{ document.updated | date:'short' }}
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="documents-card__details">
-
-                        <div class="item">
+                <div class="documents-card__details">
+                    <div class="item">
+                        @if (isSkeleton) {
+                            <div class="skeleton-bar skeleton-pill"></div>
+                        } @else {
                             <io-pill 
-                                [pill]="document.sensitivity"
+                                [pill]="doc.sensitivity"
                                 [varMap]="sensitivityColors"
                                 [textMap]="sensitivityText">
                             </io-pill>
-
-                        </div>
-
+                        }
                     </div>
                 </div>
-
             </div>
 
         </div>
-    }       
-</div>
+    </div>
+</ng-template>

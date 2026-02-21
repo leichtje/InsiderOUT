@@ -26,7 +26,7 @@ export class TokensDocumentsComponent {
     protected currentUserFilter = signal<FilterValue>('all');
     protected currentTypeFilter = signal<FilterValue>('all');
 
-    protected filteredDocuments = computed(() => {
+    protected filteredDocuments$ = computed(() => {
         const documents = this.allDocumentTokens();
         // const userFilter = this.currentUserFilter();
         // const typeFilter = this.currentTypeFilter();

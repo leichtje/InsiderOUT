@@ -1,3 +1,5 @@
 <io-tokens-documents-view
-    [filteredDocuments]="filteredDocuments()">
+    [filteredDocuments]="filteredDocuments$()"
+    [isLoading]="documentStore.isLoading()"
+>
 </io-tokens-documents-view>

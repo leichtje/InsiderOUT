@@ -310,3 +310,42 @@ button {
 
 }
 
+
+.skeleton-card {
+    pointer-events: none;
+}
+
+.skeleton-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.skeleton-title {
+    height: 20px;
+    width: 60%;
+    margin-bottom: 0;
+}
+
+.skeleton-label {
+    height: 12px;
+    width: 80px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text {
+    height: 14px;
+    width: 120px;
+}
+
+.skeleton-date {
+    height: 14px;
+    width: 100px;
+}
+
+.skeleton-pill {
+    height: 24px;
+    width: 60px;
+    border-radius: 12px;
+}

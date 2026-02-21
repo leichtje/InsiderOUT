@@ -85,6 +85,32 @@
     }
 }
 
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@mixin skeleton-shimmer {
+    background: #f6f7f8;
+    background: linear-gradient(
+        to right, 
+        var(--color-back-gray, #f6f7f8) 8%, 
+        var(--color-gray, #edeef1) 18%, 
+        var(--color-back-gray, #f6f7f8) 33%
+    );
+    background-size: 1000px 100%; 
+    animation: shimmer 3s infinite linear;
+}
+
+.skeleton-bar {
+    @include skeleton-shimmer;
+    border-radius: 4px;
+}
+
 /*----------------------- Responsive Mixins -----------------------*/
 
 @mixin web {
@@ -143,3 +169,4 @@
         display: $display;
     }
 }
+

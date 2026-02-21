@@ -1,7 +1,7 @@
 import { Component, input, output } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { DocumentModel, TokenSensitivity } from "../../../../models/token.model";
-import { DatePipe } from "@angular/common";
+import { DatePipe, NgTemplateOutlet } from "@angular/common";
 import { PillComponent } from "../../../../fragments/pill/pill.component";
 import { sensitivity_colors, sensitivity_text } from "../../../../fragments/pill/token-sensitivity-constants";
 
@@ -13,12 +13,14 @@ import { sensitivity_colors, sensitivity_text } from "../../../../fragments/pill
     imports: [
     MatIcon,
     DatePipe,
-    PillComponent
+    PillComponent,
+    NgTemplateOutlet
 ]
 })
 export class TokensDocumentsListComponent {
 
     readonly documents$ = input.required<DocumentModel[]>({alias:"documents"})
+    readonly isLoading = input<boolean>(false, {alias: "isLoading"});
 
     readonly documentSelected = output<DocumentModel>();
 
