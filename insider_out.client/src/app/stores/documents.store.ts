@@ -26,7 +26,7 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
         name: dto.name,
         location: dto.location,
         type: TokenType.document, 
-        severity: dto.tokenSeverity as TokenSensitivity, 
+        sensitivity: dto.tokenSensitivity as TokenSensitivity, 
         updated: new Date() // Fallback since 'updated' is missing from the JSON response
     };
 }
@@ -38,7 +38,7 @@ export function toDocumentDto(model: Partial<DocumentModel>): DocumentDto {
         name: model.name || '',
         location: model.location || '',
         tokenType: 'Document', 
-        tokenSeverity: model.severity?.toString() || TokenSensitivity.Low.toString()
+        tokenSensitivity: model.sensitivity?.toString() || TokenSensitivity.Low.toString()
     };
 }
 

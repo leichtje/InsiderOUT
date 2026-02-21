@@ -1,8 +1,9 @@
-import { Component, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, output, Output } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
 import { DocumentModel, TokenModel } from '../../../../models/token.model';
 import { ResponsiveDialogService } from '../../../../services/responsive-dialog.service';
 import { TokensDocumentsDialogComponent, TokensDocumentsDialogData } from '../tokens-documents-dialog/tokens-documents-dialog.component';
+import { TokensDocumentsListComponent } from "../tokens-documents-list/tokens-documents-list.component";
 
 @Component({
     selector: 'io-tokens-documents-view',
@@ -10,7 +11,8 @@ import { TokensDocumentsDialogComponent, TokensDocumentsDialogData } from '../to
     styleUrl: './tokens-documents-view.component.scss',
     standalone: true,
     imports: [
-        MatIcon
+        MatIcon,
+        TokensDocumentsListComponent
     ]
 })
 export class TokensDocumentsViewComponent {
@@ -24,10 +26,10 @@ export class TokensDocumentsViewComponent {
     // filterUserChange = output<FilterValue>();
     // filterTypeChange = output<FilterValue>();
 
-    @Output() incidentSelected = new EventEmitter<TokenModel>();
+    readonly documentSelected = output<DocumentModel>();
 
-    onIncidentClicked(incident: TokenModel) {
-        this.incidentSelected.emit(incident);
+    onDocumentClicked(document: DocumentModel) {
+        this.documentSelected.emit(document);
     }
 
     

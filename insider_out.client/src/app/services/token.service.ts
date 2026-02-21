@@ -15,7 +15,7 @@ export class TokenService {
             documentId: 123,
             name: 'MFA Password Enrollment',
             location: 'Server A',
-            severity: TokenSensitivity.Medium,
+            sensitivity: TokenSensitivity.Medium,
         },
         {
             tokenId: 124,
@@ -24,7 +24,7 @@ export class TokenService {
             documentId: 132,
             name: 'Secret Business Plans',
             location: 'Server A',
-            severity: TokenSensitivity.High,
+            sensitivity: TokenSensitivity.High,
         },
         {
             tokenId: 125,
@@ -33,7 +33,7 @@ export class TokenService {
             documentId: 143,
             name: 'Payroll Incentives 2026',
             location: 'Server B',
-            severity: TokenSensitivity.Low,
+            sensitivity: TokenSensitivity.Low,
         },
         {
             tokenId: 126,
@@ -42,7 +42,7 @@ export class TokenService {
             documentId: 154,
             name: 'Budget 2026 - CFO',
             location: 'Server C',
-            severity: TokenSensitivity.High,
+            sensitivity: TokenSensitivity.High,
         }
     ]);
 
@@ -56,7 +56,7 @@ export class TokenService {
         type: TokenType.email,
         emailId: 900,
         subject: 'Urgent Wire Transfer',
-        severity: TokenSensitivity.High,
+        sensitivity: TokenSensitivity.High,
     }
     ]);
 

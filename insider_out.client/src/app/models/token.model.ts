@@ -7,7 +7,7 @@ export interface TokenModel {
     tokenId: number;
     updated: Date;
     type: TokenType;
-    severity: TokenSensitivity;
+    sensitivity: TokenSensitivity;
 }
 
 export interface DocumentModel extends TokenModel {
@@ -39,5 +39,5 @@ export interface DocumentDto {
     name: string;
     location: string;
     tokenType: string; 
-    tokenSeverity: string;
+    tokenSensitivity: string;
 }

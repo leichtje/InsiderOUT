@@ -1,20 +1,12 @@
-<!-- @let documents = this.filteredDocuments$(); -->
+@let documents = this.filteredDocuments$();
 
 <div class="page-container">
     *Find / Search for Doc*
     *Department filter*
     <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
 
-    @for (document of filteredDocuments$(); track document.tokenId) {
-        <div>{{ document.name }}</div>
-        <div>{{ document.severity }}</div>
-        <div>{{ document.location }}</div>
-        <div>{{ document.tokenId }}</div>
 
-
-    }
-
-    <!-- <br>
+    <br>
     <br>
 
     @if (documents?.length === 0) {
@@ -24,11 +16,11 @@
         </div>
     }
     @else {
-        <io-tokens-list
-            [tokens]="documents"
-            (tokenSelected)="onTokenClicked($event)"
-        ></io-tokens-list>
-    } -->
+        <io-tokens-documents-list
+            [documents]="documents"
+            (documentSelected)="onDocumentClicked($event)"
+        ></io-tokens-documents-list>
+    }
 
 
 </div>
