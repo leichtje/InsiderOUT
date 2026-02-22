@@ -1,0 +1,193 @@
+-- SQL 
+CREATE TABLE dbo.Departments (
+    DepartmentId INT IDENTITY(1,1) PRIMARY KEY,
+    DepartmentName NVARCHAR(255) NULL,
+    SortOrder INT NOT NULL,
+    IsActive BIT NOT NULL
+);
+
+
+---DepartmentDto
+namespace InsiderOUT.Server.Models.Dto
+{
+    public class DepartmentDto
+    {
+        public int DepartmentId { get; set; }
+        public string? Department { get; set; }
+        public int SortOrder { get; set; }
+        public bool IsActive { get; set; }
+    }
+}
+
+
+---IDepartmentService
+using InsiderOUT.Server.Models.Dto;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace InsiderOUT.Server.Services
+{
+    public interface IDepartmentService
+    {
+        Task<IEnumerable<DepartmentDto>> GetAllAsync();
+        Task<DepartmentDto?> GetByIdAsync(int id);
+        Task<DepartmentDto> CreateAsync(DepartmentDto dto);
+        Task<bool> UpdateAsync(int id, DepartmentDto dto);
+        Task<bool> DeleteAsync(int id);
+    }
+}
+
+
+
+---DepartmentService
+using InsiderOUT.Server.Data;
+using InsiderOUT.Server.Models.Dto;
+using InsiderOUT.Server.Data.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace InsiderOUT.Server.Services
+{
+    public class DepartmentService : IDepartmentService
+    {
+        private readonly AppDbContext _db;
+
+        public DepartmentService(AppDbContext db)
+        {
+            _db = db;
+        }
+
+        public async Task<IEnumerable<DepartmentDto>> GetAllAsync()
+        {
+            return await _db.Departments
+                .AsNoTracking()
+                .Select(d => new DepartmentDto
+                {
+                    DepartmentId = d.DepartmentId,
+                    Department = d.DepartmentName,
+                    SortOrder = d.SortOrder,
+                    IsActive = d.IsActive
+                })
+                .ToListAsync();
+        }
+
+        public async Task<DepartmentDto?> GetByIdAsync(int id)
+        {
+            var d = await _db.Departments.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.DepartmentId == id);
+
+            if (d == null) return null;
+
+            return new DepartmentDto
+            {
+                DepartmentId = d.DepartmentId,
+                Department = d.DepartmentName,
+                SortOrder = d.SortOrder,
+                IsActive = d.IsActive
+            };
+        }
+
+        public async Task<DepartmentDto> CreateAsync(DepartmentDto dto)
+        {
+            var entity = new Department
+            {
+                DepartmentName = dto.Department,
+                SortOrder = dto.SortOrder,
+                IsActive = dto.IsActive
+            };
+
+            _db.Departments.Add(entity);
+            await _db.SaveChangesAsync();
+
+            dto.DepartmentId = entity.DepartmentId;
+            return dto;
+        }
+
+        public async Task<bool> UpdateAsync(int id, DepartmentDto dto)
+        {
+            var entity = await _db.Departments.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.DepartmentName = dto.Department;
+            entity.SortOrder = dto.SortOrder;
+            entity.IsActive = dto.IsActive;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var entity = await _db.Departments.FindAsync(id);
+            if (entity == null) return false;
+
+            _db.Departments.Remove(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+    }
+}
+
+
+
+--DepartmentsController
+using Microsoft.AspNetCore.Mvc;
+using InsiderOUT.Server.Services;
+using InsiderOUT.Server.Models.Dto;
+
+namespace InsiderOUT.Server.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class DepartmentsController : ControllerBase
+    {
+        private readonly IDepartmentService _service;
+
+        public DepartmentsController(IDepartmentService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+            => Ok(await _service.GetAllAsync());
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var dept = await _service.GetByIdAsync(id);
+            return dept == null ? NotFound() : Ok(dept);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] DepartmentDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var created = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById),
+                new { id = created.DepartmentId },
+                created);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] DepartmentDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var ok = await _service.UpdateAsync(id, dto);
+            return ok ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var ok = await _service.DeleteAsync(id);
+            return ok ? NoContent() : NotFound();
+        }
+    }
+}
+
+
+
+---Reg
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
