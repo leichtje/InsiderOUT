@@ -1,6 +1,6 @@
-using InsiderOUT.Server.Services;
+using Insider_OUT.Server.Data.Models.Incidents;
 using InsiderOUT.Server.Data;
-
+using InsiderOUT.Server.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +19,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 builder.Services.AddCors(options =>
 {

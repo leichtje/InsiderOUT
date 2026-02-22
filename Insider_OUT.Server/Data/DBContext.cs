@@ -1,4 +1,5 @@
-﻿using Insider_OUT.Server.Data.Models.Incidents;
+﻿using Insider_OUT.Server.Data.Models;
+using Insider_OUT.Server.Data.Models.Incidents;
 using Insider_OUT.Server.Data.Models.Profiles;
 using Insider_OUT.Server.Data.Models.Tokens;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ namespace InsiderOUT.Server.Data
         public DbSet<Email> Emails { get; set; }
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
