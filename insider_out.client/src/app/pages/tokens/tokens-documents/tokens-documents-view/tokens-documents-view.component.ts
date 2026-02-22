@@ -20,7 +20,7 @@ export class TokensDocumentsViewComponent {
     private dialog = inject(ResponsiveDialogService);
 
     readonly filteredDocuments$ = input.required<DocumentModel[]>({alias: 'filteredDocuments'});
-    readonly isLoading = input<boolean>(false, {alias: "isLoading"});
+    readonly isLoading$ = input<boolean>(false, {alias: "isLoading"});
 
     // readonly activeId$ = input<number | null>();
     

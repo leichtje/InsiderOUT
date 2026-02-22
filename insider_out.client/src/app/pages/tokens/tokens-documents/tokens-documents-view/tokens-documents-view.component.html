@@ -9,18 +9,12 @@
     <br>
     <br>
 
-    @if (documents?.length === 0) {
-        <div class="no-results">
-            <mat-icon>info</mat-icon>
-            <p>No documents found matching the selected filters.</p>
-        </div>
-    }
-    @else {
-        <io-tokens-documents-list
-            [documents]="documents"
-            (documentSelected)="onDocumentClicked($event)"
-        ></io-tokens-documents-list>
-    }
+    <io-tokens-documents-list
+        [documents]="documents"
+        [isLoading]="isLoading$()"
+        (documentSelected)="onDocumentClicked($event)"
+    ></io-tokens-documents-list>
+    
 
 
 </div>
