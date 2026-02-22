@@ -1,9 +1,6 @@
 @use '../../../../styles/mixins' as mixins;
 
 .incidents-list {
-    // display: grid;
-    // grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-    // justify-content: center;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -124,4 +121,10 @@
         --global-border-color: var(--color-primary);
     }
 
+}
+
+.empty-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }

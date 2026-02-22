@@ -8,6 +8,7 @@ import { FilterValue } from '../../../models/filter.model';
 import { UserService } from '../../../services/user.service';
 import { TokenType } from '../../../models/token.model';
 import { IncidentStore } from '../../../stores/incident.store';
+import { UserStore } from '../../../stores/user.store';
 
 @Component({
     selector: 'io-incidents-open',
@@ -18,7 +19,7 @@ import { IncidentStore } from '../../../stores/incident.store';
 export class IncidentsOpenComponent {
 
     protected incidentStore = inject(IncidentStore);
-    protected userService = inject(UserService);
+    protected userStore = inject(UserStore);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
@@ -31,7 +32,7 @@ export class IncidentsOpenComponent {
         const incidents = this.allIncidents();
         const userFilter = this.currentUserFilter();
         const typeFilter = this.currentTypeFilter();
-        const currentUser = this.userService.currentUser();
+        const currentUser = this.userStore.currentUser();
         
         let result = incidents; 
 

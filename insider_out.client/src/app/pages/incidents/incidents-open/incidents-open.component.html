@@ -1,5 +1,6 @@
 <io-incidents-open-view
     [incidents]="filteredIncidents()"
+    [isLoading]="incidentStore.isLoading()"
     (incidentSelected)="onIncidentSelected($event)"
     (filterUserChange)="onUserFilterChange($event)"
     (filterTypeChange)="onTypeFilterChange($event)"

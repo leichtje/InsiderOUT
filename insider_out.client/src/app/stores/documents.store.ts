@@ -26,7 +26,7 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
         name: dto.name,
         location: dto.location,
         type: TokenType.document, 
-        sensitivity: dto.tokenSeverity as TokenSensitivity, 
+        sensitivity: dto.tokenSeverity.toLowerCase() as TokenSensitivity, 
         updated: new Date() // Fallback since 'updated' is missing from the JSON response
     };
 }

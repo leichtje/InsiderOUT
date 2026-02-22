@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, input, output, Output } from '@angular/core';
 import { ProfileAvatarComponent } from '../../../fragments/profile-avatar/profile-avatar.component';
 import { UserService } from '../../../services/user.service';
 import { IncidentModel, IncidentViewModel } from '../../../models/incidents.model';
@@ -32,8 +32,10 @@ protected userStore = inject(UserStore);
     protected tokenType = TokenType;
 
     readonly incidents$ = input.required<IncidentModel[]>({alias: 'incidents'});
+    readonly isLoading$ = input<boolean>(false, {alias: "isLoading"});
     
-    @Output() incidentSelected = new EventEmitter<IncidentModel>();
+    readonly incidentSelected = output<IncidentModel>();
+
 
     statusColors = status_colors;
     statusText = status_text;

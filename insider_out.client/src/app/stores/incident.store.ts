@@ -30,7 +30,7 @@ export function toIncidentModel(dto: IncidentDto): IncidentModel {
         agent: dto.agent,
         tokenId: dto.tokenId,
         tokenType: dto.tokenType.toLowerCase() === 'email' ? TokenType.email : TokenType.document,
-        status: dto.status as IncidentStatus, 
+        status: dto.status.toLowerCase() as IncidentStatus, 
         assignedUserId: dto.assignedUserId,
         tiedSubjectId: dto.tiedSubjectId
     };

@@ -1,82 +1,110 @@
 @let vms = this.incidentViewModels();
+@let loading = isLoading$(); 
 
 <div class="incidents-list">
 
-    @for (vm of vms; track vm.incident.incidentId) {
-    
-        <div class="incident-card" (click)="onSelectIncident(vm.incident)">
+    @if (loading) {
+        @for (i of [1, 2, 3, 4]; track i) {
+            <ng-container *ngTemplateOutlet="incidentCardLayout; context: { isSkeleton: true }"></ng-container>
+        }
+    } @else {
+        @for (vm of vms; track vm.incident.incidentId) {
+            <ng-container *ngTemplateOutlet="incidentCardLayout; context: { vm: vm, isSkeleton: false }"></ng-container>
+        } @empty {
+            <div class="empty-state"><mat-icon>info</mat-icon>No incidents available.</div>
+        }
+    }
+</div>
 
-            <div class="incident-card__info">
-                
-                <div class="incident-card__title">
+<ng-template #incidentCardLayout let-vm="vm" let-isSkeleton="isSkeleton">
 
+    <div class="incident-card" 
+        [class.skeleton-card]="isSkeleton" 
+        (click)="!isSkeleton && vm ? onSelectIncident(vm.incident) : null">
+
+        <div class="incident-card__info">
+            
+            <div class="incident-card__title">
+                @if (isSkeleton) {
+                    <div class="skeleton-bar skeleton-icon"></div>
+                    <div class="skeleton-bar skeleton-text"></div>
+                } @else {
                     @if (vm.token; as token) {
-
                         @switch (token.type) {
                             @case (tokenType.document){
                                 <mat-icon>description</mat-icon>
                             }
-                            <!-- @case (tokenType.email){
-                                <mat-icon>email</mat-icon>
-
-                            } -->
-                        }
+                            }
                     }
-
                     {{vm.incident.title}}
+                }
+            </div>
 
+            <div class="divider"></div>
+
+            <div class="incident-card__details">
+                @if (isSkeleton) {
+                    <div class="item">
+                        <div class="skeleton-bar skeleton-label"></div>
+                        <div class="skeleton-bar skeleton-text"></div>
+                    </div>
+                    <div class="item">
+                        <div class="skeleton-bar skeleton-label"></div>
+                        <div class="skeleton-bar skeleton-text"></div>
+                    </div>
+                } @else {
+                    @if (vm.token; as token) {
+                        @switch (token.type) {
+                            
+                            @case (tokenType.document) {
+                                <div class="item">
+                                    <div class="label">Doc Name</div>
+                                    {{ $any(token).name }}
+                                </div>
+                                <div class="item">
+                                    <div class="label">Doc Location</div>
+                                    {{ $any(token).location }}
+                                </div>
+                            }
+
+                            @case (tokenType.email) {
+                                <div class="item">
+                                    <div class="label">Email Subject</div>
+                                    {{ $any(token).subject }}
+                                </div>
+                            }
+                        }
+                    } @else {
+                        <div class="item">
+                            <span class="muted">No Token Found</span>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="incident-card__meta-row">
+
+            <div class="incident-card__subject">
+                <div class="incident-card__title">
+                    @if (isSkeleton) {
+                        <div class="skeleton-bar skeleton-date"></div>
+                    } @else {
+                        {{vm.incident.date | date:'short'}}
+                    }
                 </div>
 
                 <div class="divider"></div>
 
-                    <div class="incident-card__details">
-
-                        @if (vm.token; as token) {
-                            
-                            @switch (token.type) {
-                                
-                                @case (tokenType.document) {
-                                    <div class="item">
-                                        <div class="label">Doc Name</div>
-                                        {{ $any(token).name }}
-                                    </div>
-                                    <div class="item">
-                                        <div class="label">Doc Location</div>
-                                        {{ $any(token).location }}
-                                    </div>
-                                }
-
-                                @case (tokenType.email) {
-                                    <div class="item">
-                                        <div class="label">Email Subject</div>
-                                        {{ $any(token).subject }}
-                                    </div>
-                                }
-                            }
-
-                        } @else {
-                            <div class="item">
-                                <span class="muted">No Token Found</span>
+                <div class="incident-card__details">
+                    <div class="item">
+                        @if (isSkeleton) {
+                            <div class="skeleton-bar skeleton-label"></div>
+                            <div class="skeleton-avatar-row">
+                                <div class="skeleton-bar skeleton-avatar"></div>
+                                <div class="skeleton-bar skeleton-text"></div>
                             </div>
-                        }
-
-                    </div>
-            </div>
-
-            <div class="incident-card__meta-row">
-    
-
-                <div class="incident-card__subject">
-
-                    <div class="incident-card__title">
-                        {{vm.incident.date | date:'short'}}
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="incident-card__details">
-
-                        <div class="item">
+                        } @else {
                             <div class="label">Subject</div>
                             @if (vm.subject) {
                                 <div class="avatar">
@@ -89,25 +117,35 @@
                                 </div>
                                 <span>No Subject</span>
                             }
-                        </div>
-
+                        }
                     </div>
                 </div>
+            </div>
 
-                <div class="incident-card__user">
-                    <div class="incident-card__title">
+            <div class="incident-card__user">
+                <div class="incident-card__title">
+                    @if (isSkeleton) {
+                        <div class="skeleton-bar skeleton-pill"></div>
+                    } @else {
                         <io-pill 
                             [pill]="vm.incident.status"
                             [varMap]="statusColors"
                             [textMap]="statusText">
                         </io-pill>
-                    </div>
+                    }
+                </div>
 
-                    <div class="divider"></div>
+                <div class="divider"></div>
 
-                    <div class="incident-card__details">
-
-                        <div class="item">
+                <div class="incident-card__details">
+                    <div class="item">
+                        @if (isSkeleton) {
+                            <div class="skeleton-bar skeleton-label"></div>
+                            <div class="skeleton-avatar-row">
+                                <div class="skeleton-bar skeleton-avatar"></div>
+                                <div class="skeleton-bar skeleton-text"></div>
+                            </div>
+                        } @else {
                             <div class="label">Assignee</div>
                             @if (vm.user) {
                                 <div class="avatar">
@@ -120,12 +158,11 @@
                                 </div>
                                 <span>No Assignee</span>
                             }
-                        </div>
-
+                        }
                     </div>
                 </div>
             </div>
 
         </div>
-    }
-</div>
+    </div>
+</ng-template>

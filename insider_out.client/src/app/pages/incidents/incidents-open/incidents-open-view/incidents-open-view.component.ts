@@ -32,6 +32,7 @@ export class IncidentsOpenViewComponent {
     ];
 
     readonly incidents$ = input.required<IncidentModel[]>({alias: 'incidents'});
+    readonly isLoading$ = input<boolean>(false, {alias: "isLoading"});
     
     readonly filterUserChange = output<FilterValue>();
     readonly filterTypeChange = output<FilterValue>();
