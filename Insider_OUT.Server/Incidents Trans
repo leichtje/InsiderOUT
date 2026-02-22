@@ -52,21 +52,16 @@ namespace InsiderOUT.Server.Services
 
 
 ---IncidentService
-using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
-using InsiderOUT.Server.Data.Models.Incidents;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace InsiderOUT.Server.Services
 {
     public class IncidentService : IIncidentService
     {
-        private readonly AppDbContext _db;
+        private readonly DBContext _db;
 
-        public IncidentService(AppDbContext db)
+        public IncidentService(DBContext db)
         {
             _db = db;
         }
@@ -156,25 +151,34 @@ namespace InsiderOUT.Server.Services
             return new IncidentViewDto
             {
                 Incident = incidentDto,
+
                 Token = token == null ? null : new TokenDto
                 {
                     TokenId = token.TokenId,
                     TokenType = token.TokenType,
                     TokenSeverity = token.TokenSeverity
                 },
+
                 Subject = subject == null ? null : new SubjectDto
                 {
                     SubjectId = subject.SubjectId,
-                    FirstName = subject.FirstName,
-                    LastName = subject.LastName,
-                    Email = subject.Email
+                    SubjectFirstName = subject.SubjectFirstName,
+                    SubjectLastName = subject.SubjectLastName,
+                    SubjectEmail = subject.SubjectEmail,
+                    SubjectPhone = subject.SubjectPhone,
+                    SubjectDepartment = subject.SubjectDepartment,
+                    SubjectRole = subject.SubjectRole,
+                    SubjectRiskScore = subject.SubjectRiskScore
                 },
+
                 User = user == null ? null : new UserDto
                 {
                     UserId = user.UserId,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email
+                    UserFirstName = user.UserFirstName,
+                    UserLastName = user.UserLastName,
+                    UserEmail = user.UserEmail,
+                    UserPhone = user.UserPhone,
+                    UserDepartment = user.UserDepartment
                 }
             };
         }
