@@ -4,7 +4,7 @@
 <div class="documents-list">
 
     @if (loading) {
-        @for (i of [1, 2, 3]; track i) {
+        @for (i of [1, 2, 3, 4]; track i) {
             <ng-container *ngTemplateOutlet="cardLayout; context: { isSkeleton: true }"></ng-container>
         }
     } @else {
