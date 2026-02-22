@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, input, Output } from '@angular/core';
 import { ProfileAvatarComponent } from '../../../fragments/profile-avatar/profile-avatar.component';
 import { UserService } from '../../../services/user.service';
 import { IncidentModel, IncidentViewModel } from '../../../models/incidents.model';
@@ -12,6 +12,9 @@ import { status_colors, status_text } from "../../../fragments/pill/incident-sta
 import { BreakpointService } from '../../../services/breakpoint.service';
 import { TokenService } from '../../../services/token.service';
 import { PillComponent } from '../../../fragments/pill/pill.component';
+import { UserStore } from '../../../stores/user.store';
+import { SubjectStore } from '../../../stores/subject.store';
+import { DocumentStore } from '../../../stores/documents.store';
 
 @Component({
     selector: 'io-incidents-list',
@@ -22,17 +25,18 @@ import { PillComponent } from '../../../fragments/pill/pill.component';
 })
 export class IncidentsListComponent {
 
-    protected userService = inject(UserService);
-    protected subjectService = inject(SubjectService);
-    protected tokenService = inject(TokenService);
+protected userStore = inject(UserStore);
+    protected subjectStore = inject(SubjectStore);
+    protected documentStore = inject(DocumentStore);
+
     protected tokenType = TokenType;
 
     readonly incidents$ = input.required<IncidentModel[]>({alias: 'incidents'});
+    
+    @Output() incidentSelected = new EventEmitter<IncidentModel>();
 
     statusColors = status_colors;
     statusText = status_text;
-
-    @Output() incidentSelected = new EventEmitter<IncidentModel>();
 
     constructor(public breakpointService: BreakpointService) { }
 
@@ -40,53 +44,40 @@ export class IncidentsListComponent {
         this.incidentSelected.emit(incident);
     }
 
-    private incidents = toObservable(this.incidents$);
+    public incidentViewModels = computed<IncidentViewModel[]>(() => {
+        const incidents = this.incidents$();
+        
+        const users = this.userStore.users();
+        const subjects = this.subjectStore.subjects();
+        const documents = this.documentStore.documents();
 
-    public incidentViewModels = toSignal(
-        this.incidents.pipe(
-            switchMap(incidents => {
-                if (!incidents || incidents.length === 0) {
-                    return of([]);
+        if (!incidents || incidents.length === 0) {
+            return [];
+        }
+
+        return incidents.map(incident => {
+            const user = incident.assignedUserId 
+                ? users.find(u => u.userId === incident.assignedUserId) || null 
+                : null;
+
+            const subject = incident.tiedSubjectId 
+                ? subjects.find(s => s.subjectId === incident.tiedSubjectId) || null 
+                : null;
+
+            let token = null;
+            if (incident.tokenId) {
+                if (incident.tokenType === TokenType.document) {
+                    token = documents.find(d => d.tokenId === incident.tokenId) || null;
                 }
+            }
 
-                const lookups$ = incidents.map(incident => {
-                    
-                    const subject$ = incident.tiedSubjectId
-                        ? this.subjectService
-                            .getSubjectById(incident.tiedSubjectId)
-                            .pipe(catchError(() => of(null)))
-                        : of(null);
-
-                    const user$ = incident.assignedUserId
-                        ? this.userService
-                            .getUserById(incident.assignedUserId)
-                            .pipe(catchError(() => of(null)))
-                        : of(null);
-
-                    const token$ = incident.tokenId
-                        ? this.tokenService
-                            .getToken(incident.tokenId, incident.tokenType)
-                            .pipe(catchError(() => of(null)))
-                        : of(null);
-
-                    return forkJoin({
-                        subject: subject$,
-                        user: user$,
-                        token: token$
-                    }).pipe(
-                        map(({ subject, user, token }) => ({
-                            incident: incident,
-                            subject: subject,
-                            user: user,
-                            token: token
-                        }) as IncidentViewModel)
-                    );
-                });
-
-                return forkJoin(lookups$);
-            })
-        ),
-        { initialValue: [] }
-    );
+            return {
+                incident,
+                subject,
+                user,
+                token
+            };
+        });
+    });
 
 }

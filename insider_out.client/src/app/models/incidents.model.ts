@@ -29,3 +29,17 @@ export enum IncidentStatus {
     Resolved = 'Resolved',
     Closed = 'Closed'
 }
+
+export interface IncidentDto {
+    incidentId: number;
+    title: string;
+    desc: string;
+    date: string;
+    updated: string; 
+    agent: string;
+    tokenId: number;
+    tokenType: string; 
+    status: string; 
+    assignedUserId: number | null;
+    tiedSubjectId: number | null;
+}

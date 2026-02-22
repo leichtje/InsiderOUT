@@ -7,6 +7,7 @@ import { IncidentModel } from '../../../models/incidents.model';
 import { FilterValue } from '../../../models/filter.model';
 import { UserService } from '../../../services/user.service';
 import { TokenType } from '../../../models/token.model';
+import { IncidentStore } from '../../../stores/incident.store';
 
 @Component({
     selector: 'io-incidents-open',
@@ -16,12 +17,12 @@ import { TokenType } from '../../../models/token.model';
 })
 export class IncidentsOpenComponent {
 
-    protected incidentService = inject(IncidentService);
+    protected incidentStore = inject(IncidentStore);
     protected userService = inject(UserService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
-    private allIncidents = this.incidentService.incidents;
+    private allIncidents = this.incidentStore.incidents;
 
     protected currentUserFilter = signal<FilterValue>('all');
     protected currentTypeFilter = signal<FilterValue>('all');
@@ -34,33 +35,31 @@ export class IncidentsOpenComponent {
         
         let result = incidents; 
 
-        return result;
+        switch (userFilter) {
+            case 'mine':
+                result = result.filter(i => i.assignedUserId === currentUser?.userId);
+                break;
+            
+            case 'unassigned':
+                result = result.filter(i => !i.assignedUserId);
+                break;            
+            
+            case 'all':
+            default:
+                break;
+        }
 
-        // switch (userFilter) {
-        //     case 'mine':
-        //         result = result.filter(i => i.assignedUserId === currentUser?.userId);
-        //         break;
+        switch (typeFilter) {
+            case 'document':
+                return result.filter(i => i.tokenType === TokenType.document);
             
-        //     case 'unassigned':
-        //         result = result.filter(i => !i.assignedUserId);
-        //         break;            
+            case 'email':
+                return result.filter(i => i.tokenType === TokenType.email);
             
-        //     case 'all':
-        //     default:
-        //         break;
-        // }
-
-        // switch (typeFilter) {
-        //     case 'document':
-        //         return result.filter(i => i.tokenType === TokenType.document);
-            
-        //     case 'email':
-        //         return result.filter(i => i.tokenType === TokenType.email);
-            
-        //     case 'all':
-        //     default:
-        //         return result;
-        // }
+            case 'all':
+            default:
+                return result;
+        }
     });
 
     onUserFilterChange(newFilter: FilterValue) {
