@@ -5,6 +5,7 @@ import { computed, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { catchError, map, pipe, switchMap, tap } from "rxjs";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 type IncidentState = {
     incidents: IncidentModel[];
@@ -73,7 +74,7 @@ export const IncidentStore = signalStore(
         })
     })),
 
-    withMethods((store, http = inject(HttpClient)) => {
+    withMethods((store, http = inject(HttpClient), snackBar = inject(MatSnackBar)) => {
         const apiUrl = 'https://localhost:7244/api/incidents'; 
 
         return {
@@ -154,10 +155,20 @@ export const IncidentStore = signalStore(
                                     selectedIncident: state.selectedIncident?.incidentId === id ? data : state.selectedIncident,
                                     isLoading: false
                                 }));
+
+                                snackBar.open('Incident updated successfully', 'Close', {
+                                    duration: 3000,
+                                    horizontalPosition: 'right',
+                                    verticalPosition: 'bottom',
+                                    panelClass: ['success-snackbar']
+                                });
                             }),
                             catchError((err) => {
                                 console.error('Failed to update incident:', err);
                                 patchState(store, { isLoading: false, error: err.message });
+                                
+                                snackBar.open('Failed to save changes', 'Retry', { duration: 5000 });
+                                
                                 return [];
                             })
                         );
