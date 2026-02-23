@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Insider_OUT.Server.Data.Models.Tokens
@@ -17,6 +17,14 @@ namespace Insider_OUT.Server.Data.Models.Tokens
         [Required, MaxLength(50)]
         [Column("TokenSeverity")]
         public string TokenSeverity { get; set; }
+
+        [Required]
+        [Column("CreatedDate")]
+        public DateTime CreatedDate { get; set; }
+
+        [Required]
+        [Column("UpdatedDate")]
+        public DateTime UpdatedDate { get; set; }
 
         // Navigation properties for subtypes (one-to-one)
         public Document Document { get; set; }
