@@ -1,0 +1,300 @@
+---SQL 
+
+ALTER TABLE dbo.Incidents
+ADD IsActive BIT NOT NULL DEFAULT 1;
+
+
+---Incident Model
+
+[Table("Incidents")]
+    public class Incident
+    {
+        [Key]
+        [Column("IncidentId")]
+        public int IncidentId { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("IncidentTitle")]
+        public string IncidentTitle { get; set; }
+
+        [Required]
+        [Column("IncidentDescription")]
+        public string IncidentDescription { get; set; }
+
+        [Required]
+        [Column("IncidentCreatedDate")]
+        public DateTime IncidentCreatedDate { get; set; }
+
+        [Required]
+        [Column("IncidentUpdatedDate")]
+        public DateTime IncidentUpdatedDate { get; set; }
+
+        [Required, MaxLength(255)]
+        [Column("IncidentAgent")]
+        public string IncidentAgent { get; set; }
+
+        [Required]
+        [Column("IncidentTokenId")]
+        public int IncidentTokenId { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("IncidentTokenType")]
+        public string IncidentTokenType { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column("IncidentStatus")]
+        public string IncidentStatus { get; set; }
+
+        [Column("IncidentAssignedUserId")]
+        public int? IncidentAssignedUserId { get; set; }
+
+        [Column("IncidentTiedSubjectId")]
+        public int? IncidentTiedSubjectId { get; set; }
+
+        [ForeignKey(nameof(IncidentAssignedUserId))]
+        public User AssignedUser { get; set; }
+
+        [ForeignKey(nameof(IncidentTiedSubjectId))]
+        public Subject TiedSubject { get; set; }
+
+        [ForeignKey(nameof(IncidentTokenId))]
+        public Token Token { get; set; }
+
+        // NEW FIELD — nothing else changed
+        [Required]
+        [Column("IsActive")]
+        public bool IsActive { get; set; }
+    }
+
+
+
+
+--IncidentDto
+
+
+namespace InsiderOUT.Server.Models.Dto
+{
+    public class IncidentDto
+    {
+        public int IncidentId { get; set; }
+        public string Title { get; set; }
+        public string Desc { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime Updated { get; set; }
+        public string Agent { get; set; }
+        public int TokenId { get; set; }
+        public string TokenType { get; set; }
+        public string Status { get; set; }
+        public int? AssignedUserId { get; set; }
+        public int? TiedSubjectId { get; set; }
+
+        public bool IsActive { get; set; }
+    }
+
+    public class IncidentViewDto
+    {
+        public IncidentDto Incident { get; set; }
+        public TokenDto? Token { get; set; }
+        public SubjectDto? Subject { get; set; }
+        public UserDto? User { get; set; }
+    }
+}
+
+
+
+--IncSer
+
+using InsiderOUT.Server.Data;
+using InsiderOUT.Server.Data.Models.Incidents;
+using InsiderOUT.Server.Models.Dto;
+using Microsoft.EntityFrameworkCore;
+
+namespace InsiderOUT.Server.Services
+{
+    public class IncidentService : IIncidentService
+    {
+        private readonly DBContext _db;
+
+        public IncidentService(DBContext db)
+        {
+            _db = db;
+        }
+
+        public async Task<IEnumerable<IncidentDto>> GetAllAsync()
+        {
+            return await _db.Incidents
+                .AsNoTracking()
+                .Select(i => new IncidentDto
+                {
+                    IncidentId = i.IncidentId,
+                    Title = i.IncidentTitle,
+                    Desc = i.IncidentDescription,
+                    Date = i.IncidentCreatedDate,
+                    Updated = i.IncidentUpdatedDate,
+                    Agent = i.IncidentAgent,
+                    TokenId = i.IncidentTokenId,
+                    TokenType = i.IncidentTokenType,
+                    Status = i.IncidentStatus,
+                    AssignedUserId = i.IncidentAssignedUserId,
+                    TiedSubjectId = i.IncidentTiedSubjectId,
+                    IsActive = i.IsActive
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IncidentDto?> GetByIdAsync(int id)
+        {
+            var i = await _db.Incidents
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.IncidentId == id);
+
+            if (i == null) return null;
+
+            return new IncidentDto
+            {
+                IncidentId = i.IncidentId,
+                Title = i.IncidentTitle,
+                Desc = i.IncidentDescription,
+                Date = i.IncidentCreatedDate,
+                Updated = i.IncidentUpdatedDate,
+                Agent = i.IncidentAgent,
+                TokenId = i.IncidentTokenId,
+                TokenType = i.IncidentTokenType,
+                Status = i.IncidentStatus,
+                AssignedUserId = i.IncidentAssignedUserId,
+                TiedSubjectId = i.IncidentTiedSubjectId,
+                IsActive = i.IsActive
+            };
+        }
+
+        public async Task<IncidentViewDto?> GetViewByIdAsync(int id)
+        {
+            var incident = await _db.Incidents
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.IncidentId == id);
+
+            if (incident == null) return null;
+
+            var token = await _db.Tokens
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.TokenId == incident.IncidentTokenId);
+
+            var subject = incident.IncidentTiedSubjectId.HasValue
+                ? await _db.Subjects.AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.SubjectId == incident.IncidentTiedSubjectId.Value)
+                : null;
+
+            var user = incident.IncidentAssignedUserId.HasValue
+                ? await _db.Users.AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.UserId == incident.IncidentAssignedUserId.Value)
+                : null;
+
+            var incidentDto = new IncidentDto
+            {
+                IncidentId = incident.IncidentId,
+                Title = incident.IncidentTitle,
+                Desc = incident.IncidentDescription,
+                Date = incident.IncidentCreatedDate,
+                Updated = incident.IncidentUpdatedDate,
+                Agent = incident.IncidentAgent,
+                TokenId = incident.IncidentTokenId,
+                TokenType = incident.IncidentTokenType,
+                Status = incident.IncidentStatus,
+                AssignedUserId = incident.IncidentAssignedUserId,
+                TiedSubjectId = incident.IncidentTiedSubjectId,
+                IsActive = incident.IsActive
+            };
+
+            return new IncidentViewDto
+            {
+                Incident = incidentDto,
+                Token = token == null ? null : new TokenDto
+                {
+                    TokenId = token.TokenId,
+                    TokenType = token.TokenType,
+                    TokenSeverity = token.TokenSeverity,
+                    CreatedDate = token.CreatedDate,
+                    UpdatedDate = token.UpdatedDate
+                },
+                Subject = subject == null ? null : new SubjectDto
+                {
+                    SubjectId = subject.SubjectId,
+                    SubjectFirstName = subject.SubjectFirstName,
+                    SubjectLastName = subject.SubjectLastName,
+                    SubjectEmail = subject.SubjectEmail,
+                    SubjectPhone = subject.SubjectPhone,
+                    SubjectDepartment = subject.SubjectDepartment,
+                    SubjectRole = subject.SubjectRole,
+                    SubjectRiskScore = subject.SubjectRiskScore
+                },
+                User = user == null ? null : new UserDto
+                {
+                    UserId = user.UserId,
+                    UserFirstName = user.UserFirstName,
+                    UserLastName = user.UserLastName,
+                    UserEmail = user.UserEmail,
+                    UserPhone = user.UserPhone,
+                    UserDepartment = user.UserDepartment
+                }
+            };
+        }
+
+        public async Task<IncidentDto> CreateAsync(IncidentDto dto)
+        {
+            var entity = new Incident
+            {
+                IncidentTitle = dto.Title,
+                IncidentDescription = dto.Desc,
+                IncidentCreatedDate = dto.Date,
+                IncidentUpdatedDate = dto.Updated,
+                IncidentAgent = dto.Agent,
+                IncidentTokenId = dto.TokenId,
+                IncidentTokenType = dto.TokenType,
+                IncidentStatus = dto.Status,
+                IncidentAssignedUserId = dto.AssignedUserId,
+                IncidentTiedSubjectId = dto.TiedSubjectId,
+                IsActive = dto.IsActive
+            };
+
+            _db.Incidents.Add(entity);
+            await _db.SaveChangesAsync();
+
+            dto.IncidentId = entity.IncidentId;
+            return dto;
+        }
+
+        public async Task<bool> UpdateAsync(int id, IncidentDto dto)
+        {
+            var entity = await _db.Incidents.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.IncidentTitle = dto.Title;
+            entity.IncidentDescription = dto.Desc;
+            entity.IncidentCreatedDate = dto.Date;
+            entity.IncidentUpdatedDate = dto.Updated;
+            entity.IncidentAgent = dto.Agent;
+            entity.IncidentTokenId = dto.TokenId;
+            entity.IncidentTokenType = dto.TokenType;
+            entity.IncidentStatus = dto.Status;
+            entity.IncidentAssignedUserId = dto.AssignedUserId;
+            entity.IncidentTiedSubjectId = dto.TiedSubjectId;
+            entity.IsActive = dto.IsActive;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var entity = await _db.Incidents.FindAsync(id);
+            if (entity == null) return false;
+
+            _db.Incidents.Remove(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+    }
+}
+
+
+
