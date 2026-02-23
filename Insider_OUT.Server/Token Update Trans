@@ -1,0 +1,205 @@
+--SQL
+
+ALTER TABLE Tokens
+ADD CreatedDate DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    UpdatedDate DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME();
+
+
+--Updated Model
+public class Token
+{
+    public int TokenId { get; set; }
+    public string TokenType { get; set; } = string.Empty;
+    public string TokenSeverity { get; set; } = string.Empty;
+
+    public DateTime CreatedDate { get; set; }
+    public DateTime UpdatedDate { get; set; }
+}
+
+
+
+--TokenDto
+
+public class TokenDto
+{
+    public int TokenId { get; set; }
+    public string TokenType { get; set; } = string.Empty;
+    public string TokenSeverity { get; set; } = string.Empty;
+
+    public DateTime CreatedDate { get; set; }
+    public DateTime UpdatedDate { get; set; }
+}
+
+
+---ITokSer
+
+public interface ITokenService
+{
+    Task<IEnumerable<TokenDto>> GetAllTokensAsync();
+    Task<TokenDto?> GetTokenByIdAsync(int id);
+    Task<TokenDto> CreateTokenAsync(CreateTokenDto dto);
+    Task<TokenDto?> UpdateTokenAsync(int id, UpdateTokenDto dto);
+    Task<bool> DeleteTokenAsync(int id);
+}
+
+
+--TokenSer
+
+public class TokenService : ITokenService
+{
+    private readonly AppDbContext _context;
+
+    public TokenService(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<TokenDto>> GetAllTokensAsync()
+    {
+        return await _context.Tokens
+            .Select(t => new TokenDto
+            {
+                TokenId = t.TokenId,
+                TokenType = t.TokenType,
+                TokenSeverity = t.TokenSeverity,
+                CreatedDate = t.CreatedDate,
+                UpdatedDate = t.UpdatedDate
+            })
+            .ToListAsync();
+    }
+
+    public async Task<TokenDto?> GetTokenByIdAsync(int id)
+    {
+        return await _context.Tokens
+            .Where(t => t.TokenId == id)
+            .Select(t => new TokenDto
+            {
+                TokenId = t.TokenId,
+                TokenType = t.TokenType,
+                TokenSeverity = t.TokenSeverity,
+                CreatedDate = t.CreatedDate,
+                UpdatedDate = t.UpdatedDate
+            })
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<TokenDto> CreateTokenAsync(CreateTokenDto dto)
+    {
+        var token = new Token
+        {
+            TokenType = dto.TokenType,
+            TokenSeverity = dto.TokenSeverity,
+            CreatedDate = DateTime.UtcNow,
+            UpdatedDate = DateTime.UtcNow
+        };
+
+        _context.Tokens.Add(token);
+        await _context.SaveChangesAsync();
+
+        return new TokenDto
+        {
+            TokenId = token.TokenId,
+            TokenType = token.TokenType,
+            TokenSeverity = token.TokenSeverity,
+            CreatedDate = token.CreatedDate,
+            UpdatedDate = token.UpdatedDate
+        };
+    }
+
+    public async Task<TokenDto?> UpdateTokenAsync(int id, UpdateTokenDto dto)
+    {
+        var token = await _context.Tokens.FindAsync(id);
+        if (token == null)
+            return null;
+
+        token.TokenSeverity = dto.TokenSeverity;
+        token.UpdatedDate = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return new TokenDto
+        {
+            TokenId = token.TokenId,
+            TokenType = token.TokenType,
+            TokenSeverity = token.TokenSeverity,
+            CreatedDate = token.CreatedDate,
+            UpdatedDate = token.UpdatedDate
+        };
+    }
+
+    public async Task<bool> DeleteTokenAsync(int id)
+    {
+        var token = await _context.Tokens.FindAsync(id);
+        if (token == null)
+            return false;
+
+        _context.Tokens.Remove(token);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+}
+
+
+--Controller
+
+[ApiController]
+[Route("api/[controller]")]
+public class TokensController : ControllerBase
+{
+    private readonly ITokenService _service;
+
+    public TokensController(ITokenService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await _service.GetAllTokensAsync());
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var token = await _service.GetTokenByIdAsync(id);
+        if (token == null)
+            return NotFound();
+
+        return Ok(token);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTokenDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var created = await _service.CreateTokenAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.TokenId }, created);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateTokenDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var updated = await _service.UpdateTokenAsync(id, dto);
+        if (updated == null)
+            return NotFound();
+
+        return Ok(updated);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await _service.DeleteTokenAsync(id);
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
+    }
+}
+
