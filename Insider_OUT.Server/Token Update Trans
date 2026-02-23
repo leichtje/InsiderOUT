@@ -20,7 +20,9 @@ public class Token
 
 --TokenDto
 
-namespace Insider_OUT.Server.Data.Models.Dto
+using System;
+
+namespace InsiderOUT.Server.Models.Dto
 {
     public class TokenDto
     {
@@ -35,42 +37,45 @@ namespace Insider_OUT.Server.Data.Models.Dto
 
 ---ITokSer
 
-using Insider_OUT.Server.Data.Models.Dto;
+using InsiderOUT.Server.Models.Dto;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Insider_OUT.Server.Services.Tokens
+namespace InsiderOUT.Server.Services
 {
     public interface ITokenService
     {
-        Task<IEnumerable<TokenDto>> GetAllTokensAsync();
-        Task<TokenDto?> GetTokenByIdAsync(int id);
-        Task<TokenDto> CreateTokenAsync(TokenDto dto);
-        Task<TokenDto?> UpdateTokenAsync(int id, TokenDto dto);
-        Task<bool> DeleteTokenAsync(int id);
+        Task<IEnumerable<TokenDto>> GetAllAsync();
+        Task<TokenDto?> GetByIdAsync(int id);
+        Task<TokenDto> CreateAsync(CreateTokenDto dto);
+        Task<TokenDto?> UpdateAsync(int id, UpdateTokenDto dto);
+        Task<bool> DeleteAsync(int id);
     }
 }
 
 
 --TokenSer
 
-using Insider_OUT.Server.Data;
-using Insider_OUT.Server.Data.Models.Tokens;
-using Insider_OUT.Server.Data.Models.Dto;
+using InsiderOUT.Server.Data;
+using InsiderOUT.Server.Data.Models.Tokens;
+using InsiderOUT.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
-namespace Insider_OUT.Server.Services.Tokens
+namespace InsiderOUT.Server.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly AppDbContext _context;
+        private readonly DBContext _db;
 
-        public TokenService(AppDbContext context)
+        public TokenService(DBContext db)
         {
-            _context = context;
+            _db = db;
         }
 
-        public async Task<IEnumerable<TokenDto>> GetAllTokensAsync()
+        public async Task<IEnumerable<TokenDto>> GetAllAsync()
         {
-            return await _context.Tokens
+            return await _db.Tokens
+                .AsNoTracking()
                 .Select(t => new TokenDto
                 {
                     TokenId = t.TokenId,
@@ -82,26 +87,29 @@ namespace Insider_OUT.Server.Services.Tokens
                 .ToListAsync();
         }
 
-        public async Task<TokenDto?> GetTokenByIdAsync(int id)
+        public async Task<TokenDto?> GetByIdAsync(int id)
         {
-            return await _context.Tokens
-                .Where(t => t.TokenId == id)
-                .Select(t => new TokenDto
-                {
-                    TokenId = t.TokenId,
-                    TokenType = t.TokenType,
-                    TokenSeverity = t.TokenSeverity,
-                    CreatedDate = t.CreatedDate,
-                    UpdatedDate = t.UpdatedDate
-                })
-                .FirstOrDefaultAsync();
+            var t = await _db.Tokens
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.TokenId == id);
+
+            if (t == null) return null;
+
+            return new TokenDto
+            {
+                TokenId = t.TokenId,
+                TokenType = t.TokenType,
+                TokenSeverity = t.TokenSeverity,
+                CreatedDate = t.CreatedDate,
+                UpdatedDate = t.UpdatedDate
+            };
         }
 
-        public async Task<TokenDto> CreateTokenAsync(TokenDto dto)
+        public async Task<TokenDto> CreateAsync(CreateTokenDto dto)
         {
             var now = DateTime.UtcNow;
 
-            var token = new Token
+            var entity = new Token
             {
                 TokenType = dto.TokenType,
                 TokenSeverity = dto.TokenSeverity,
@@ -109,42 +117,46 @@ namespace Insider_OUT.Server.Services.Tokens
                 UpdatedDate = now
             };
 
-            _context.Tokens.Add(token);
-            await _context.SaveChangesAsync();
+            _db.Tokens.Add(entity);
+            await _db.SaveChangesAsync();
 
-            dto.TokenId = token.TokenId;
-            dto.CreatedDate = token.CreatedDate;
-            dto.UpdatedDate = token.UpdatedDate;
-
-            return dto;
+            return new TokenDto
+            {
+                TokenId = entity.TokenId,
+                TokenType = entity.TokenType,
+                TokenSeverity = entity.TokenSeverity,
+                CreatedDate = entity.CreatedDate,
+                UpdatedDate = entity.UpdatedDate
+            };
         }
 
-        public async Task<TokenDto?> UpdateTokenAsync(int id, TokenDto dto)
+        public async Task<TokenDto?> UpdateAsync(int id, UpdateTokenDto dto)
         {
-            var token = await _context.Tokens.FindAsync(id);
-            if (token == null)
-                return null;
+            var entity = await _db.Tokens.FindAsync(id);
+            if (entity == null) return null;
 
-            token.TokenType = dto.TokenType;
-            token.TokenSeverity = dto.TokenSeverity;
-            token.UpdatedDate = DateTime.UtcNow;
+            entity.TokenSeverity = dto.TokenSeverity;
+            entity.UpdatedDate = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
 
-            dto.CreatedDate = token.CreatedDate;
-            dto.UpdatedDate = token.UpdatedDate;
-
-            return dto;
+            return new TokenDto
+            {
+                TokenId = entity.TokenId,
+                TokenType = entity.TokenType,
+                TokenSeverity = entity.TokenSeverity,
+                CreatedDate = entity.CreatedDate,
+                UpdatedDate = entity.UpdatedDate
+            };
         }
 
-        public async Task<bool> DeleteTokenAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var token = await _context.Tokens.FindAsync(id);
-            if (token == null)
-                return false;
+            var entity = await _db.Tokens.FindAsync(id);
+            if (entity == null) return false;
 
-            _context.Tokens.Remove(token);
-            await _context.SaveChangesAsync();
+            _db.Tokens.Remove(entity);
+            await _db.SaveChangesAsync();
             return true;
         }
     }
@@ -153,11 +165,11 @@ namespace Insider_OUT.Server.Services.Tokens
 
 --Controller
 
-using Insider_OUT.Server.Data.Models.Dto;
-using Insider_OUT.Server.Services.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using InsiderOUT.Server.Services;
+using InsiderOUT.Server.Models.Dto;
 
-namespace Insider_OUT.Server.Controllers
+namespace InsiderOUT.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -172,51 +184,40 @@ namespace Insider_OUT.Server.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
-        {
-            return Ok(await _service.GetAllTokensAsync());
-        }
+            => Ok(await _service.GetAllAsync());
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var token = await _service.GetTokenByIdAsync(id);
-            if (token == null)
-                return NotFound();
-
-            return Ok(token);
+            var token = await _service.GetByIdAsync(id);
+            return token == null ? NotFound() : Ok(token);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TokenDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateTokenDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var created = await _service.CreateTokenAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.TokenId }, created);
+            var created = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById),
+                new { id = created.TokenId },
+                created);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] TokenDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateTokenDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var updated = await _service.UpdateTokenAsync(id, dto);
-            if (updated == null)
-                return NotFound();
-
-            return Ok(updated);
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated == null ? NotFound() : Ok(updated);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _service.DeleteTokenAsync(id);
-            if (!deleted)
-                return NotFound();
-
-            return NoContent();
+            var ok = await _service.DeleteAsync(id);
+            return ok ? NoContent() : NotFound();
         }
     }
 }
