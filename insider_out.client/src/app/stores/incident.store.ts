@@ -74,7 +74,6 @@ export const IncidentStore = signalStore(
     })),
 
     withMethods((store, http = inject(HttpClient)) => {
-        // Adjust this URL to match your actual incidents endpoint
         const apiUrl = 'https://localhost:7244/api/incidents'; 
 
         return {
@@ -148,11 +147,17 @@ export const IncidentStore = signalStore(
                     switchMap(({ id, data }) => {
                         const payload = toIncidentDto(data);
 
-                        return http.put(`${apiUrl}/${id}`, payload).pipe(
-                            tap(() => {
+                        return http.put<IncidentDto>(`${apiUrl}/${id}`, payload).pipe(
+                            map(toIncidentModel), 
+                            
+                            tap((updatedServerIncident) => {
                                 patchState(store, (state) => ({
-                                    incidents: state.incidents.map(i => i.incidentId === id ? data : i),
-                                    selectedIncident: state.selectedIncident?.incidentId === id ? data : state.selectedIncident,
+                                    incidents: state.incidents.map(i => 
+                                        i.incidentId === id ? updatedServerIncident : i
+                                    ),
+                                    selectedIncident: state.selectedIncident?.incidentId === id 
+                                        ? updatedServerIncident 
+                                        : state.selectedIncident,
                                     isLoading: false
                                 }));
                             }),
