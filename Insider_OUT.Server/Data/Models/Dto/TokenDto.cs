@@ -3,7 +3,9 @@
     public class TokenDto
     {
         public int TokenId { get; set; }
-        public string TokenType { get; set; }      // "document", "email", etc.
-        public string TokenSeverity { get; set; }  // "Low", "Medium", "High"
+        public string TokenType { get; set; }
+        public string TokenSeverity { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

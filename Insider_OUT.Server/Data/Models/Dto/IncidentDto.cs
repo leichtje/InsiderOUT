@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace InsiderOUT.Server.Models.Dto
+﻿namespace InsiderOUT.Server.Models.Dto
 {
     public class IncidentDto
     {

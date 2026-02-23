@@ -32,7 +32,9 @@ namespace InsiderOUT.Server.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.TokenId }, created);
+            return CreatedAtAction(nameof(GetById),
+                new { id = created.TokenId },
+                created);
         }
 
         [HttpPut("{id:int}")]
@@ -40,8 +42,8 @@ namespace InsiderOUT.Server.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var ok = await _service.UpdateAsync(id, dto);
-            return ok ? NoContent() : NotFound();
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated == null ? NotFound() : Ok(updated);
         }
 
         [HttpDelete("{id:int}")]
