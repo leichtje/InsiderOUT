@@ -25,7 +25,6 @@ export class NavigationService {
         icon: "create_new_folder",
         subpages: [
             { title: "Documents", route: "/tokens/documents" },
-            { title: "Emails", route: "/tokens/emails" }
         ] 
     },
     { 

@@ -38,22 +38,22 @@ import { SkeletonLoaderComponent } from "../../../fragments/skeleton-loader/skel
     styleUrl: './incidents-detail.component.scss',
     standalone: true,
     imports: [
-    CommonModule,
-    RouterLink,
-    ActionBarComponent,
-    MatIconModule,
-    ProfilePickerComponent,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
-    TextFieldModule,
-    ActivityListComponent,
-    PillComponent,
-    PillSelectComponent,
-    SkeletonLoaderComponent
-],
+        CommonModule,
+        RouterLink,
+        ActionBarComponent,
+        MatIconModule,
+        ProfilePickerComponent,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatTooltipModule,
+        TextFieldModule,
+        ActivityListComponent,
+        PillComponent,
+        PillSelectComponent,
+        SkeletonLoaderComponent
+    ],
     providers: [IncidentDetailStore]
 })
 export class IncidentsDetailComponent implements OnInit { 
