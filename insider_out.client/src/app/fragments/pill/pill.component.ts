@@ -12,16 +12,31 @@ export class PillComponent<T> {
     
     value = input<T | null | undefined>(null, { alias: 'pill' });
 
+    private getMatchedKey(map: Map<T, string>, val: T | null | undefined): T | undefined {
+        if (!val) return undefined;
+        
+        const lowerVal = String(val).toLowerCase();
+        
+        for (const key of map.keys()) {
+            if (String(key).toLowerCase() === lowerVal) {
+                return key;
+            }
+        }
+        return undefined;
+    }
+
     backgroundColor = computed(() => {
-        const val = this.value();
-        if (val === null || val === undefined) return 'var(--color-gray-2)';
-        return this.varMap$().get(val) ?? 'var(--color-gray-2)';
+        const map = this.varMap$();
+        const matchedKey = this.getMatchedKey(map, this.value());
+        
+        return matchedKey ? map.get(matchedKey) : 'var(--color-gray-2)';
     });
 
     displayText = computed(() => {
-        const val = this.value();
-        if (val === null || val === undefined) return 'Unknown';
-        return this.textMap$().get(val) ?? 'Unknown';
+        const map = this.textMap$();
+        const matchedKey = this.getMatchedKey(map, this.value());
+        
+        return matchedKey ? map.get(matchedKey) : 'Unknown';
     });
 
     @HostBinding('style.--background-color')

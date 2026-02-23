@@ -49,6 +49,13 @@ export const DocumentStore = signalStore(
     withComputed((store) => ({
         documentCount: computed(() => store.documents().length),
         hasSelectedDocument: computed(() => !!store.selectedDocument()),
+        entityMap: computed(() => {
+            const map: Record<number, DocumentModel> = {};
+            for (const document of store.documents()) {
+                map[document.documentId] = document;
+            }
+            return map;
+        })
     })),
 
     withMethods((store, http = inject(HttpClient)) => {
@@ -159,6 +166,28 @@ export const DocumentStore = signalStore(
                             catchError((err) => {
                                 console.error('Failed to load document details:', err);
                                 patchState(store, { isLoading: false, error: err.message });
+                                return [];
+                            })
+                        );
+                    })
+                )
+            ),
+            loadDocument: rxMethod<number>(
+                pipe(
+                    switchMap((id) => {
+                        if (store.entityMap()[id]) {
+                            return []; 
+                        }
+
+                        return http.get<DocumentDto>(`${apiUrl}/${id}`).pipe(
+                            map(toDocumentModel),
+                            tap((document) => {
+                                patchState(store, (state) => ({
+                                    documents: [...state.documents, document] 
+                                }));
+                            }),
+                            catchError((err) => {
+                                console.error(`Failed to load missing document ${id}:`, err);
                                 return [];
                             })
                         );

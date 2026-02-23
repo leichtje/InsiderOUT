@@ -62,7 +62,15 @@ export const IncidentStore = signalStore(
         
         unassignedIncidents: computed(() => 
             store.incidents().filter(inc => inc.assignedUserId === null)
-        )
+        ),
+
+        entityMap: computed(() => {
+            const map: Record<number, IncidentModel> = {};
+            for (const incident of store.incidents()) {
+                map[incident.incidentId] = incident;
+            }
+            return map;
+        })
     })),
 
     withMethods((store, http = inject(HttpClient)) => {

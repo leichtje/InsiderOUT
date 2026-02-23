@@ -52,6 +52,13 @@ export const UserStore = signalStore(
     withComputed((store) => ({
         isAuthenticated: computed(() => !!store.currentUser()),
         userCount: computed(() => store.users().length),
+        entityMap: computed(() => {
+            const map: Record<number, UserModel> = {};
+            for (const user of store.users()) {
+                map[user.userId] = user;
+            }
+            return map;
+        })
     })),
 
     withMethods((store, http = inject(HttpClient)) => {
@@ -164,6 +171,28 @@ export const UserStore = signalStore(
 
                     return http.get<UserModel>(`${apiUrl}/${id}`).pipe(
                             tap(user => patchState(store, { selectedUser: user, isLoading: false }))
+                        );
+                    })
+                )
+            ),
+            loadUser: rxMethod<number>(
+                pipe(
+                    switchMap((id) => {
+                        if (store.entityMap()[id]) {
+                            return []; 
+                        }
+
+                        return http.get<UserDto>(`${apiUrl}/${id}`).pipe(
+                            map(toUserModel),
+                            tap((user) => {
+                                patchState(store, (state) => ({
+                                    users: [...state.users, user] 
+                                }));
+                            }),
+                            catchError((err) => {
+                                console.error(`Failed to load missing user ${id}:`, err);
+                                return [];
+                            })
                         );
                     })
                 )

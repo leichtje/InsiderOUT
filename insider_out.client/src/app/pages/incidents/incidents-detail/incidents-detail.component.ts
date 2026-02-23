@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { filter, of, startWith, switchMap } from 'rxjs';
+import { filter, map, of, startWith, switchMap } from 'rxjs';
 import { IncidentService } from '../../../services/incident.service';
 import { UserService } from '../../../services/user.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -26,6 +26,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BreakpointService } from "../../../services/breakpoint.service";
 import { PillComponent } from "../../../fragments/pill/pill.component";
 import { status_colors, status_text } from '../../../fragments/pill/incident-status-constants';
+import { IncidentDetailStore } from '../../../stores/incident-detail.store';
+import { UserStore } from '../../../stores/user.store';
+import { SubjectStore } from '../../../stores/subject.store';
+import { IncidentStore } from '../../../stores/incident.store';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -33,39 +37,38 @@ import { status_colors, status_text } from '../../../fragments/pill/incident-sta
     styleUrl: './incidents-detail.component.scss',
     standalone: true,
     imports: [
-    CommonModule,
-    RouterLink,
-    ActionBarComponent,
-    MatIconModule,
-    ProfilePickerComponent,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
-    TextFieldModule,
-    ActivityListComponent,
-    PillComponent,
-    PillSelectComponent
-]
+        CommonModule,
+        RouterLink,
+        ActionBarComponent,
+        MatIconModule,
+        ProfilePickerComponent,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatTooltipModule,
+        TextFieldModule,
+        ActivityListComponent,
+        PillComponent,
+        PillSelectComponent
+    ],
+    providers: [IncidentDetailStore]
 })
-export class IncidentsDetailComponent { 
+export class IncidentsDetailComponent implements OnInit { 
 
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
+    protected breakpointService = inject(BreakpointService);
 
-    protected incidentService = inject(IncidentService);
-    protected userService = inject(UserService);
-    protected subjectService = inject(SubjectService);
-    protected tokenService = inject(TokenService);
+    public store = inject(IncidentDetailStore);
+    protected userStore = inject(UserStore);
+    protected subjectStore = inject(SubjectStore);
+    protected incidentStore = inject(IncidentStore); 
 
-    protected readonly tokenType = TokenType;
     protected readonly activityScope = ActivityScope;
 
-    protected users = this.userService.users;
-    protected subjects = this.subjectService.subjects;
-    
-    protected breakpointService = inject(BreakpointService);
+    protected users = this.userStore.users;
+    protected subjects = this.subjectStore.subjects;
 
     statusColors = status_colors;
     statusText = status_text;
@@ -85,46 +88,51 @@ export class IncidentsDetailComponent {
 
     constructor() {
         effect(() => {
-        const data = this.incident();
-        if (data) {
-            this.form.patchValue({
-                title: data.title,
-                desc: data.desc,
-                status: data.status,
-                assignedUserId: data.assignedUserId,
-                tiedSubjectId: data.tiedSubjectId,
-                tokenId: data.tokenId
-            });
+            const data = this.store.incident();
+            if (data) {
+                this.form.patchValue({
+                    title: data.title,
+                    desc: data.desc,
+                    status: data.status,
+                    assignedUserId: data.assignedUserId,
+                    tiedSubjectId: data.tiedSubjectId,
+                    tokenId: data.tokenId
+                });
 
-            this.form.markAsPristine(); 
-        }
+                this.form.markAsPristine(); 
+            }
+        });
+    }
+
+    ngOnInit() {
+        this.route.paramMap.pipe(
+            map(params => params.get('id')),
+            filter((id): id is string => id !== null),
+            map(id => +id)
+        ).subscribe(id => {
+            this.store.loadIncidentDetails(id);
         });
     }
 
     activeTab = signal<'left' | 'right'>('left');
-
     isPhone = computed(() => this.breakpointService.isPhone()); 
     
     selectTab(tab: 'left' | 'right') {
         this.activeTab.set(tab);
     }
 
-    private assignedUserId$ = this.form.controls.assignedUserId.valueChanges.pipe(
-        startWith(this.form.controls.assignedUserId.value) 
-    );
-
-    selectedUserId = toSignal(this.assignedUserId$);
-
+    selectedUserId = toSignal(this.form.controls.assignedUserId.valueChanges, {
+        initialValue: this.form.controls.assignedUserId.value
+    });
+    
     selectedUser = computed(() => {
         const id = this.selectedUserId();
-        const users = this.users();
-        return users.find(u => u.userId === id) || null;
+        return this.users().find(u => u.userId === id) || null;
     });
 
-    private tiedSubjectId$ = this.form.controls.tiedSubjectId.valueChanges.pipe(
-        startWith(this.form.controls.tiedSubjectId.value)
-    );
-    selectedSubjectId = toSignal(this.tiedSubjectId$);
+    selectedSubjectId = toSignal(this.form.controls.tiedSubjectId.valueChanges, {
+        initialValue: this.form.controls.tiedSubjectId.value
+    });
     
     selectedSubject = computed(() => {
         const id = this.selectedSubjectId();
@@ -141,90 +149,20 @@ export class IncidentsDetailComponent {
     onSave() {
         if (this.form.valid) {
             const formValue = this.form.value;
-            console.log('Saving payload:', formValue);
-            // TODO: Call service update method here
+            const incidentId = this.store.incident()?.incidentId;
+            
+            if (incidentId) {
+                this.incidentStore.update({ id: incidentId, data: formValue as any });
+            }
 
             this.form.markAsPristine();
         }
     }
 
     onCancel() {
-        const data = this.incident();
+        const data = this.store.incident();
         if (data) {
             this.form.reset(data);
         }
     }
-
-    private incidentId$ = this.route.paramMap.pipe(
-        switchMap(params => {
-            const id = params.get('id');
-            return of(id ? +id : null);
-        })
-    );
-
-    incident = toSignal(
-        this.incidentId$.pipe(
-            filter((id): id is number => id !== null),
-            switchMap(id => {
-                return this.incidentService.getIncidentById(id);
-            })
-        ),
-        { initialValue: null }
-    );
-
-    private incidentSignal$ = toObservable(this.incident);
-
-    assignedUser = toSignal(
-        this.incidentSignal$.pipe(
-            filter((incident): incident is IncidentModel => !!incident),
-            switchMap(incident => {
-                const userId = incident.assignedUserId;
-                if (userId) {
-                    return this.userService.getUserById(userId);
-                }
-                return of(null as UserModel | null);
-            })
-        ),
-        { initialValue: null as UserModel | null }
-    );
-
-    tiedSubject = toSignal(
-        this.incidentSignal$.pipe(
-            filter((incident): incident is IncidentModel => !!incident),
-            switchMap(incident => {
-                const subjectId = incident.tiedSubjectId;
-                if (subjectId) {
-                    return this.subjectService.getSubjectById(subjectId);
-                }
-                return of(null as SubjectModel | null);
-            })
-        ),
-        { initialValue: null as SubjectModel | null }
-    );
-
-    token = toSignal(
-        this.incidentSignal$.pipe(
-            filter((incident): incident is IncidentModel => !!incident),
-            switchMap(incident => {
-                const tokenId = incident.tokenId;
-                const tokenType = incident.tokenType;
-                if (tokenId) {
-                    return this.tokenService.getToken(tokenId, tokenType);
-                }
-                return of(null as Token | null); 
-            })
-        ),
-        { initialValue: null as Token | null }
-    );
-
-    tokenAsDocument = computed(() => {
-        const t = this.token();
-        return (t?.type === TokenType.document) ? (t as DocumentModel) : null;
-    });
-    
-    tokenAsEmail = computed(() => {
-        const t = this.token();
-        return (t?.type === TokenType.email) ? (t as EmailModel) : null;
-    });
-
 }

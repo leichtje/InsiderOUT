@@ -51,6 +51,16 @@ export const SubjectStore = signalStore(
     { providedIn: 'root' },
     withState(initialState),
 
+    withComputed((store) => ({
+        entityMap: computed(() => {
+            const map: Record<number, SubjectModel> = {};
+            for (const subject of store.subjects()) {
+                map[subject.subjectId] = subject;
+            }
+            return map;
+        })
+    })),
+
     withMethods((store, http = inject(HttpClient)) => {
         const apiUrl = 'https://localhost:7244/api/subjects';
 
@@ -139,6 +149,28 @@ export const SubjectStore = signalStore(
 
                     return http.get<SubjectModel>(`${apiUrl}/${id}`).pipe(
                             tap(subject => patchState(store, { selectedSubject: subject, isLoading: false }))
+                        );
+                    })
+                )
+            ),
+            loadSubject: rxMethod<number>(
+                pipe(
+                    switchMap((id) => {
+                        if (store.entityMap()[id]) {
+                            return []; 
+                        }
+
+                        return http.get<SubjectDto>(`${apiUrl}/${id}`).pipe(
+                            map(toSubjectModel),
+                            tap((subject) => {
+                                patchState(store, (state) => ({
+                                    subjects: [...state.subjects, subject] 
+                                }));
+                            }),
+                            catchError((err) => {
+                                console.error(`Failed to load missing subject ${id}:`, err);
+                                return [];
+                            })
                         );
                     })
                 )
