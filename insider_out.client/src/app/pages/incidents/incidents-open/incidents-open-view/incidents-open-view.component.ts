@@ -27,7 +27,6 @@ export class IncidentsOpenViewComponent {
 
     filterTypeOptions: FilterOptionModel[] = [
         { label: 'Document', value: 'document', icon: 'description' },
-        { label: 'Email', value: 'email', icon: 'email' },
         { label: 'All Types', value: 'all', icon: 'list' }
     ];
 
