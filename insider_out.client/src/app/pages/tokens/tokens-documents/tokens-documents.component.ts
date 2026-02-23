@@ -5,7 +5,7 @@ import { TokenService } from '../../../services/token.service';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterValue } from '../../../models/filter.model';
-import { TokenModel } from '../../../models/token.model';
+import { DocumentModel, TokenModel } from '../../../models/token.model';
 import { DocumentStore } from '../../../stores/documents.store';
 
 @Component({
@@ -69,8 +69,8 @@ export class TokensDocumentsComponent {
         this.currentTypeFilter.set(newFilter);
     }
 
-    onDocumentSelected(token: TokenModel) {
-        const id = token.tokenId;
+    onDocumentSelected(document: DocumentModel) {
+        const id = document.documentId;
 
         this.router.navigate([id], { relativeTo: this.route });
     }

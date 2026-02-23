@@ -18,6 +18,10 @@
     }
 
     &__left {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
         @include mixins.non-phone(){
             width: 60%;
         }
@@ -26,27 +30,7 @@
             width: 100%;
         }
 
-        .section-title {
-            margin-bottom: 20px;
-
-            .title-input {
-                width: 100%;
-
-                ::ng-deep .mat-mdc-input-element {
-                    font-size: 1.25em !important; 
-                    letter-spacing: 1.5px !important;
-                    font-weight: 600 !important;
-                    color: var(--color-text) !important;
-
-                    line-height: 1.2 !important;
-                    resize: none; 
-                    overflow: hidden; 
-                    padding: 0; 
-                }
-            }
-        }
-
-        .section-date {
+        .section-title, .section-date, .section-sensitivity {
             display: flex;
             flex-wrap: wrap;
             gap: 20px 40px;
@@ -80,10 +64,11 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px 40px;
+            margin-bottom: 20px;
 
-            .updated {
-                margin-bottom: 20px;
-            }
+
+            // .location-input {
+            // }
         }
 
         .wrapper {
@@ -120,6 +105,12 @@
                     align-items: flex-start;                
                 }
 
+                .related-incidents {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;  
+                    gap: 5px;  
+                }
                 
             }
         }

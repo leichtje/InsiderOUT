@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { MatIcon, MatIconModule } from "@angular/material/icon";
-import { FilterComponent } from '../../../../fragments/filter/filter.component';
+import { MatIconModule } from "@angular/material/icon";
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BreakpointService } from '../../../../services/breakpoint.service';
-import { IncidentDetailStore } from '../../../../stores/incident-detail.store';
 import { DocumentDetailStore } from '../../../../stores/document-detail.store';
 import { DocumentModel, TokenSensitivity } from '../../../../models/token.model';
 import { sensitivity_colors, sensitivity_text } from '../../../../fragments/pill/token-sensitivity-constants';
@@ -17,10 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivityListComponent } from '../../../../fragments/activity-list/activity-list.component';
-import { PillSelectComponent } from '../../../../fragments/pill-select/pill-select.component';
 import { PillComponent } from '../../../../fragments/pill/pill.component';
-import { ProfilePickerComponent } from '../../../../fragments/profile-picker/profile-picker.component';
 import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/skeleton-loader.component';
 
 @Component({
@@ -28,19 +23,20 @@ import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/s
     templateUrl: './tokens-documents-detail.component.html',
     styleUrl: './tokens-documents-detail.component.scss',
     standalone: true,
-    imports: [        
-        CommonModule,
-        RouterLink,
-        ActionBarComponent,
-        MatIconModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatTooltipModule,
-        TextFieldModule,
-        PillSelectComponent,
-        SkeletonLoaderComponent],
+    imports: [
+    CommonModule,
+    RouterLink,
+    ActionBarComponent,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTooltipModule,
+    TextFieldModule,
+    SkeletonLoaderComponent,
+    PillComponent
+],
     providers: [DocumentDetailStore]
 
 })
@@ -58,7 +54,6 @@ export class TokensDocumentsDetailComponent {
     sensitivityOptions = Object.values(TokenSensitivity);
 
     form = this.fb.group({
-        name: ['', [Validators.required, Validators.maxLength(100)]],
         location: ['', [Validators.required, Validators.maxLength(100)]],
         sensitivity: [null as TokenSensitivity | null, Validators.required],
     });
@@ -68,11 +63,12 @@ export class TokensDocumentsDetailComponent {
             const data = this.store.document();
             if (data) {
                 this.form.patchValue({
-                    name: data.name,
                     location: data.location,
                     sensitivity: data.sensitivity,
                 });
 
+                console.log(data.sensitivity);
+                
                 this.form.markAsPristine(); 
             }
         });

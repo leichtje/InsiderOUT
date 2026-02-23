@@ -11,6 +11,7 @@ export class IncidentService {
     private incidentsSignal = signal<IncidentModel[]>([
         {
             incidentId: 1,
+            isActive: true,
             title: 'Incident #1',
             desc: "This is the description.",
             date: new Date("2025-11-18T05:34:00Z"),
@@ -24,6 +25,7 @@ export class IncidentService {
         },
         {
             incidentId: 2,
+            isActive: true,
             title: 'Incident #2',
             desc: "This is an incident for sure.",
             date: new Date("2025-11-08T04:39:00Z"),
@@ -37,6 +39,7 @@ export class IncidentService {
         },
         {
             incidentId: 3,
+            isActive: true,
             title: 'Incident Incident Incident Incident #3',
             desc: "test",
             date: new Date("2025-11-16T15:58:00Z"),
@@ -50,6 +53,7 @@ export class IncidentService {
         },
         {
             incidentId: 4,
+            isActive: true,
             title: 'Incident #4',
             desc: "",
             date: new Date("2025-11-17T21:05:00Z"),

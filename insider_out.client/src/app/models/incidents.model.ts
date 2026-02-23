@@ -3,6 +3,7 @@ import { Token, TokenType } from "./token.model";
 
 export interface IncidentModel {
     incidentId: number;
+    isActive: boolean;
     title: string;
     desc: string;
     date: Date;
@@ -32,6 +33,7 @@ export enum IncidentStatus {
 
 export interface IncidentDto {
     incidentId: number;
+    isActive: boolean;
     title: string;
     desc: string;
     date: string;

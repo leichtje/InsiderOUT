@@ -29,22 +29,12 @@
                 @if (!isPhone() || activeTab() === 'left') {
                     <div class="body__left">
                         <div class="section-title">
-                            <span class="label">Name</span>
-                            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
-                                <textarea matInput
-                                    formControlName="name"
-                                    cdkTextareaAutosize
-                                    cdkAutosizeMinRows="1"
-                                    placeholder="Enter Document Name"
-                                    (keydown.enter)="$event.preventDefault()">
-                                </textarea>
-                                @if (form.get('Name')?.hasError('required')) {
-                                    <mat-error>Name is required</mat-error>
-                                }
-                                @if (form.get('Name')?.hasError('maxlength')) {
-                                    <mat-error>name cannot exceed 100 characters</mat-error>
-                                }
-                            </mat-form-field>
+                            @if (document.name) {
+                                <div>
+                                    <span class="label">Name</span>
+                                    <span>{{ document.name }}</span>
+                                </div>
+                            }
                         </div>
                         
                         <div class="section-date">
@@ -54,37 +44,40 @@
                                     <span>{{ document.updated | date:'MMM d, y, h:mm a' }}</span>
                                 </div>
                             }
-                        </div>                        
+                        </div>    
+                        <div class="section-sensitivity">
+                            @if (document.sensitivity) {
+                                <div>
+                                    <span class="label">Sensitivity</span>
+                                    <io-pill
+                                        [pill]="document.sensitivity"
+                                        [varMap]="sensitivityColors"
+                                        [textMap]="sensitivityText">
+                                    </io-pill>
+                                </div>  
+                            }
+                        </div>                    
                     </div>
                 }
 
                 @if (!isPhone() || activeTab() === 'right') {
                     <div class="body__right">
                         <div class="header">
-                            <div class="select">
-                                <span class="label">Sensitivity</span>
-                                <io-pill-select
-                                    [options]="sensitivityOptions"
-                                    [varMap]="sensitivityColors"
-                                    [textMap]="sensitivityText"
-                                    formControlName="sensitivity">
-                                </io-pill-select>
-                            </div>
                             @if (document.location) {
                                 <div>
                                     <span class="label">Location</span>
-                                    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="List">
+                                    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="location-input">
                                         <textarea matInput
                                             formControlName="location"
                                             cdkTextareaAutosize
                                             cdkAutosizeMinRows="1"
-                                            placeholder="Enter Document Location"
+                                            placeholder="Enter Location"
                                             (keydown.enter)="$event.preventDefault()">
                                         </textarea>
-                                        @if (form.get('Location')?.hasError('required')) {
+                                        @if (form.get('location')?.hasError('required')) {
                                             <mat-error>Location is required</mat-error>
                                         }
-                                        @if (form.get('Location')?.hasError('maxlength')) {
+                                        @if (form.get('location')?.hasError('maxlength')) {
                                             <mat-error>Location cannot exceed 100 characters</mat-error>
                                         }
                                     </mat-form-field>
@@ -102,9 +95,19 @@
                                 <div class="section-title">
                                     <span class="label">Related Incidents</span>
                                 </div>
-                                @for (incidents of store.relatedIncidents(); track incidents.incidentId) {
-                                    {{incidents.title}}
-                                }
+                                <div class="related-incidents">
+                                    @for (incident of store.relatedIncidents(); track incident.incidentId) {
+                                        @if (incident.isActive) {
+                                            <a [routerLink]="['/incidents/open', incident.incidentId ]" >{{incident.title}}</a>
+                                        }
+                                        @else {
+                                            <a [routerLink]="['/incidents/closed', incident.incidentId ]" >{{incident.title}}</a>
+                                        }
+                                    }
+                                    @empty {
+                                        No Related Incidents Found. 
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>

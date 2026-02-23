@@ -24,6 +24,7 @@ const initialState: IncidentState = {
 export function toIncidentModel(dto: IncidentDto): IncidentModel {
     return {
         incidentId: dto.incidentId,
+        isActive: dto.isActive,
         title: dto.title,
         desc: dto.desc,
         date: new Date(dto.date),
@@ -40,6 +41,7 @@ export function toIncidentModel(dto: IncidentDto): IncidentModel {
 export function toIncidentDto(model: Partial<IncidentModel>): IncidentDto {
     return {
         incidentId: model.incidentId ?? 0,
+        isActive: model.isActive ?? true,
         title: model.title || '',
         desc: model.desc || '',
         date: model.date ? model.date.toISOString() : new Date().toISOString(),
