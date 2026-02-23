@@ -147,17 +147,11 @@ export const IncidentStore = signalStore(
                     switchMap(({ id, data }) => {
                         const payload = toIncidentDto(data);
 
-                        return http.put<IncidentDto>(`${apiUrl}/${id}`, payload).pipe(
-                            map(toIncidentModel), 
-                            
-                            tap((updatedServerIncident) => {
+                        return http.put(`${apiUrl}/${id}`, payload).pipe(
+                            tap(() => {
                                 patchState(store, (state) => ({
-                                    incidents: state.incidents.map(i => 
-                                        i.incidentId === id ? updatedServerIncident : i
-                                    ),
-                                    selectedIncident: state.selectedIncident?.incidentId === id 
-                                        ? updatedServerIncident 
-                                        : state.selectedIncident,
+                                    incidents: state.incidents.map(i => i.incidentId === id ? data : i),
+                                    selectedIncident: state.selectedIncident?.incidentId === id ? data : state.selectedIncident,
                                     isLoading: false
                                 }));
                             }),

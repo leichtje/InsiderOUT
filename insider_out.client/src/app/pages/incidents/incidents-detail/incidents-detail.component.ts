@@ -148,14 +148,22 @@ export class IncidentsDetailComponent implements OnInit {
 
     onSave() {
         if (this.form.valid) {
-            const formValue = this.form.value;
-            const incidentId = this.store.incident()?.incidentId;
+            const currentIncident = this.store.incident();
             
-            if (incidentId) {
-                this.incidentStore.update({ id: incidentId, data: formValue as any });
-            }
+            if (currentIncident) {
+                const updatedIncident: IncidentModel = {
+                    ...currentIncident,
+                    ...(this.form.value as Partial<IncidentModel>),
+                    updated: new Date()
+                };
 
-            this.form.markAsPristine();
+                this.incidentStore.update({ 
+                    id: currentIncident.incidentId, 
+                    data: updatedIncident 
+                });
+
+                this.form.markAsPristine();
+            }
         }
     }
 
