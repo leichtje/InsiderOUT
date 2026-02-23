@@ -4,6 +4,7 @@ import { computed, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { catchError, map, pipe, switchMap, tap } from "rxjs";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 type DocumentState = {
     documents: DocumentModel[];
@@ -61,7 +62,7 @@ export const DocumentStore = signalStore(
         })
     })),
 
-    withMethods((store, http = inject(HttpClient)) => {
+    withMethods((store, http = inject(HttpClient), snackBar = inject(MatSnackBar)) => {
         const apiUrl = 'https://localhost:7244/api/documents'; 
 
         return {
@@ -138,14 +139,24 @@ export const DocumentStore = signalStore(
                         return http.put(`${apiUrl}/${id}`, payload).pipe(
                             tap(() => {
                                 patchState(store, (state) => ({
-                                    documents: state.documents.map(d => d.documentId === id ? data : d),
+                                    documents: state.documents.map(i => i.documentId === id ? data : i),
                                     selectedDocument: state.selectedDocument?.documentId === id ? data : state.selectedDocument,
                                     isLoading: false
                                 }));
+
+                                snackBar.open('Document updated successfully', 'Close', {
+                                    duration: 5000,
+                                    horizontalPosition: 'center',
+                                    verticalPosition: 'top',
+                                    panelClass: ['snackbar']
+                                });
                             }),
                             catchError((err) => {
                                 console.error('Failed to update document:', err);
                                 patchState(store, { isLoading: false, error: err.message });
+                                
+                                snackBar.open('Failed to save changes', 'Retry', { duration: 5000 });
+                                
                                 return [];
                             })
                         );

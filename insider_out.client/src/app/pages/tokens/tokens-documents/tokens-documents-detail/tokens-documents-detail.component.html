@@ -54,39 +54,7 @@
                                     <span>{{ document.updated | date:'MMM d, y, h:mm a' }}</span>
                                 </div>
                             }
-                        </div>
-                        
-                        <div class="divider"></div>
-                        
-                        <div class="section">
-                            <div>
-                                <span class="label">Token -
-                                    @if (document) {
-                                        <mat-icon>description</mat-icon><span class="sub-label">Document</span>
-                                    } @else {
-                                        <span class="sub-label">None</span>
-                                    }
-                                </span>
-                                
-                                @if (document) {
-                                    <div class="info-grid">
-                                        <span class="sub-label">Severity</span>
-                                        <io-pill
-                                            [pill]="document.sensitivity"
-                                            [varMap]="sensitivityColors"
-                                            [textMap]="sensitivityText">
-                                        </io-pill>
-                                        
-                                        <span class="sub-label">Title</span>
-                                        <span>{{ document.name }}</span>
-                                        
-                                        <span class="sub-label">Location</span>
-                                        <span>{{ document.location }}</span>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        
+                        </div>                        
                     </div>
                 }
 
@@ -99,7 +67,7 @@
                                     [options]="sensitivityOptions"
                                     [varMap]="sensitivityColors"
                                     [textMap]="sensitivityText"
-                                    formControlName="status">
+                                    formControlName="sensitivity">
                                 </io-pill-select>
                             </div>
                             @if (document.updated) {
