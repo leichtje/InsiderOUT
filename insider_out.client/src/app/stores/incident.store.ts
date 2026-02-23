@@ -157,10 +157,10 @@ export const IncidentStore = signalStore(
                                 }));
 
                                 snackBar.open('Incident updated successfully', 'Close', {
-                                    duration: 3000,
-                                    horizontalPosition: 'right',
-                                    verticalPosition: 'bottom',
-                                    panelClass: ['success-snackbar']
+                                    duration: 5000,
+                                    horizontalPosition: 'center',
+                                    verticalPosition: 'top',
+                                    panelClass: ['snackbar']
                                 });
                             }),
                             catchError((err) => {

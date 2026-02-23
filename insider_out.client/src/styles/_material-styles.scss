@@ -1,6 +1,7 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@use 'mixins' as mixins;
 
 html {
     @include mat.theme((
@@ -184,4 +185,20 @@ mat-nav-list {
 .cdk-overlay-backdrop {
     backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
+}
+
+
+
+.snackbar {
+    .mdc-snackbar__surface {
+        background-color: var(--color-primary-5) !important;
+        border-left: 5px solid var(--color-primary-6) !important;
+    }
+
+    .mdc-snackbar__label {
+        display: flex;
+        align-items: center;
+        color: var(--color-text) !important;
+        @include mixins.font();
+    }
 }

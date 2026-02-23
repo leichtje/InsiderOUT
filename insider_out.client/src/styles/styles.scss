@@ -349,3 +349,10 @@ button {
     width: 60px;
     border-radius: 50%;
 }
+
+
+.empty-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}

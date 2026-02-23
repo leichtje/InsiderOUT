@@ -4,12 +4,11 @@
 @let document = store.document();
 
 <form [formGroup]="form" class="incident-form">
-    @if (incident) {
-        <div class="page-container">
-            <div routerLink="/incidents/open" class="back flex-inline">
-                <mat-icon>arrow_back</mat-icon> Back to List
-            </div>
-            
+    <div class="page-container">
+        <div routerLink="/incidents/open" class="back flex-inline">
+            <mat-icon>arrow_back</mat-icon> Back to List
+        </div>
+        @if (incident) {
             <div class="body">
                 @if (isPhone()) {
                     <div class="tab-controls">
@@ -185,10 +184,12 @@
                     </div>
                 }
             </div>
-        </div>
-    } @else if (!store.isLoading()) {
-        <p>Incident Not Found</p>
-    }
+        } @else if (store.isLoading()) {
+            <io-skeleton-loader [lines]="5" [showTitle]="true"></io-skeleton-loader>
+        } @else {
+            <div class="empty-state"><mat-icon>info</mat-icon>Incident Not Found</div>
+        }
+    </div>
 </form>
 
 <io-action-bar

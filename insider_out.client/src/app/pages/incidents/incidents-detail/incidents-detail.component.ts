@@ -30,6 +30,7 @@ import { IncidentDetailStore } from '../../../stores/incident-detail.store';
 import { UserStore } from '../../../stores/user.store';
 import { SubjectStore } from '../../../stores/subject.store';
 import { IncidentStore } from '../../../stores/incident.store';
+import { SkeletonLoaderComponent } from "../../../fragments/skeleton-loader/skeleton-loader.component";
 
 @Component({
     selector: 'io-incidents-detail',
@@ -37,21 +38,22 @@ import { IncidentStore } from '../../../stores/incident.store';
     styleUrl: './incidents-detail.component.scss',
     standalone: true,
     imports: [
-        CommonModule,
-        RouterLink,
-        ActionBarComponent,
-        MatIconModule,
-        ProfilePickerComponent,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatTooltipModule,
-        TextFieldModule,
-        ActivityListComponent,
-        PillComponent,
-        PillSelectComponent
-    ],
+    CommonModule,
+    RouterLink,
+    ActionBarComponent,
+    MatIconModule,
+    ProfilePickerComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTooltipModule,
+    TextFieldModule,
+    ActivityListComponent,
+    PillComponent,
+    PillSelectComponent,
+    SkeletonLoaderComponent
+],
     providers: [IncidentDetailStore]
 })
 export class IncidentsDetailComponent implements OnInit { 
