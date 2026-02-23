@@ -29,20 +29,20 @@
                 @if (!isPhone() || activeTab() === 'left') {
                     <div class="body__left">
                         <div class="section-title">
-                            <span class="label">Title</span>
+                            <span class="label">Name</span>
                             <mat-form-field appearance="outline" subscriptSizing="dynamic" class="title-input">
                                 <textarea matInput
-                                    formControlName="title"
+                                    formControlName="name"
                                     cdkTextareaAutosize
                                     cdkAutosizeMinRows="1"
-                                    placeholder="Enter Incident Title"
+                                    placeholder="Enter Document Name"
                                     (keydown.enter)="$event.preventDefault()">
                                 </textarea>
-                                @if (form.get('title')?.hasError('required')) {
-                                    <mat-error>Title is required</mat-error>
+                                @if (form.get('Name')?.hasError('required')) {
+                                    <mat-error>Name is required</mat-error>
                                 }
-                                @if (form.get('title')?.hasError('maxlength')) {
-                                    <mat-error>Title cannot exceed 100 characters</mat-error>
+                                @if (form.get('Name')?.hasError('maxlength')) {
+                                    <mat-error>name cannot exceed 100 characters</mat-error>
                                 }
                             </mat-form-field>
                         </div>
@@ -109,17 +109,14 @@
                                 </div>
                             }
                         </div>
-                        
                         <div class="wrapper">
                             <div class="section">
-                                <span class="label">Description</span>
-                                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="desc-input">
-                                    <textarea matInput
-                                        formControlName="desc"
-                                        cdkTextareaAutosize
-                                        placeholder="Enter description">
-                                    </textarea>
-                                </mat-form-field>
+                                <div class="section-title">
+                                    <span class="label">Related Incidents</span>
+                                </div>
+                                @for (incidents of store.relatedIncidents(); track incidents.incidentId) {
+                                    {{incidents.title}}
+                                }
                             </div>
                         </div>
                     </div>

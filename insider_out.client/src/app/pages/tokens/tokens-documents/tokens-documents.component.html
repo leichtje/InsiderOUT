@@ -1,5 +1,6 @@
 <io-tokens-documents-view
     [filteredDocuments]="filteredDocuments$()"
     [isLoading]="documentStore.isLoading()"
+    (documentSelected)="onDocumentSelected($event)"
 >
 </io-tokens-documents-view>

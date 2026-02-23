@@ -69,7 +69,7 @@ export class TokensDocumentsComponent {
         this.currentTypeFilter.set(newFilter);
     }
 
-    onIncidentSelected(token: TokenModel) {
+    onDocumentSelected(token: TokenModel) {
         const id = token.tokenId;
 
         this.router.navigate([id], { relativeTo: this.route });
