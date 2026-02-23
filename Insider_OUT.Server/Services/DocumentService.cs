@@ -2,7 +2,6 @@
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace InsiderOUT.Server.Services
 {
@@ -18,102 +17,101 @@ namespace InsiderOUT.Server.Services
         public async Task<IEnumerable<DocumentDto>> GetAllAsync()
         {
             return await _db.Documents
-                .Join(
-                    _db.Tokens,
-                    d => d.DocumentTokenId,
-                    t => t.TokenId,
-                    (d, t) => new DocumentDto
-                    {
-                        DocumentId = d.DocumentId,
-                        TokenId = t.TokenId,
-                        Name = d.DocumentName,
-                        Location = d.DocumentLocation,
-                        TokenType = t.TokenType,
-                        TokenSeverity = t.TokenSeverity
-                    })
                 .AsNoTracking()
+                .Include(d => d.Token)
+                .Select(d => new DocumentDto
+                {
+                    DocumentId = d.DocumentId,
+                    DocumentName = d.DocumentName,
+                    DocumentLocation = d.DocumentLocation,
+
+                    TokenId = d.Token.TokenId,
+                    TokenType = d.Token.TokenType,
+                    TokenSeverity = d.Token.TokenSeverity,
+
+                    CreatedDate = d.Token.CreatedDate,
+                    UpdatedDate = d.Token.UpdatedDate
+                })
                 .ToListAsync();
         }
 
-        public async Task<DocumentDto?> GetByIdAsync(int documentId)
+        public async Task<DocumentDto?> GetByIdAsync(int id)
         {
-            return await _db.Documents
-                .Where(d => d.DocumentId == documentId)
-                .Join(
-                    _db.Tokens,
-                    d => d.DocumentTokenId,
-                    t => t.TokenId,
-                    (d, t) => new DocumentDto
-                    {
-                        DocumentId = d.DocumentId,
-                        TokenId = t.TokenId,
-                        Name = d.DocumentName,
-                        Location = d.DocumentLocation,
-                        TokenType = t.TokenType,
-                        TokenSeverity = t.TokenSeverity
-                    })
+            var d = await _db.Documents
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .Include(x => x.Token)
+                .FirstOrDefaultAsync(x => x.DocumentId == id);
+
+            if (d == null) return null;
+
+            return new DocumentDto
+            {
+                DocumentId = d.DocumentId,
+                DocumentName = d.DocumentName,
+                DocumentLocation = d.DocumentLocation,
+
+                TokenId = d.Token.TokenId,
+                TokenType = d.Token.TokenType,
+                TokenSeverity = d.Token.TokenSeverity,
+
+                CreatedDate = d.Token.CreatedDate,
+                UpdatedDate = d.Token.UpdatedDate
+            };
         }
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
-            // Create Token first
-            var token = new Token
+            // We trust frontend to send a valid TokenId; FK enforces correctness.
+            var entity = new Document
             {
-                TokenType = dto.TokenType,
-                TokenSeverity = dto.TokenSeverity
+                DocumentName = dto.DocumentName,
+                DocumentLocation = dto.DocumentLocation,
+                DocumentTokenId = dto.TokenId
             };
 
-            _db.Tokens.Add(token);
+            _db.Documents.Add(entity);
             await _db.SaveChangesAsync();
 
-            // Create Document linked to Token
-            var document = new Document
+            // Reload with token to populate dates and token info
+            var created = await _db.Documents
+                .AsNoTracking()
+                .Include(d => d.Token)
+                .FirstAsync(d => d.DocumentId == entity.DocumentId);
+
+            return new DocumentDto
             {
-                DocumentTokenId = token.TokenId,
-                DocumentName = dto.Name,
-                DocumentLocation = dto.Location   // REQUIRED (NOT NULL)
+                DocumentId = created.DocumentId,
+                DocumentName = created.DocumentName,
+                DocumentLocation = created.DocumentLocation,
+
+                TokenId = created.Token.TokenId,
+                TokenType = created.Token.TokenType,
+                TokenSeverity = created.Token.TokenSeverity,
+
+                CreatedDate = created.Token.CreatedDate,
+                UpdatedDate = created.Token.UpdatedDate
             };
-
-            _db.Documents.Add(document);
-            await _db.SaveChangesAsync();
-
-            dto.TokenId = token.TokenId;
-            dto.DocumentId = document.DocumentId;
-
-            return dto;
         }
 
-        public async Task<bool> UpdateAsync(int documentId, DocumentDto dto)
+        public async Task<bool> UpdateAsync(int id, DocumentDto dto)
         {
-            var document = await _db.Documents.FindAsync(documentId);
-            if (document == null) return false;
+            var entity = await _db.Documents.FindAsync(id);
+            if (entity == null) return false;
 
-            var token = await _db.Tokens.FindAsync(document.DocumentTokenId);
-            if (token == null) return false;
-
-            document.DocumentName = dto.Name;
-            document.DocumentLocation = dto.Location;
-
-            token.TokenType = dto.TokenType;
-            token.TokenSeverity = dto.TokenSeverity;
+            entity.DocumentName = dto.DocumentName;
+            entity.DocumentLocation = dto.DocumentLocation;
+            entity.DocumentTokenId = dto.TokenId;
 
             await _db.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int documentId)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var document = await _db.Documents.FindAsync(documentId);
-            if (document == null) return false;
+            var entity = await _db.Documents.FindAsync(id);
+            if (entity == null) return false;
 
-            var token = await _db.Tokens.FindAsync(document.DocumentTokenId);
-
-            _db.Documents.Remove(document);
-            if (token != null)
-                _db.Tokens.Remove(token);
-
+            _db.Documents.Remove(entity);
             await _db.SaveChangesAsync();
             return true;
         }

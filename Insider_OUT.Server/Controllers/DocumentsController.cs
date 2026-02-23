@@ -19,10 +19,10 @@ namespace InsiderOUT.Server.Controllers
         public async Task<IActionResult> GetAll()
             => Ok(await _service.GetAllAsync());
 
-        [HttpGet("{documentId:int}")]
-        public async Task<IActionResult> GetById(int documentId)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var doc = await _service.GetByIdAsync(documentId);
+            var doc = await _service.GetByIdAsync(id);
             return doc == null ? NotFound() : Ok(doc);
         }
 
@@ -33,23 +33,23 @@ namespace InsiderOUT.Server.Controllers
 
             var created = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById),
-                new { documentId = created.DocumentId },
+                new { id = created.DocumentId },
                 created);
         }
 
-        [HttpPut("{documentId:int}")]
-        public async Task<IActionResult> Update(int documentId, [FromBody] DocumentDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] DocumentDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var ok = await _service.UpdateAsync(documentId, dto);
+            var ok = await _service.UpdateAsync(id, dto);
             return ok ? NoContent() : NotFound();
         }
 
-        [HttpDelete("{documentId:int}")]
-        public async Task<IActionResult> Delete(int documentId)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var ok = await _service.DeleteAsync(documentId);
+            var ok = await _service.DeleteAsync(id);
             return ok ? NoContent() : NotFound();
         }
     }

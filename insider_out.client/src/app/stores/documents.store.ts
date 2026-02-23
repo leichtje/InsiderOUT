@@ -23,11 +23,12 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
     return {
         tokenId: dto.tokenId,
         documentId: dto.documentId,
-        name: dto.name,
-        location: dto.location,
+        name: dto.documentName,
+        location: dto.documentLocation,
         type: TokenType.document, 
         sensitivity: dto.tokenSeverity.toLowerCase() as TokenSensitivity, 
-        updated: new Date() // Fallback since 'updated' is missing from the JSON response
+        updated: dto.updatedDate, 
+        created: dto.createdDate,
     };
 }
 
@@ -35,10 +36,12 @@ export function toDocumentDto(model: Partial<DocumentModel>): DocumentDto {
     return {
         documentId: model.documentId ?? 0,
         tokenId: model.tokenId ?? 0,
-        name: model.name || '',
-        location: model.location || '',
+        documentName: model.name || '',
+        documentLocation: model.location || '',
         tokenType: 'Document', 
-        tokenSeverity: model.sensitivity?.toString() || TokenSensitivity.Low.toString()
+        tokenSeverity: model.sensitivity?.toString() || TokenSensitivity.Low.toString(),
+        updatedDate: model.updated ?? new Date(),
+        createdDate: model.created ?? new Date(),
     };
 }
 

@@ -6,6 +6,7 @@ export enum TokenType {
 export interface TokenModel {
     tokenId: number;
     updated: Date;
+    created: Date;
     type: TokenType;
     sensitivity: TokenSensitivity;
 }
@@ -36,8 +37,10 @@ export enum TokenSensitivity {
 export interface DocumentDto {
     documentId: number;
     tokenId: number;
-    name: string;
-    location: string;
+    documentName: string;
+    documentLocation: string;
     tokenType: string; 
     tokenSeverity: string;
+    updatedDate: Date;
+    createdDate: Date;
 }

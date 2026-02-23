@@ -11,18 +11,19 @@ namespace Insider_OUT.Server.Data.Models.Tokens
         public int DocumentId { get; set; }
 
         [Required]
-        [Column("DocumentTokenId")]
-        public int DocumentTokenId { get; set; }
-
-        [Required, MaxLength(255)]
+        [MaxLength(255)]
         [Column("DocumentName")]
         public string DocumentName { get; set; }
 
-        [Required, MaxLength(500)]
+        [Required]
         [Column("DocumentLocation")]
         public string DocumentLocation { get; set; }
 
+        [Required]
+        [Column("DocumentTokenId")]
+        public int DocumentTokenId { get; set; }
+
         [ForeignKey(nameof(DocumentTokenId))]
-        public Token Token { get; set; }
+        public Tokens.Token Token { get; set; }
     }
 }

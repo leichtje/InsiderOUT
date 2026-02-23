@@ -3,12 +3,14 @@
     public class DocumentDto
     {
         public int DocumentId { get; set; }
+        public string DocumentName { get; set; }
+        public string DocumentLocation { get; set; }
+
         public int TokenId { get; set; }
+        public string TokenType { get; set; }
+        public string TokenSeverity { get; set; }
 
-        public string Name { get; set; }              // DocumentName
-        public string Location { get; set; }          // DocumentLocation (NOT NULL)
-
-        public string TokenType { get; set; }         // from Tokens table
-        public string TokenSeverity { get; set; }     // from Tokens table
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

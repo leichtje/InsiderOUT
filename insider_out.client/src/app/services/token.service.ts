@@ -11,6 +11,7 @@ export class TokenService {
         {
             tokenId: 123,
             updated: new Date("2025-11-24T09:12:00Z"),
+            created: new Date("2025-11-24T09:12:00Z"),
             type: TokenType.document,
             documentId: 123,
             name: 'MFA Password Enrollment',
@@ -20,6 +21,7 @@ export class TokenService {
         {
             tokenId: 124,
             updated: new Date("2025-11-24T09:13:00Z"),
+            created: new Date("2025-11-24T09:12:00Z"),
             type: TokenType.document,
             documentId: 132,
             name: 'Secret Business Plans',
@@ -29,6 +31,7 @@ export class TokenService {
         {
             tokenId: 125,
             updated: new Date("2025-11-24T09:14:00Z"),
+            created: new Date("2025-11-24T09:12:00Z"),
             type: TokenType.document,
             documentId: 143,
             name: 'Payroll Incentives 2026',
@@ -38,6 +41,7 @@ export class TokenService {
         {
             tokenId: 126,
             updated: new Date("2025-11-24T09:15:00Z"),
+            created: new Date("2025-11-24T09:12:00Z"),
             type: TokenType.document,
             documentId: 154,
             name: 'Budget 2026 - CFO',
@@ -53,6 +57,7 @@ export class TokenService {
     {
         tokenId: 127,
         updated: new Date("2025-11-24T09:16:00Z"),
+        created: new Date("2025-11-24T09:12:00Z"),
         type: TokenType.email,
         emailId: 900,
         subject: 'Urgent Wire Transfer',
