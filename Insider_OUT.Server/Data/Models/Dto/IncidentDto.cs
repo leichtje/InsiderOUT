@@ -13,6 +13,8 @@
         public string Status { get; set; }
         public int? AssignedUserId { get; set; }
         public int? TiedSubjectId { get; set; }
+
+        public bool IsActive { get; set; }
     }
 
     public class IncidentViewDto

@@ -62,7 +62,7 @@
                     <div class="body__right">
                         <div class="header">
                             <div class="select">
-                                <span class="label">Status</span>
+                                <span class="label">Sensitivity</span>
                                 <io-pill-select
                                     [options]="sensitivityOptions"
                                     [varMap]="sensitivityColors"
@@ -70,6 +70,26 @@
                                     formControlName="sensitivity">
                                 </io-pill-select>
                             </div>
+                            @if (document.location) {
+                                <div>
+                                    <span class="label">Location</span>
+                                    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="List">
+                                        <textarea matInput
+                                            formControlName="location"
+                                            cdkTextareaAutosize
+                                            cdkAutosizeMinRows="1"
+                                            placeholder="Enter Document Location"
+                                            (keydown.enter)="$event.preventDefault()">
+                                        </textarea>
+                                        @if (form.get('Location')?.hasError('required')) {
+                                            <mat-error>Location is required</mat-error>
+                                        }
+                                        @if (form.get('Location')?.hasError('maxlength')) {
+                                            <mat-error>Location cannot exceed 100 characters</mat-error>
+                                        }
+                                    </mat-form-field>
+                                </div>
+                            }
                             @if (document.updated) {
                                 <div class="updated">
                                     <span class="label">Last Updated</span>

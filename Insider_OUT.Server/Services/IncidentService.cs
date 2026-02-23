@@ -30,7 +30,8 @@ namespace InsiderOUT.Server.Services
                     TokenType = i.IncidentTokenType,
                     Status = i.IncidentStatus,
                     AssignedUserId = i.IncidentAssignedUserId,
-                    TiedSubjectId = i.IncidentTiedSubjectId
+                    TiedSubjectId = i.IncidentTiedSubjectId,
+                    IsActive = i.IsActive
                 })
                 .ToListAsync();
         }
@@ -55,7 +56,8 @@ namespace InsiderOUT.Server.Services
                 TokenType = i.IncidentTokenType,
                 Status = i.IncidentStatus,
                 AssignedUserId = i.IncidentAssignedUserId,
-                TiedSubjectId = i.IncidentTiedSubjectId
+                TiedSubjectId = i.IncidentTiedSubjectId,
+                IsActive = i.IsActive
             };
         }
 
@@ -93,20 +95,21 @@ namespace InsiderOUT.Server.Services
                 TokenType = incident.IncidentTokenType,
                 Status = incident.IncidentStatus,
                 AssignedUserId = incident.IncidentAssignedUserId,
-                TiedSubjectId = incident.IncidentTiedSubjectId
+                TiedSubjectId = incident.IncidentTiedSubjectId,
+                IsActive = incident.IsActive
             };
 
             return new IncidentViewDto
             {
                 Incident = incidentDto,
-
                 Token = token == null ? null : new TokenDto
                 {
                     TokenId = token.TokenId,
                     TokenType = token.TokenType,
-                    TokenSeverity = token.TokenSeverity
+                    TokenSeverity = token.TokenSeverity,
+                    CreatedDate = token.CreatedDate,
+                    UpdatedDate = token.UpdatedDate
                 },
-
                 Subject = subject == null ? null : new SubjectDto
                 {
                     SubjectId = subject.SubjectId,
@@ -118,7 +121,6 @@ namespace InsiderOUT.Server.Services
                     SubjectRole = subject.SubjectRole,
                     SubjectRiskScore = subject.SubjectRiskScore
                 },
-
                 User = user == null ? null : new UserDto
                 {
                     UserId = user.UserId,
@@ -144,7 +146,8 @@ namespace InsiderOUT.Server.Services
                 IncidentTokenType = dto.TokenType,
                 IncidentStatus = dto.Status,
                 IncidentAssignedUserId = dto.AssignedUserId,
-                IncidentTiedSubjectId = dto.TiedSubjectId
+                IncidentTiedSubjectId = dto.TiedSubjectId,
+                IsActive = dto.IsActive
             };
 
             _db.Incidents.Add(entity);
@@ -169,6 +172,7 @@ namespace InsiderOUT.Server.Services
             entity.IncidentStatus = dto.Status;
             entity.IncidentAssignedUserId = dto.AssignedUserId;
             entity.IncidentTiedSubjectId = dto.TiedSubjectId;
+            entity.IsActive = dto.IsActive;
 
             await _db.SaveChangesAsync();
             return true;

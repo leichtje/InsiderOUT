@@ -59,5 +59,9 @@ namespace Insider_OUT.Server.Data.Models.Incidents
 
         [ForeignKey(nameof(IncidentTokenId))]
         public Token Token { get; set; }
+
+        [Required]
+        [Column("IsActive")]
+        public bool IsActive { get; set; }
     }
 }

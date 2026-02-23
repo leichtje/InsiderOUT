@@ -59,7 +59,7 @@ export class TokensDocumentsDetailComponent {
 
     form = this.fb.group({
         name: ['', [Validators.required, Validators.maxLength(100)]],
-        location: [''],
+        location: ['', [Validators.required, Validators.maxLength(100)]],
         sensitivity: [null as TokenSensitivity | null, Validators.required],
     });
 

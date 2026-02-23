@@ -56,12 +56,11 @@ export const DocumentDetailStore = signalStore(
             )
         ),
         
-        clear: () => incidentStore.clearSelectedIncident()
+        clear: () => documentStore.clearSelectedDocument()
     })),
 
     withHooks({
         onInit(store) {
-            const documentStore = inject(DocumentStore);
             const incidentStore = inject(IncidentStore);
 
             effect(() => {
