@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PillComponent } from '../../../../fragments/pill/pill.component';
 import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/skeleton-loader.component';
+import { status_colors, status_text } from '../../../../fragments/pill/incident-status-constants';
 
 @Component({
     selector: 'io-tokens-documents-detail',
@@ -24,19 +25,19 @@ import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/s
     styleUrl: './tokens-documents-detail.component.scss',
     standalone: true,
     imports: [
-    CommonModule,
-    RouterLink,
-    ActionBarComponent,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
-    TextFieldModule,
-    SkeletonLoaderComponent,
-    PillComponent
-],
+        CommonModule,
+        RouterLink,
+        ActionBarComponent,
+        MatIconModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatTooltipModule,
+        TextFieldModule,
+        SkeletonLoaderComponent,
+        PillComponent
+    ],
     providers: [DocumentDetailStore]
 
 })
@@ -51,7 +52,10 @@ export class TokensDocumentsDetailComponent {
     
     sensitivityColors = sensitivity_colors;
     sensitivityText = sensitivity_text;
-    sensitivityOptions = Object.values(TokenSensitivity);
+
+    statusColors = status_colors;
+    statusText = status_text;
+
 
     form = this.fb.group({
         location: ['', [Validators.required, Validators.maxLength(100)]],

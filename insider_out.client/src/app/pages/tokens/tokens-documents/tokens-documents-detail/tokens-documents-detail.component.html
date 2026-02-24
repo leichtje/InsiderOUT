@@ -3,7 +3,7 @@
 <form [formGroup]="form" class="incident-form">
     <div class="page-container">
         <div routerLink="/tokens/documents" class="back flex-inline">
-            <mat-icon>arrow_back</mat-icon> Back to List
+            <mat-icon>arrow_back</mat-icon> Documents
         </div>
         @if (document) {
             <div class="body">
@@ -98,7 +98,14 @@
                                 <div class="related-incidents">
                                     @for (incident of store.relatedIncidents(); track incident.incidentId) {
                                         @if (incident.isActive) {
-                                            <a [routerLink]="['/incidents/open', incident.incidentId ]" >{{incident.title}}</a>
+                                            <a [routerLink]="['/incidents/open', incident.incidentId ]" class="related-incident">
+                                                {{incident.title}}                                            
+                                                <io-pill
+                                                    [pill]="incident.status"
+                                                    [varMap]="statusColors"
+                                                    [textMap]="statusText">
+                                                </io-pill>
+                                            </a>
                                         }
                                         @else {
                                             <a [routerLink]="['/incidents/closed', incident.incidentId ]" >{{incident.title}}</a>
