@@ -24,20 +24,20 @@ export interface TokensDocumentsDialogData {
     selector: 'io-tokens-documents-dialog',
     standalone: true,
     imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatListModule,
-    PillSelectComponent,
-    MatTooltipModule,
-    IncidentsListComponent,
-    StepProgressComponent,
-    SkeletonLoaderComponent,
-    GradientTextDirective
-],
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatListModule,
+        PillSelectComponent,
+        MatTooltipModule,
+        IncidentsListComponent,
+        StepProgressComponent,
+        SkeletonLoaderComponent,
+        GradientTextDirective
+    ],
     templateUrl: './tokens-documents-dialog.component.html',
     styleUrl: './tokens-documents-dialog.component.scss'
 })
@@ -50,6 +50,7 @@ export class TokensDocumentsDialogComponent {
     documentForm = this.fb.group({
         description: ['', Validators.required],
         audience: ['', Validators.required],
+        // department: ['', Validators.required],
         sensitivity: ['', Validators.required]
     });
 

@@ -32,7 +32,7 @@ export class NavigationService {
         icon: "settings",
         subpages: [
             { title: "Profiles", route: "/settings/profiles" },
-            { title: "Company", route: "/settings/company" }
+            { title: "Department", route: "/settings/department" }
         ] 
     },
     ];

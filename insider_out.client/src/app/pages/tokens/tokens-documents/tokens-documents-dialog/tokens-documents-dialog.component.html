@@ -36,9 +36,14 @@
                         <mat-error>Intended Audience is required</mat-error>
                     </mat-form-field>
                 </div>
+                
+                <div class="document-control">
+                    <span class="info">Select the deparment the document is expected to be placed</span>
+
+                </div>
 
                 <div class="document-control">
-                    <span class="info">Define the level of sensitive information the document is meant to represent.</span>
+                    <span class="info">Select the level of sensitive information the document is meant to represent.</span>
                     <io-pill-select
                         [options]="sensitivityOptions"
                         [varMap]="sensitivityColors"
