@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36915.13 d17.14
+VisualStudioVersion = 17.14.36915.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "insider_out.client", "insider_out.client\insider_out.client.esproj", "{C8DE15AD-231C-C624-202E-F3FFC86D6666}"
 EndProject
@@ -12,7 +12,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Insider_OUT.PythonService", "Insider_OUT.PythonService", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InsiderOUT.PythonService", "InsiderOUT.PythonService", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		InsiderOUT.PythonService\main.py = InsiderOUT.PythonService\main.py
+		InsiderOUT.PythonService\requirements.txt = InsiderOUT.PythonService\requirements.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "output", "output", "{AD98448E-E5E2-4178-8251-9E519217126D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{DDBB778A-1B87-4710-9954-497A9A7C5B2F}"
+	ProjectSection(SolutionItems) = preProject
+		InsiderOUT.PythonService\scripts\canary_creation.py = InsiderOUT.PythonService\scripts\canary_creation.py
+		InsiderOUT.PythonService\scripts\gen.py = InsiderOUT.PythonService\scripts\gen.py
+		InsiderOUT.PythonService\scripts\image_create.py = InsiderOUT.PythonService\scripts\image_create.py
+		InsiderOUT.PythonService\scripts\pdf_creation.py = InsiderOUT.PythonService\scripts\pdf_creation.py
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +47,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AD98448E-E5E2-4178-8251-9E519217126D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{DDBB778A-1B87-4710-9954-497A9A7C5B2F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {34A69125-61B8-46A5-9CCF-20E431C6D4FC}

@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-docx
+lxml
+pillow
+fpdf
+pikepdf
+google-generativeai
