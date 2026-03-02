@@ -13,6 +13,7 @@ import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 import { TokensDocumentsComponent } from './pages/tokens/tokens-documents/tokens-documents.component';
 import { TokensEmailsComponent } from './pages/tokens/tokens-emails/tokens-emails.component';
 import { TokensDocumentsDetailComponent } from './pages/tokens/tokens-documents/tokens-documents-detail/tokens-documents-detail.component';
+import { DepartmentComponent } from './pages/department/department.component';
 
 const routes: Routes = [
     /* Home */
@@ -56,7 +57,7 @@ const routes: Routes = [
                 { path: 'user/:id', component: ProfilesDetailComponent },
                 { path: 'subject/:id', component: ProfilesDetailComponent }
             ] },
-            { path: 'Company', component: TokensEmailsComponent },
+            { path: 'Department', component: DepartmentComponent },
         ]
     },
 
