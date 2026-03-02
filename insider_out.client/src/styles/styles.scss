@@ -356,3 +356,15 @@ button {
     align-items: center;
     gap: 5px;
 }
+
+.back {
+    cursor: pointer;
+    color: var(--color-primary-2);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    @include mixins.font();
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

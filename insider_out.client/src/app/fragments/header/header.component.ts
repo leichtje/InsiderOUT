@@ -1,13 +1,9 @@
 import { Component, input, output, computed, inject } from "@angular/core"; 
-
-import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { BreakpointService } from "../../services/breakpoint.service";
 import { MatIcon } from "@angular/material/icon";
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { UserStore } from "../../stores/user.store";
-import { SubjectModel, UserModel } from "../../models/profile.model";
-
 
 @Component({
     selector:'io-header',
