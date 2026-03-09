@@ -1,0 +1,14 @@
+.layout-container { display: flex; height: 100vh; gap: 20px; padding: 20px; }
+.sidebar { width: 300px; border-right: 1px solid #ccc; padding-right: 20px; }
+.main-content { flex: 1; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+
+.drop-list { border: 1px solid #ccc; border-radius: 4px; background: white; }
+.drop-list-item { 
+    padding: 15px 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px;
+}
+.drop-list-item:last-child { border-bottom: none; }
+.drop-list-item:hover { background: #f0f0f0; }
+.drop-list-item.selected { background: #e0f7fa; font-weight: bold; }
+
+.drag-handle { color: #888; cursor: grab; padding: 0 5px; }
+

@@ -1,0 +1,40 @@
+<div class="layout-container">
+    
+    <div class="sidebar">
+    <h3>Departments</h3>
+    
+    <div cdkDropList class="drop-list" (cdkDropListDropped)="drop($event)">
+        @for (dept of departments(); track dept.departmentId) {
+            <div 
+                cdkDrag 
+                class="drop-list-item"
+                [ngClass]="{'selected': dept.departmentId === selectedDepartment()?.departmentId}"
+                (click)="onSelect.emit(dept.departmentId)">
+                
+                <span class="drag-handle" cdkDragHandle>≡</span>
+                {{ dept.department }}
+                
+            </div>
+        } @empty {
+            <p>No departments found.</p>
+        }
+    </div>
+    </div>
+
+    <div class="main-content">
+        @if (selectedDepartment(); as selected) {
+            <div class="details-card">
+            <h2>{{ selected.department }} Details</h2>
+            <p><strong>ID:</strong> {{ selected.departmentId }}</p>
+            <p><strong>Status:</strong> {{ selected.isActive ? 'Active' : 'Inactive' }}</p>
+            <p><strong>Sort Order:</strong> {{ selected.sortOrder }}</p>
+            
+            </div>
+        } @else {
+            <div class="empty-state">
+            <p>Select a department from the left to view details.</p>
+            </div>
+        }
+    </div>
+
+    </div>
