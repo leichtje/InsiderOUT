@@ -11,7 +11,7 @@ import { sensitivity_colors, sensitivity_text } from "../../../../fragments/pill
 import { TokenSensitivity } from "../../../../models/token.model";
 import { PillSelectComponent } from "../../../../fragments/pill-select/pill-select.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { IncidentsListComponent } from "../../../../fragments/dialog/dialog-header/dialog-header.component";
+import { DialogHeader } from "../../../../fragments/dialog/dialog-header/dialog-header.component";
 import { StepDefinition, StepProgressComponent } from "../../../../fragments/step-progress/step-progress.component";
 import { SkeletonLoaderComponent } from "../../../../fragments/skeleton-loader/skeleton-loader.component";
 import { GradientTextDirective } from "../../../../fragments/gradient-text/gradient-text.directive";
@@ -33,7 +33,7 @@ export interface TokensDocumentsDialogData {
         MatListModule,
         PillSelectComponent,
         MatTooltipModule,
-        IncidentsListComponent,
+        DialogHeader,
         StepProgressComponent,
         SkeletonLoaderComponent,
         GradientTextDirective

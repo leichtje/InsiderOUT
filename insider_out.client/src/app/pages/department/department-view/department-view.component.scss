@@ -1,3 +1,5 @@
+@use '../../../../styles/mixins' as mixins;
+
 .layout-container { 
     display: flex;
     height: 100vh;
@@ -9,36 +11,52 @@
     width: 300px;
     border-right: 1px solid #ccc;
     padding-right: 20px; 
+
+    .title {
+        @include mixins.font();
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+
+        button { 
+            width: 25px;
+            height: 25px;
+        }
+    }
+}
+
+
+.form-group {
+    margin-bottom: 20px;
 }
 
 .checkbox-group {
     display: flex;
-    justify-content: center;
+    align-items: center;
 }
 
 .drop-list { 
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    background: white; 
-    &:has(.drop-list-item.selected) {
-        border-color: var(--color-primary);
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .drop-list-item { 
     padding: 15px 10px;
-    border-bottom: 1px solid #eee; cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid #ccc;
     display: flex;
     align-items: center;
     gap: 10px;
-}
-.drop-list-item:last-child {
-    border-bottom: none;
+    cursor: pointer;
 }
 .drop-list-item:hover {
-    background: #f0f0f0;
+    background: var(--color-primary-3);
 }
+
 .drop-list-item.selected {
     background: var(--color-primary-3);
+    border-color: var(--color-primary);
     font-weight: bold;
 }
 .drag-handle { 

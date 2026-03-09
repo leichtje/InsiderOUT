@@ -5,13 +5,15 @@ import { NgClass } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActionBarComponent } from "../../../fragments/header/action-bar/action-bar.component";
 import { MatIcon } from "@angular/material/icon";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+
 
 @Component({
     selector: 'io-department-view',
     templateUrl: './department-view.component.html',
     styleUrl: './department-view.component.scss',
     standalone: true,
-    imports: [CdkDropList, CdkDrag, NgClass, ActionBarComponent, ReactiveFormsModule, MatIcon]
+    imports: [CdkDropList, CdkDrag, NgClass, ActionBarComponent, ReactiveFormsModule, MatIcon, MatSlideToggleModule]
 })
 export class DepartmentViewComponent {
     private fb = inject(FormBuilder);
@@ -28,7 +30,7 @@ export class DepartmentViewComponent {
         departmentId: [0],
         department: ['', Validators.required],
         sortOrder: [0],
-        isActive: [false]
+        isActive: [true]
     });
 
     constructor() {

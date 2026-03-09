@@ -219,3 +219,7 @@ mat-nav-list {
 .cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); 
 }
+
+.mdc-switch__track::after {
+    background: var(--color-primary-5) !important;
+}
