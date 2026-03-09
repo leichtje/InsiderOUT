@@ -2,5 +2,6 @@
     [departments]="store.sortedDepartments()"
     [selectedDepartment]="store.selectedDepartment()"
     (onSelect)="store.selectDepartment($event)"
+    (onUpdate)="handleUpdate($event)"
     (onReorder)="handleReorder($event)">
 </io-department-view>

@@ -16,4 +16,11 @@ export class DepartmentComponent {
 
     handleReorder(updatedDepartments: DepartmentModel[]) {    
     }
+
+    handleUpdate(updatedDepartment: DepartmentModel) {
+        this.store.update({ 
+            id: updatedDepartment.departmentId, 
+            data: updatedDepartment 
+        });
+    }
 }
