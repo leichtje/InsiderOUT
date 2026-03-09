@@ -57,7 +57,7 @@ const routes: Routes = [
                 { path: 'user/:id', component: ProfilesDetailComponent },
                 { path: 'subject/:id', component: ProfilesDetailComponent }
             ] },
-            { path: 'Department', component: DepartmentComponent },
+            { path: 'department', component: DepartmentComponent },
         ]
     },
 
