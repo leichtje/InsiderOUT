@@ -9,7 +9,7 @@ import { MatIconModule } from "@angular/material/icon";
     standalone: true,
     imports: [MatIconModule]
 })
-export class IncidentsListComponent {
+export class DialogHeader {
     readonly title$ = input.required<string>({alias: 'title'});
     readonly showClose$ = input<boolean>(true, {alias: 'showClose'});
     

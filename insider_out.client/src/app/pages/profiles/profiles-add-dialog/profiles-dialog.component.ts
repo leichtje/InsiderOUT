@@ -5,7 +5,7 @@ import { UserModel, SubjectModel } from '../../../models/profile.model';
 import { SubjectStore } from '../../../stores/subject.store';
 import { ResponsiveDialogService } from '../../../services/responsive-dialog.service';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
-import { IncidentsListComponent } from "../../../fragments/dialog/dialog-header/dialog-header.component";
+import { DialogHeader } from "../../../fragments/dialog/dialog-header/dialog-header.component";
 
 export interface ProfileDialogData {
     type: 'user' | 'subject',
@@ -16,7 +16,7 @@ export interface ProfileDialogData {
 @Component({
     selector: 'io-profiles-dialog',
     standalone: true,
-    imports: [ReactiveFormsModule, MatDialogContent, IncidentsListComponent, MatDialogActions],
+    imports: [ReactiveFormsModule, MatDialogContent, MatDialogActions, DialogHeader],
     templateUrl: './profiles-dialog.component.html',
     styleUrl: './profiles-dialog.component.scss'
 })

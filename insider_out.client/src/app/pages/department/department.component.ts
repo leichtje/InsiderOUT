@@ -2,6 +2,8 @@ import { Component, inject} from '@angular/core';
 import { DepartmentViewComponent } from './department-view/department-view.component';
 import { DepartmentStore } from '../../stores/department.store';
 import { DepartmentModel } from '../../models/department.model';
+import { DepartmentDialogComponent } from './department-add-dialog/department-add-dialog.component';
+import { ResponsiveDialogService } from '../../services/responsive-dialog.service';
 
 
 @Component({
@@ -11,8 +13,8 @@ import { DepartmentModel } from '../../models/department.model';
     imports: [DepartmentViewComponent]
 })
 export class DepartmentComponent {
-    
     readonly store = inject(DepartmentStore);
+    private dialog = inject(ResponsiveDialogService);
 
     handleReorder(updatedDepartments: DepartmentModel[]) {    
     }
@@ -22,5 +24,9 @@ export class DepartmentComponent {
             id: updatedDepartment.departmentId, 
             data: updatedDepartment 
         });
+    }
+
+    openCreate() {
+        this.dialog.open(DepartmentDialogComponent, {});
     }
 }

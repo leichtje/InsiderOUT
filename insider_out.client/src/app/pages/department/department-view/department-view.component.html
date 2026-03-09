@@ -13,7 +13,10 @@
                 
                 <span class="drag-handle" cdkDragHandle>≡</span>
                 <span class="status-indicator" [ngClass]="{'active': dept.isActive}"></span>
-                {{ dept.department }}
+                {{ dept.department }} 
+                <button (click)="onCreate(); $event.stopPropagation()">
+                    <mat-icon>add</mat-icon>
+                </button>
                 
             </div>
             } @empty {
@@ -22,7 +25,7 @@
         </div>
         </div>
 
-        <div class="main-content">
+    <div class="main-content">
         @if (selectedDepartment(); as selected) {
             <div class="details-card" [formGroup]="form">
             <h2>Edit Department</h2>

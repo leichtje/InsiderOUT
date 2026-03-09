@@ -1,0 +1,33 @@
+<io-dialog-header
+    title="Add Department"
+    (close)="closeDialog()"
+    >
+</io-dialog-header>
+
+<mat-dialog-content class="picker-content">
+    <form [formGroup]="form">
+        
+        <div class="form-group">
+            <label>Department Name</label>
+            <div class="input-wrapper">
+                <input formControlName="department" />
+                @if (form.controls.department.invalid && form.controls.department.touched) {
+                    <div class="error-message">Department name is required</div>
+                }
+            </div>
+        </div>
+
+        <div class="form-group checkbox-group" style="margin-top: 15px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+                <input type="checkbox" formControlName="isActive" />
+                Is Active
+            </label>
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="flat" (click)="closeDialog()">Cancel</button>
+    <button (click)="save()" [disabled]="form.invalid">Add</button>
+</mat-dialog-actions>

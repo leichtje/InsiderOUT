@@ -4,23 +4,25 @@ import { DepartmentModel } from '../../../models/department.model';
 import { NgClass } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActionBarComponent } from "../../../fragments/header/action-bar/action-bar.component";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'io-department-view',
     templateUrl: './department-view.component.html',
     styleUrl: './department-view.component.scss',
     standalone: true,
-    imports: [CdkDropList, CdkDrag, NgClass, ActionBarComponent, ReactiveFormsModule]
+    imports: [CdkDropList, CdkDrag, NgClass, ActionBarComponent, ReactiveFormsModule, MatIcon]
 })
 export class DepartmentViewComponent {
     private fb = inject(FormBuilder);
 
-    departments = input.required<DepartmentModel[]>();
-    selectedDepartment = input<DepartmentModel | null>(null);
+    readonly departments = input.required<DepartmentModel[]>();
+    readonly selectedDepartment = input<DepartmentModel | null>(null);
 
-    onSelect = output<number>();
-    onReorder = output<DepartmentModel[]>();
-    onUpdate = output<DepartmentModel>(); 
+    readonly select = output<number>();
+    readonly reorder = output<DepartmentModel[]>();
+    readonly update = output<DepartmentModel>(); 
+    readonly create = output<void>(); 
 
     form = this.fb.group({
         departmentId: [0],
@@ -45,7 +47,7 @@ export class DepartmentViewComponent {
         if (this.form.dirty && !confirm('You have unsaved changes. Discard?')) {
         return;
         }
-        this.onSelect.emit(id);
+        this.select.emit(id);
     }
 
     drop(event: CdkDragDrop<DepartmentModel[]>) {
@@ -57,12 +59,16 @@ export class DepartmentViewComponent {
         sortOrder: index + 1 
         }));
 
-        this.onReorder.emit(updatedList);
+        this.reorder.emit(updatedList);
+    }
+
+    onCreate() {
+        this.create.emit(); 
     }
 
     onSave() {
         if (this.form.valid && this.form.dirty) {
-        this.onUpdate.emit(this.form.value as DepartmentModel);
+        this.update.emit(this.form.value as DepartmentModel);
         this.form.markAsPristine();
         }
     }

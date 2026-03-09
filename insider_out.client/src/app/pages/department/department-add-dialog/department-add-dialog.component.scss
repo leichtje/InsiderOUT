@@ -1,0 +1,17 @@
+form {
+    display: grid;
+    grid-template-columns: auto 1fr; 
+    gap: 1rem 1.5rem; 
+    align-items: center; 
+}
+
+.form-group {
+    display: contents; 
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; 
+}
+

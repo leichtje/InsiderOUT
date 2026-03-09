@@ -1,7 +1,8 @@
 <io-department-view
     [departments]="store.sortedDepartments()"
     [selectedDepartment]="store.selectedDepartment()"
-    (onSelect)="store.selectDepartment($event)"
-    (onUpdate)="handleUpdate($event)"
-    (onReorder)="handleReorder($event)">
+    (select)="store.selectDepartment($event)"
+    (create)="openCreate()"
+    (update)="handleUpdate($event)"
+    (reorder)="handleReorder($event)">
 </io-department-view>
