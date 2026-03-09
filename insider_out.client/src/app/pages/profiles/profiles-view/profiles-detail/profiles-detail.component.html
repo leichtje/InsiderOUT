@@ -2,6 +2,8 @@
 
 @if (profile) {
 
+    <h2>Edit Profile</h2>
+
     <io-profile-card [profile]="profile"></io-profile-card>
 
     @if (userStore.isCurrentUser(profile)) {
