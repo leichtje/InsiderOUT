@@ -104,7 +104,7 @@ export class TokensDocumentsDialogComponent {
     }
 
     calculateFormProgress(): number {
-        const requiredFields = ['description', 'audience', 'sensitivity'];
+        const requiredFields = ['description', 'audience', 'department', 'sensitivity'];
         
         let validCount = 0;
 
