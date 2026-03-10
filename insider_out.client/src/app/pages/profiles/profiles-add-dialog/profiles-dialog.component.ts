@@ -6,6 +6,8 @@ import { SubjectStore } from '../../../stores/subject.store';
 import { ResponsiveDialogService } from '../../../services/responsive-dialog.service';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { DialogHeader } from "../../../fragments/dialog/dialog-header/dialog-header.component";
+import { DepartmentStore } from '../../../stores/department.store';
+import { EntitySelectComponent } from "../../../fragments/entity-select/entity-select.component";
 
 export interface ProfileDialogData {
     type: 'user' | 'subject',
@@ -16,7 +18,7 @@ export interface ProfileDialogData {
 @Component({
     selector: 'io-profiles-dialog',
     standalone: true,
-    imports: [ReactiveFormsModule, MatDialogContent, MatDialogActions, DialogHeader],
+    imports: [ReactiveFormsModule, MatDialogContent, MatDialogActions, DialogHeader, EntitySelectComponent],
     templateUrl: './profiles-dialog.component.html',
     styleUrl: './profiles-dialog.component.scss'
 })
@@ -28,6 +30,7 @@ export class ProfileDialogComponent {
     private userStore = inject(UserStore);
     private subjectStore = inject(SubjectStore);
 
+    public departmentStore = inject(DepartmentStore);
 
     type: 'user' | 'subject' = 'user'; 
     profileToEdit: UserModel | SubjectModel | null = null;

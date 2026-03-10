@@ -11,10 +11,12 @@ import { sensitivity_colors, sensitivity_text } from "../../../../fragments/pill
 import { TokenSensitivity } from "../../../../models/token.model";
 import { PillSelectComponent } from "../../../../fragments/pill-select/pill-select.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { DialogHeader } from "../../../../fragments/dialog/dialog-header/dialog-header.component";
 import { StepDefinition, StepProgressComponent } from "../../../../fragments/step-progress/step-progress.component";
 import { SkeletonLoaderComponent } from "../../../../fragments/skeleton-loader/skeleton-loader.component";
 import { GradientTextDirective } from "../../../../fragments/gradient-text/gradient-text.directive";
+import { DialogHeader } from "../../../../fragments/dialog/dialog-header/dialog-header.component";
+import { DepartmentStore } from "../../../../stores/department.store";
+import { EntitySelectComponent } from "../../../../fragments/entity-select/entity-select.component";
 
 export interface TokensDocumentsDialogData {
 
@@ -33,10 +35,11 @@ export interface TokensDocumentsDialogData {
         MatListModule,
         PillSelectComponent,
         MatTooltipModule,
-        DialogHeader,
         StepProgressComponent,
         SkeletonLoaderComponent,
-        GradientTextDirective
+        GradientTextDirective,
+        DialogHeader,
+        EntitySelectComponent
     ],
     templateUrl: './tokens-documents-dialog.component.html',
     styleUrl: './tokens-documents-dialog.component.scss'
@@ -46,11 +49,12 @@ export class TokensDocumentsDialogComponent {
     private dialogRef = inject(MatDialogRef<TokensDocumentsDialogComponent>);
     public data = inject<TokensDocumentsDialogData>(MAT_DIALOG_DATA);
     private fb = inject(FormBuilder);
+    public departmentStore = inject(DepartmentStore);
 
     documentForm = this.fb.group({
         description: ['', Validators.required],
         audience: ['', Validators.required],
-        // department: ['', Validators.required],
+        department: ['', Validators.required],
         sensitivity: ['', Validators.required]
     });
 

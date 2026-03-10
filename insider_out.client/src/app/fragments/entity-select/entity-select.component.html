@@ -1,0 +1,29 @@
+<mat-form-field appearance="outline" style="width: 100%;">
+    @if (label()) { <mat-label>{{ label() }}</mat-label> }
+    
+    <mat-select 
+        [value]="value()" 
+        (selectionChange)="onSelectionChange($event)" 
+        [disabled]="isDisabled()"
+        [errorStateMatcher]="matcher"
+        [required]="required()">
+        
+        <mat-option value="" disabled selected>Select {{ label() | lowercase }}...</mat-option>
+        
+        @for (item of options(); track item[valueKey()]) {
+            <mat-option [value]="item[valueKey()]">
+                {{ item[labelKey()] }}
+            </mat-option>
+        }
+    </mat-select>
+    
+    @if (ngControl?.invalid && ngControl?.touched) {
+        <mat-error>
+            @if (ngControl?.errors?.['required']) {
+                {{ label() }} is required
+            } @else {
+                Invalid selection
+            }
+        </mat-error>
+    }
+</mat-form-field>
