@@ -1,29 +1,36 @@
-<mat-form-field appearance="outline" style="width: 100%;">
-    @if (label()) { <mat-label>{{ label() }}</mat-label> }
-    
-    <mat-select 
-        [value]="value()" 
-        (selectionChange)="onSelectionChange($event)" 
-        [disabled]="isDisabled()"
-        [errorStateMatcher]="matcher"
-        [required]="required()">
-        
-        <mat-option value="" disabled selected>Select {{ label() | lowercase }}...</mat-option>
-        
-        @for (item of options(); track item[valueKey()]) {
-            <mat-option [value]="item[valueKey()]">
-                {{ item[labelKey()] }}
-            </mat-option>
+<div class="select-container">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" style="width: 100%;">
+
+        @if (label()) {
+            <mat-label>{{ label() }}</mat-label>
         }
-    </mat-select>
-    
-    @if (ngControl?.invalid && ngControl?.touched) {
-        <mat-error>
-            @if (ngControl?.errors?.['required']) {
-                {{ label() }} is required
-            } @else {
-                Invalid selection
+
+        @if (labelIcon()) {
+            <mat-icon matPrefix>{{ labelIcon() }}</mat-icon>
+        }
+
+        <mat-select 
+            [value]="value()" 
+            [disabled]="isDisabled()"
+            [required]="required()"
+            [errorStateMatcher]="matcher"
+            (selectionChange)="onSelectionChange($event)"
+            (openedChange)="onTouched()" 
+            panelClass="entity-select-panel">
+
+            <mat-select-trigger>
+                <span>{{ selectedEntityLabel() }}</span>
+            </mat-select-trigger>
+
+            @for (item of options(); track item[valueKey()]) {
+                <mat-option [value]="item[valueKey()]">
+                    {{ item[labelKey()] }}
+                </mat-option>
             }
-        </mat-error>
-    }
-</mat-form-field>
+
+        </mat-select>
+        
+        <mat-error>{{ label() }} is required</mat-error>
+
+    </mat-form-field>
+</div>

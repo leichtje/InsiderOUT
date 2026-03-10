@@ -39,16 +39,14 @@
                 
                 <div class="document-control">
                     <span class="info">Select the deparment the document is expected to be placed</span>
-                    <label>Department</label>
-                    <div class="input-wrapper">
-                        <io-entity-select
-                            formControlName="department"
-                            label="Department"
-                            [options]="departmentStore.activeSortedDepartments()"
-                            labelKey="department"
-                            valueKey="department"> 
-                        </io-entity-select>
-                    </div>
+                    <io-entity-select
+                        formControlName="department"
+                        label="Department"
+                        labelIcon="business" 
+                        [options]="departmentStore.activeSortedDepartments()"
+                        labelKey="department"
+                        valueKey="department"> 
+                    </io-entity-select>
                 </div>
 
                 <div class="document-control">

@@ -1,29 +1,30 @@
-import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, computed, DoCheck, input, Optional, Self, signal, ViewChild } from "@angular/core";
-import { AbstractControl, ControlValueAccessor, FormsModule, NgControl } from "@angular/forms";
-import { ErrorStateMatcher } from "@angular/material/core";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatSelect, MatSelectModule } from "@angular/material/select";
+import { Component, input, signal, computed, Self, Optional, ChangeDetectorRef, DoCheck, ViewChild } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
     selector: 'io-entity-select',
     standalone: true,
-    templateUrl: 'entity-select.component.html',
     imports: [
-        CommonModule,
         MatFormFieldModule,
         MatSelectModule,
+        MatIconModule,
         FormsModule
-    ]
+    ],
+    templateUrl: './entity-select.component.html',
+    // Alternatively, you can drop the HTML inline here!
 })
 export class EntitySelectComponent<T> implements ControlValueAccessor, DoCheck { 
 
     readonly options = input.required<T[]>();
-    
     readonly labelKey = input.required<keyof T>();
     readonly valueKey = input.required<keyof T>();
     
     readonly label = input<string>('');
+    readonly labelIcon = input<string>('');
 
     value = signal<any>(null);
     isDisabled = signal(false);
@@ -44,6 +45,14 @@ export class EntitySelectComponent<T> implements ControlValueAccessor, DoCheck {
             this.ngControl.valueAccessor = this;
         }
     }
+
+    selectedEntityLabel = computed(() => {
+        const currentVal = this.value();
+        if (currentVal === null || currentVal === undefined) return '';
+        
+        const selectedItem = this.options().find(item => item[this.valueKey()] === currentVal);
+        return selectedItem ? String(selectedItem[this.labelKey()]) : '';
+    });
 
     ngDoCheck(): void {
         const isTouched = this.ngControl?.touched || false;
