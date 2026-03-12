@@ -1,5 +1,5 @@
 
-import { Component, effect, inject, signal } from "@angular/core";
+import { Component, effect, ElementRef, inject, signal, ViewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
@@ -51,6 +51,8 @@ export class TokensDocumentsDialogComponent {
     private fb = inject(FormBuilder);
     public departmentStore = inject(DepartmentStore);
 
+    @ViewChild('pdfIframe') pdfIframe!: ElementRef<HTMLIFrameElement>;
+
     documentForm = this.fb.group({
         description: ['', Validators.required],
         audience: ['', Validators.required],
@@ -62,9 +64,9 @@ export class TokensDocumentsDialogComponent {
         location: [''],
     });
 
-    sensitivityColors = sensitivity_colors;
-    sensitivityText = sensitivity_text;
-    sensitivityOptions = Object.values(TokenSensitivity);
+    readonly sensitivityColors = sensitivity_colors;
+    readonly sensitivityText = sensitivity_text;
+    readonly sensitivityOptions = Object.values(TokenSensitivity);
 
     currentStepIndex$ = signal(0);
     isLoading$ = signal(false);
@@ -130,6 +132,18 @@ export class TokensDocumentsDialogComponent {
             setTimeout(() => {
                 this.isLoading$.set(false); 
             }, 5000);
+        }
+    }
+
+    toggleFullscreen() {
+        const elem = this.pdfIframe.nativeElement;
+
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if ((elem as any).webkitRequestFullscreen) { /* Safari */
+            (elem as any).webkitRequestFullscreen();
+        } else if ((elem as any).msRequestFullscreen) { /* IE11 */
+            (elem as any).msRequestFullscreen();
         }
     }
 

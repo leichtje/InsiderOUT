@@ -83,9 +83,21 @@
                     <p>Note: This document is for preview purposes only, do not deploy this document.</p>
 
                     <br>
-                    <!-- allow preview to be expanded -->
-                    <iframe class="preview-document" src="../../../../../assets/temp/test.pdf"><a href="../../../../../assets/temp/test.pdf"></a></iframe>
-                }
+
+                    <button mat-button (click)="toggleFullscreen()">
+                        <mat-icon>fullscreen</mat-icon>
+                        View Fullscreen
+                    </button>
+
+                    <br>
+                    <iframe 
+                        #pdfIframe
+                        class="preview-document" 
+                        src="../../../../../assets/temp/test.pdf"
+                        allowfullscreen>
+                        <a href="../../../../../assets/temp/test.pdf">Download PDF</a>
+                    </iframe>
+=                }
             </div>
         }
 
