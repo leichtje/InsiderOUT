@@ -34,7 +34,7 @@ def generate_content(short_desc: str, target_audience: str, severity_level: str,
     content_response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=(
-            f"You are an AI generating content for a {short_desc} for {target_audience}. "
+            f"You are an AI generating content for a {short_desc} document for {target_audience}. The document would be stored in a file share for a {selected_department} team."
             f"Make sure the file doesn't contain any logos, emojis, tables or headers and make it strictly text based. "
             f"Ensure the data is random but does not follow obvious patterns like sequential numbers or repeated values. "
             f"The content should be realistic and relevant to the specified description and audience. "

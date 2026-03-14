@@ -25,9 +25,9 @@ Outputs:
 Note: The logic for how we want to handle the document naming is incomplete but is easy to tweak once we decide how to structure the server.
 '''
 
-TRACKING_URL = "http://127.0.0.1:8080/images/testing.png" # this will be a url of a unique image to the word document. It will be created when a new token file is created in site.
+TRACKING_URL = "http://192.120.1.124/tokens/{token_id}.png" # this is the URL where the image will be hosted on the Kali box. The {token_id} will be replaced with the actual token ID for each document.
 # DOCX_FILENAME = "testing.docx" # hardcoded with the token.docx. The actual name the user wants will be used in the final
-REL_ID = "rIdCanary" # this is whatever the token id is. Can be taken from the image url above.
+REL_ID = "{token_id}" # this is whatever the token id is. Can be taken from the image url above.
 
 # Creating a Word Doc
 def create_base_docx(content, header, filename):

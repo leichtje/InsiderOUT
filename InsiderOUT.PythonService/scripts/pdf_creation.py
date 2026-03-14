@@ -11,13 +11,20 @@ Outputs:
 
 # Creating PDF file
 def preview_pdf(content, header, filename):
-    pdf = FPDF()
-    pdf.set_margins(left=15, top=20, right=15)
-    pdf.add_page()
-    pdf.set_font("Arial", size = 20)
+    try:
+        pdf = FPDF()
+        pdf.set_margins(left=15, top=20, right=15)
+        pdf.add_page()
+        pdf.set_font("Arial", size = 20)
 
-    pdf.cell(0, 10, txt=header, ln=True)
-    pdf.set_font("Arial", size = 12)
-    pdf.multi_cell(0, 10, txt=content)
+        pdf.cell(0, 10, txt=header, ln=True)
+        pdf.set_font("Arial", size = 12)
+        pdf.multi_cell(0, 10, txt=content)
 
-    pdf.save(filename)
+        #Will be saved under the /src/assets/temp in the client
+        pdf.save(filename)
+
+        # Assuming the PDF generation is good return True
+        return True
+    except Exception as e:
+        return False
