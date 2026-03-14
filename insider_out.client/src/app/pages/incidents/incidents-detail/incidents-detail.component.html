@@ -5,7 +5,7 @@
 
 <form [formGroup]="form" class="incident-form">
     <div class="page-container">
-        <div routerLink="/incidents/open" class="back flex-inline">
+        <div [routerLink]="incident?.isActive ? '/incidents/open' :'/incidents/closed' " class="back flex-inline">
             <mat-icon>arrow_back</mat-icon> Incidents
         </div>
         @if (incident) {
