@@ -31,6 +31,7 @@ import { UserStore } from '../../../stores/user.store';
 import { SubjectStore } from '../../../stores/subject.store';
 import { IncidentStore } from '../../../stores/incident.store';
 import { SkeletonLoaderComponent } from "../../../fragments/skeleton-loader/skeleton-loader.component";
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -66,6 +67,7 @@ export class IncidentsDetailComponent implements OnInit {
     protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
     protected incidentStore = inject(IncidentStore); 
+    private titleService = inject(Title);
 
     protected readonly activityScope = ActivityScope;
 
@@ -92,6 +94,8 @@ export class IncidentsDetailComponent implements OnInit {
         effect(() => {
             const data = this.store.incident();
             if (data) {
+                this.titleService.setTitle(`${data.title} - Incident`);
+
                 this.form.patchValue({
                     title: data.title,
                     desc: data.desc,
@@ -102,6 +106,8 @@ export class IncidentsDetailComponent implements OnInit {
                 });
 
                 this.form.markAsPristine(); 
+            } else {
+                this.titleService.setTitle('Incident');
             }
         });
     }

@@ -9,6 +9,7 @@ import { UserStore } from "../../../../stores/user.store";
 import { SubjectStore } from "../../../../stores/subject.store";
 import { ResponsiveDialogService } from "../../../../services/responsive-dialog.service";
 import { ProfileDialogComponent } from "../../profiles-add-dialog/profiles-dialog.component";
+import { Title } from "@angular/platform-browser";
 
 @Component({
     selector:'io-profiles-detail',
@@ -23,12 +24,15 @@ export class ProfilesDetailComponent {
     
     protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
+    private titleService = inject(Title);
 
     private params = toSignal(this.route.paramMap);
     private urlSegments = toSignal(this.route.url);
     private dialog = inject(ResponsiveDialogService);
 
     constructor() {
+        this.titleService.setTitle(`Profiles`);
+        
         effect(() => {
             const p = this.params();
             const u = this.urlSegments();

@@ -6,6 +6,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActionBarComponent } from "../../../fragments/header/action-bar/action-bar.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class DepartmentViewComponent {
 
     readonly departments = input.required<DepartmentModel[]>();
     readonly selectedDepartment = input<DepartmentModel | null>(null);
+    private titleService = inject(Title);
 
     readonly select = output<number>();
     readonly reorder = output<DepartmentModel[]>();
@@ -34,6 +36,8 @@ export class DepartmentViewComponent {
     });
 
     constructor() {
+        this.titleService.setTitle(`Departments`);
+
         effect(() => {
             const dept = this.selectedDepartment();
             if (dept) {
@@ -53,15 +57,25 @@ export class DepartmentViewComponent {
     }
 
     drop(event: CdkDragDrop<DepartmentModel[]>) {
+        if (event.previousIndex === event.currentIndex) {
+            return;
+        }
+
         const currentList = [...this.departments()];
         moveItemInArray(currentList, event.previousIndex, event.currentIndex);
         
-        const updatedList = currentList.map((dept, index) => ({
-        ...dept,
-        sortOrder: index + 1 
-        }));
-
-        this.reorder.emit(updatedList);
+        currentList.forEach((dept, index) => {
+            const newSortOrder = index + 1;
+            
+            if (dept.sortOrder !== newSortOrder) {
+                const updatedDept: DepartmentModel = {
+                    ...dept,
+                    sortOrder: newSortOrder
+                };
+                
+                this.update.emit(updatedDept);
+            }
+        });
     }
 
     onCreate() {

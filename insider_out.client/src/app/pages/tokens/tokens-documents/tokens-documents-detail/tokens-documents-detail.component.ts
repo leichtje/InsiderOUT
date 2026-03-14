@@ -18,6 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PillComponent } from '../../../../fragments/pill/pill.component';
 import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/skeleton-loader.component';
 import { status_colors, status_text } from '../../../../fragments/pill/incident-status-constants';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector: 'io-tokens-documents-detail',
@@ -49,6 +50,7 @@ export class TokensDocumentsDetailComponent {
 
     public store = inject(DocumentDetailStore);
     protected documentStore = inject(DocumentStore); 
+    private titleService = inject(Title);
     
     sensitivityColors = sensitivity_colors;
     sensitivityText = sensitivity_text;
@@ -66,6 +68,8 @@ export class TokensDocumentsDetailComponent {
         effect(() => {
             const data = this.store.document();
             if (data) {
+                this.titleService.setTitle(`${data.name} - Document`);
+
                 this.form.patchValue({
                     location: data.location,
                     sensitivity: data.sensitivity,
@@ -74,6 +78,8 @@ export class TokensDocumentsDetailComponent {
                 console.log(data.sensitivity);
                 
                 this.form.markAsPristine(); 
+            } else {
+                this.titleService.setTitle('Document');
             }
         });
     }
