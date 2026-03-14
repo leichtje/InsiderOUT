@@ -2,7 +2,7 @@ import { patchState, signalStore, withComputed, withHooks, withMethods, withStat
 import { computed, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { catchError, map, pipe, switchMap, tap } from "rxjs";
+import { catchError, map, mergeMap, pipe, switchMap, tap } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DepartmentModel } from "../models/department.model";
 
@@ -117,7 +117,7 @@ export const DepartmentStore = signalStore(
             update: rxMethod<{ id: number; data: DepartmentModel }>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
-                    switchMap(({ id, data }) => {
+                    mergeMap(({ id, data }) => {
                         return http.put(`${apiUrl}/${id}`, data).pipe(
                             tap(() => {
                                 patchState(store, (state) => ({

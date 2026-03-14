@@ -48,7 +48,6 @@ const routes: Routes = [
     /* Tokens */
     {
         path: 'tokens',
-        component: TokensDocumentsComponent,
         children: [
             { path: 'documents', title: 'Documents - InsiderOUT', component: TokensDocumentsComponent},
             { 
