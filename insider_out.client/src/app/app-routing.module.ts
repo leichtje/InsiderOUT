@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router'; // <-- Added ActivatedRouteSnapshot
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/notfound/notfound.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -17,7 +17,6 @@ import { DepartmentComponent } from './pages/department/department.component';
 
 const routes: Routes = [
     /* Home */
-    // Need this to point to the user selected home page, default dashboard. 
     { path: '', title: 'Home - InsiderOUT', component: HomeComponent },
     { path: 'home', title: 'Home - InsiderOUT', component: HomeComponent},
 
@@ -29,22 +28,36 @@ const routes: Routes = [
         path: 'incidents',
         component: IncidentsComponent,
         children: [
-            { path: 'open', component: IncidentsOpenComponent},
-            { path: 'open/:id', component: IncidentsDetailComponent, canDeactivate: [unsavedChangesGuard]},
-            { path: 'closed', component: IncidentsClosedComponent },
-            { path: 'closed/:id', component: IncidentsDetailComponent, canDeactivate: [unsavedChangesGuard]}
+            { path: 'open', title: 'Open Incidents - InsiderOUT', component: IncidentsOpenComponent},
+            { 
+                path: 'open/:id', 
+                title: (route: ActivatedRouteSnapshot) => `Incident #${route.paramMap.get('id')} - InsiderOUT`, 
+                component: IncidentsDetailComponent, 
+                canDeactivate: [unsavedChangesGuard]
+            },
+            { path: 'closed', title: 'Closed Incidents - InsiderOUT', component: IncidentsClosedComponent },
+            { 
+                path: 'closed/:id', 
+                title: (route: ActivatedRouteSnapshot) => `Incident #${route.paramMap.get('id')} - InsiderOUT`, 
+                component: IncidentsDetailComponent, 
+                canDeactivate: [unsavedChangesGuard]
+            }
         ]
     },
 
-    /* Incidents */
+    /* Tokens */
     {
         path: 'tokens',
-        component: IncidentsComponent,
+        component: TokensDocumentsComponent,
         children: [
-            { path: 'documents', component: TokensDocumentsComponent},
-            { path: 'documents/:id', component: TokensDocumentsDetailComponent, canDeactivate: [unsavedChangesGuard]},
-            { path: 'emails', component: TokensEmailsComponent },
-            // { path: 'emails/:id', component: TokensEmailsDetailComponent, canDeactivate: [unsavedChangesGuard]}
+            { path: 'documents', title: 'Documents - InsiderOUT', component: TokensDocumentsComponent},
+            { 
+                path: 'documents/:id', 
+                title: (route: ActivatedRouteSnapshot) => `Document #${route.paramMap.get('id')} - InsiderOUT`,
+                component: TokensDocumentsDetailComponent, 
+                canDeactivate: [unsavedChangesGuard]
+            },
+            { path: 'emails', title: 'Emails - InsiderOUT', component: TokensEmailsComponent },
         ]
     },
 
@@ -52,18 +65,29 @@ const routes: Routes = [
     {
         path: 'settings',
         children: [
-            { path: 'profiles', component: ProfilesComponent,
-            children: [
-                { path: 'user/:id', component: ProfilesDetailComponent },
-                { path: 'subject/:id', component: ProfilesDetailComponent }
-            ] },
-            { path: 'departments', component: DepartmentComponent },
+            { 
+                path: 'profiles', 
+                title: 'Profiles - InsiderOUT',
+                component: ProfilesComponent,
+                children: [
+                    { 
+                        path: 'user/:id', 
+                        title: (route: ActivatedRouteSnapshot) => `User Profile ${route.paramMap.get('id')} - InsiderOUT`,
+                        component: ProfilesDetailComponent 
+                    },
+                    { 
+                        path: 'subject/:id', 
+                        title: (route: ActivatedRouteSnapshot) => `Subject Profile ${route.paramMap.get('id')} - InsiderOUT`,
+                        component: ProfilesDetailComponent 
+                    }
+                ] 
+            },
+            { path: 'departments', title: 'Departments - InsiderOUT', component: DepartmentComponent },
         ]
     },
 
-
-    // Wildcard route for a 404 page - MUST be the last route
-    { path: '**', component: NotFoundComponent } 
+    // Wildcard route for a 404 page
+    { path: '**', title: 'Page Not Found - InsiderOUT', component: NotFoundComponent } 
 ];
 
 @NgModule({
