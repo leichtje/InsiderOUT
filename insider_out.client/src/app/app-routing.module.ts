@@ -32,7 +32,7 @@ const routes: Routes = [
             { path: 'open', component: IncidentsOpenComponent},
             { path: 'open/:id', component: IncidentsDetailComponent, canDeactivate: [unsavedChangesGuard]},
             { path: 'closed', component: IncidentsClosedComponent },
-            { path: 'closed/:id', component: IncidentsClosedComponent, canDeactivate: [unsavedChangesGuard]}
+            { path: 'closed/:id', component: IncidentsDetailComponent, canDeactivate: [unsavedChangesGuard]}
         ]
     },
 
