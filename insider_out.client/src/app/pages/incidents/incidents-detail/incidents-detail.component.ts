@@ -153,9 +153,14 @@ export class IncidentsDetailComponent implements OnInit {
             const currentIncident = this.store.incident();
             
             if (currentIncident) {
+                const formValues = this.form.value;
+                
+                const isNowActive = formValues.status !== IncidentStatus.Closed; 
+
                 const updatedIncident: IncidentModel = {
                     ...currentIncident,
-                    ...(this.form.value as Partial<IncidentModel>),
+                    ...(formValues as Partial<IncidentModel>),
+                    isActive: isNowActive,
                     updated: new Date()
                 };
 
