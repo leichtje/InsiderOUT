@@ -111,12 +111,12 @@ export class TokensDocumentsDialogComponent {
         let validCount = 0;
 
         requiredFields.forEach(key => {
-        const control = this.documentForm.get(key);
-        
+            const control = this.documentForm.get(key);
+            
 
-        if (control && control.valid) {
-            validCount++;
-        }
+            if (control && control.valid) {
+                validCount++;
+            }
         });
 
         return (validCount / requiredFields.length) * 100;
@@ -140,9 +140,9 @@ export class TokensDocumentsDialogComponent {
 
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
-        } else if ((elem as any).webkitRequestFullscreen) { /* Safari */
+        } else if ((elem as any).webkitRequestFullscreen) {
             (elem as any).webkitRequestFullscreen();
-        } else if ((elem as any).msRequestFullscreen) { /* IE11 */
+        } else if ((elem as any).msRequestFullscreen) {
             (elem as any).msRequestFullscreen();
         }
     }

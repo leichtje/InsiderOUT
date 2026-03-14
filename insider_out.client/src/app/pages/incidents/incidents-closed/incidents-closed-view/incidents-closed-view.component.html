@@ -1,0 +1,18 @@
+@let incidents = this.incidents$();
+
+<div class="page-container">
+    <io-filter [filterOptions]="filterUserOptions" filterTitle="User" (filterChanged)="filterUserChange.emit($event)"></io-filter>
+
+    <io-filter [filterOptions]="filterTypeOptions" filterTitle="Type" (filterChanged)="filterTypeChange.emit($event)"></io-filter>
+
+    <br>
+    <br>
+
+    <io-incidents-list
+        [incidents]="incidents"
+        [isLoading]="isLoading$()"
+        (incidentSelected)="onIncidentClicked($event)"
+    ></io-incidents-list>
+    
+
+</div>

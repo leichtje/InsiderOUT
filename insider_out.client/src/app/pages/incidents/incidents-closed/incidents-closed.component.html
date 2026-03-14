@@ -1,3 +1,7 @@
-<div class="page-container">
-    *Closed Incidents*
-</div>
+<io-incidents-closed-view
+    [incidents]="filteredIncidents()"
+    [isLoading]="incidentStore.isLoading()"
+    (incidentSelected)="onIncidentSelected($event)"
+    (filterUserChange)="onUserFilterChange($event)"
+    (filterTypeChange)="onTypeFilterChange($event)"
+></io-incidents-closed-view>

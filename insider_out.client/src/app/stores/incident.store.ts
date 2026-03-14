@@ -67,6 +67,14 @@ export const IncidentStore = signalStore(
             store.incidents().filter(inc => inc.assignedUserId === null)
         ),
 
+        activeIncidents: computed(() => 
+            store.incidents().filter(inc => inc.isActive === true)
+        ),
+
+        InActiveIncidents: computed(() => 
+            store.incidents().filter(inc => inc.isActive === false)
+        ),
+
         entityMap: computed(() => {
             const map: Record<number, IncidentModel> = {};
             for (const incident of store.incidents()) {

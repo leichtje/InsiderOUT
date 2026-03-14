@@ -7,9 +7,9 @@ import { MatIcon } from "@angular/material/icon";
 import { FilterComponent } from '../../../../fragments/filter/filter.component';
 
 @Component({
-    selector: 'io-incidents-open-view',
-    templateUrl: './incidents-open-view.component.html',
-    styleUrl: './incidents-open-view.component.scss',
+    selector: 'io-incidents-closed-view',
+    templateUrl: './incidents-closed-view.component.html',
+    styleUrl: './incidents-closed-view.component.scss',
     standalone: true,
     imports: [
         IncidentsListComponent,
@@ -17,7 +17,7 @@ import { FilterComponent } from '../../../../fragments/filter/filter.component';
         MatIcon
     ]
 })
-export class IncidentsOpenViewComponent {
+export class IncidentsClosedViewComponent {
 
     filterUserOptions: FilterOptionModel[] = [
         { label: 'Assigned to Me', value: 'mine', icon: 'person' },

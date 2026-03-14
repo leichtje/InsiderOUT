@@ -2,5 +2,7 @@
     [filteredDocuments]="filteredDocuments$()"
     [isLoading]="documentStore.isLoading()"
     (documentSelected)="onDocumentSelected($event)"
+    (filterDepartmentChange)="onDepartmentFilterChange($event)"
+
 >
 </io-tokens-documents-view>

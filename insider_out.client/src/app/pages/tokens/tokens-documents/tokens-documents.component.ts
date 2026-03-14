@@ -22,14 +22,11 @@ export class TokensDocumentsComponent {
     private route = inject(ActivatedRoute);
 
     private allDocumentTokens = this.documentStore.documents;
-
-    protected currentUserFilter = signal<FilterValue>('all');
-    protected currentTypeFilter = signal<FilterValue>('all');
+    protected currentDepartmentFilter = signal<string>('all');
 
     protected filteredDocuments$ = computed(() => {
         const documents = this.allDocumentTokens();
-        // const userFilter = this.currentUserFilter();
-        // const typeFilter = this.currentTypeFilter();
+        const departmentFilter = this.currentDepartmentFilter();
         
         let result = documents; 
 
@@ -61,12 +58,8 @@ export class TokensDocumentsComponent {
         return result;
     });
 
-    onUserFilterChange(newFilter: FilterValue) {
-        this.currentUserFilter.set(newFilter);
-    }
-
-    onTypeFilterChange(newFilter: FilterValue) {
-        this.currentTypeFilter.set(newFilter);
+    onDepartmentFilterChange (newFilter: string) {
+        this.currentDepartmentFilter.set(newFilter);
     }
 
     onDocumentSelected(document: DocumentModel) {

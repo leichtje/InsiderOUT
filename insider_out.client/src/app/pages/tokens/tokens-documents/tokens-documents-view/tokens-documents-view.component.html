@@ -1,8 +1,18 @@
 @let documents = this.filteredDocuments$();
 
 <div class="page-container">
+
     *Find / Search for Doc*
-    *Department filter*
+
+    <io-entity-select
+        label="Department"
+        labelIcon="business" 
+        [options]="departmentStore.activeSortedDepartments()"
+        labelKey="department"
+        valueKey="department"
+        (selectionChanged)="filterDepartmentChange.emit($event)">
+    </io-entity-select>
+                    
     <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
 
 

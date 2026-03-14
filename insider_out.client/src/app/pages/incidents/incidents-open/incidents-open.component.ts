@@ -23,13 +23,13 @@ export class IncidentsOpenComponent {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
-    private allIncidents = this.incidentStore.incidents;
+    private allActiveIncidents = this.incidentStore.activeIncidents;
 
     protected currentUserFilter = signal<FilterValue>('all');
     protected currentTypeFilter = signal<FilterValue>('all');
 
     protected filteredIncidents = computed(() => {
-        const incidents = this.allIncidents();
+        const incidents = this.allActiveIncidents();
         const userFilter = this.currentUserFilter();
         const typeFilter = this.currentTypeFilter();
         const currentUser = this.userStore.currentUser();

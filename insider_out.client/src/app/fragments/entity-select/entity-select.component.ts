@@ -1,4 +1,4 @@
-import { Component, input, signal, computed, Self, Optional, ChangeDetectorRef, DoCheck, ViewChild } from '@angular/core';
+import { Component, input, signal, computed, Self, Optional, ChangeDetectorRef, DoCheck, ViewChild, output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
@@ -15,7 +15,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
         FormsModule
     ],
     templateUrl: './entity-select.component.html',
-    // Alternatively, you can drop the HTML inline here!
 })
 export class EntitySelectComponent<T> implements ControlValueAccessor, DoCheck { 
 
@@ -25,6 +24,8 @@ export class EntitySelectComponent<T> implements ControlValueAccessor, DoCheck {
     
     readonly label = input<string>('');
     readonly labelIcon = input<string>('');
+
+    readonly selectionChanged = output<any>(); 
 
     value = signal<any>(null);
     isDisabled = signal(false);
@@ -102,6 +103,8 @@ export class EntitySelectComponent<T> implements ControlValueAccessor, DoCheck {
         this.onChange(event.value);
         this.onTouched();
         
+        this.selectionChanged.emit(event.value); 
+
         setTimeout(() => {
             this.matSelect?.updateErrorState();
         });
