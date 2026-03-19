@@ -1,62 +1,57 @@
---Updated Image create
+-- Updated PDF Script
 
-# Created with the help of Gemini AI 2.5 Flash
+from fpdf import FPDF
 import os
-from PIL import Image
-import uuid
 
 '''
 Inputs:
+- content (the content to be added to the document)
+- header (the header for the document)
+- filename (the name of the file to be created)
 
 Outputs:
-- A UUID for the canary token is generated and returned. This will be used as the filename for the image and the token ID in the document XML.
-- A 1x1 pixel transparent PNG image with the filename of the token_id is saved to a temp directory.
-Note: As this script is ran on IIS it will have to be saved temporarily and then moved to the Kali Box appropriately. How this is handled is TBD.
+- A PDF with the content ready for preview. Again need to define folder structure for this still.
 '''
 
+# Creating PDF file
+def preview_pdf(content, header, filename, output_dir=None):
+    try:
+        # Default output directory
+        if output_dir is None:
+            output_dir = "C:\\temp_tokens\\pdf_preview\\"
 
-def create_transparent_pixel_image(output_dir=None):
-    """
-    Creates a 1x1 pixel transparent PNG image using the Pillow library.
-    Args:
-        output_dir (str): The directory to save the image to. Defaults to C:\temp_tokens\
-    """
+        os.makedirs(output_dir, exist_ok=True)
 
-    # Generate a random ID for the canary token
-    token_id = str(uuid.uuid4())
+        # Full path to save the PDF
+        pdf_path = os.path.join(output_dir, filename)
 
-    # Output directory is C:\temp_tokens\
-    if output_dir is None:
-        output_dir = "C:\\temp_tokens\\"
+        pdf = FPDF()
+        pdf.set_margins(left=15, top=20, right=15)
+        pdf.add_page()
+        pdf.set_font("Arial", size=20)
 
-    os.makedirs(output_dir, exist_ok=True)
+        pdf.cell(0, 10, txt=header, ln=True)
+        pdf.set_font("Arial", size=12)
+        pdf.multi_cell(0, 10, txt=content)
 
-    temp_filepath = os.path.join(output_dir, f"{token_id}.png")
+        # Will be saved under the /src/assets/temp in the client (mapped later)
+        pdf.output(pdf_path)
 
-    # 1. Define image dimensions and mode (RGBA for transparency)
-    width, height = 1, 1
-    img = Image.new('RGBA', (width, height))
+        # Return the filename so the API can return it
+        return pdf_path
 
-    # 2. Define the pixel data: (R, G, B, A)
-    transparent_pixel = (0, 0, 0, 0)
-
-    # 3. Set the single pixel's color
-    img.putpixel((0, 0), transparent_pixel)
-
-    # 4. Save the image
-    img.save(temp_filepath, "PNG")
-
-    # Return the token ID (not a set)
-    return token_id
+    except Exception as e:
+        return None
 
 
+--Updated Main Script
 
---Updated Main file
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from scripts.gen import generate_content
 from scripts.image_create import create_transparent_pixel_image
+from scripts.pdf_creation import preview_pdf
 
 app = FastAPI()
 
@@ -75,7 +70,7 @@ class GenerateContentRequest(BaseModel):
     shortDescription: str
     targetAudience: str
     severityLevel: str
-    departments: list[str]  # must contain exactly ONE department
+    departments: list[str]
 
 
 class GenerateContentResponse(BaseModel):
@@ -90,20 +85,28 @@ class TrackingImageResponse(BaseModel):
     fileName: str
 
 
+class PreviewPdfRequest(BaseModel):
+    content: str
+    header: str
+    fileName: str
+
+
+class PreviewPdfResponse(BaseModel):
+    pdfPath: str
+
+
 # ---------------------------------------------------------
 # Generate Content Endpoint
 # ---------------------------------------------------------
 @app.post("/generate-content", response_model=GenerateContentResponse)
 def api_generate_content(req: GenerateContentRequest):
 
-    # Validate department count
     if len(req.departments) != 1:
         raise HTTPException(
             status_code=400,
             detail="Exactly one department must be provided."
         )
 
-    # Call the updated Python script logic
     content, header, filename, department = generate_content(
         req.shortDescription,
         req.targetAudience,
@@ -111,7 +114,6 @@ def api_generate_content(req: GenerateContentRequest):
         req.departments
     )
 
-    # Return the structured response
     return GenerateContentResponse(
         content=content,
         header=header,
@@ -126,10 +128,7 @@ def api_generate_content(req: GenerateContentRequest):
 @app.post("/create-tracking-image", response_model=TrackingImageResponse)
 def api_create_tracking_image():
 
-    # Create the transparent pixel image
     token_id = create_transparent_pixel_image()
-
-    # The file name is always token_id + ".png"
     file_name = f"{token_id}.png"
 
     return TrackingImageResponse(
@@ -138,3 +137,22 @@ def api_create_tracking_image():
     )
 
 
+# ---------------------------------------------------------
+# PDF Preview Endpoint
+# ---------------------------------------------------------
+@app.post("/preview-pdf", response_model=PreviewPdfResponse)
+def api_preview_pdf(req: PreviewPdfRequest):
+
+    pdf_path = preview_pdf(
+        req.content,
+        req.header,
+        req.fileName
+    )
+
+    if pdf_path is None:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to generate PDF preview."
+        )
+
+    return PreviewPdfResponse(pdfPath=pdf_path)
