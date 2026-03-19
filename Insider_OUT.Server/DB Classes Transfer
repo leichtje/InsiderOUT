@@ -1,369 +1,433 @@
---User 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace InsiderOUT.Data.Models.Identity
-{
-    [Table("Users")]
-    public class User
-    {
-        [Key]
-        [Column("UserId")]
-        public int UserId { get; set; }
-
-        [Required, MaxLength(100)]
-        [Column("UserFirstName")]
-        public string UserFirstName { get; set; }
-
-        [Required, MaxLength(100)]
-        [Column("UserLastName")]
-        public string UserLastName { get; set; }
-
-        [Required, MaxLength(255)]
-        [Column("UserEmail")]
-        public string UserEmail { get; set; }
-
-        [MaxLength(50)]
-        [Column("UserPhone")]
-        public string UserPhone { get; set; }
-
-        [MaxLength(100)]
-        [Column("UserDepartment")]
-        public string UserDepartment { get; set; }
-    }
-}
-
-
-
---Subjects 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace InsiderOUT.Data.Models.Identity
-{
-    [Table("Subjects")]
-    public class Subject
-    {
-        [Key]
-        [Column("SubjectId")]
-        public int SubjectId { get; set; }
-
-        [Required, MaxLength(100)]
-        [Column("SubjectFirstName")]
-        public string SubjectFirstName { get; set; }
-
-        [Required, MaxLength(100)]
-        [Column("SubjectLastName")]
-        public string SubjectLastName { get; set; }
-
-        [Required, MaxLength(255)]
-        [Column("SubjectEmail")]
-        public string SubjectEmail { get; set; }
-
-        [MaxLength(50)]
-        [Column("SubjectPhone")]
-        public string SubjectPhone { get; set; }
-
-        [MaxLength(100)]
-        [Column("SubjectDepartment")]
-        public string SubjectDepartment { get; set; }
-
-        [MaxLength(100)]
-        [Column("SubjectRole")]
-        public string SubjectRole { get; set; }
-
-        [Column("SubjectRiskScore")]
-        public int SubjectRiskScore { get; set; }
-    }
-}
-
-
-
-
-
---Tokens
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace InsiderOUT.Data.Models.Tokens
-{
-    [Table("Tokens")]
-    public class Token
-    {
-        [Key]
-        [Column("TokenId")]
-        public int TokenId { get; set; }
-
-        [Required, MaxLength(50)]
-        [Column("TokenType")]
-        public string TokenType { get; set; }
-
-        [Required, MaxLength(50)]
-        [Column("TokenSeverity")]
-        public string TokenSeverity { get; set; }
-
-        // Navigation properties for subtypes (one-to-one)
-        public Document Document { get; set; }
-        public Email Email { get; set; }
-    }
-}
-
-
---Document 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace InsiderOUT.Data.Models.Tokens
-{
-    [Table("Documents")]
-    public class Document
-    {
-        [Key]
-        [Column("DocumentId")]
-        public int DocumentId { get; set; }
-
-        [Required]
-        [Column("DocumentTokenId")]
-        public int DocumentTokenId { get; set; }
-
-        [Required, MaxLength(255)]
-        [Column("DocumentName")]
-        public string DocumentName { get; set; }
-
-        [Required, MaxLength(500)]
-        [Column("DocumentLocation")]
-        public string DocumentLocation { get; set; }
-
-        [ForeignKey(nameof(DocumentTokenId))]
-        public Token Token { get; set; }
-    }
-}
-
-
---Email
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace InsiderOUT.Data.Models.Tokens
-{
-    [Table("Emails")]
-    public class Email
-    {
-        [Key]
-        [Column("EmailId")]
-        public int EmailId { get; set; }
-
-        [Required]
-        [Column("EmailTokenId")]
-        public int EmailTokenId { get; set; }
-
-        [Required, MaxLength(255)]
-        [Column("EmailSubject")]
-        public string EmailSubject { get; set; }
-
-        [ForeignKey(nameof(EmailTokenId))]
-        public Token Token { get; set; }
-    }
-}
-
-
-
---Incident 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using InsiderOUT.Data.Models.Identity;
-using InsiderOUT.Data.Models.Tokens;
-
-namespace InsiderOUT.Data.Models.Incidents
-{
-    [Table("Incidents")]
-    public class Incident
-    {
-        [Key]
-        [Column("IncidentId")]
-        public int IncidentId { get; set; }
-
-        [Required, MaxLength(255)]
-        [Column("IncidentTitle")]
-        public string IncidentTitle { get; set; }
-
-        [Required]
-        [Column("IncidentDescription")]
-        public string IncidentDescription { get; set; }
-
-        [Required]
-        [Column("IncidentCreatedDate")]
-        public DateTime IncidentCreatedDate { get; set; }
-
-        [Required]
-        [Column("IncidentUpdatedDate")]
-        public DateTime IncidentUpdatedDate { get; set; }
-
-        [Required, MaxLength(255)]
-        [Column("IncidentAgent")]
-        public string IncidentAgent { get; set; }
-
-        [Required]
-        [Column("IncidentTokenId")]
-        public int IncidentTokenId { get; set; }
-
-        [Required, MaxLength(50)]
-        [Column("IncidentTokenType")]
-        public string IncidentTokenType { get; set; }
-
-        [Required, MaxLength(50)]
-        [Column("IncidentStatus")]
-        public string IncidentStatus { get; set; }
-
-        [Column("IncidentAssignedUserId")]
-        public int? IncidentAssignedUserId { get; set; }
-
-        [Column("IncidentTiedSubjectId")]
-        public int? IncidentTiedSubjectId { get; set; }
-
-        [ForeignKey(nameof(IncidentAssignedUserId))]
-        public User AssignedUser { get; set; }
-
-        [ForeignKey(nameof(IncidentTiedSubjectId))]
-        public Subject TiedSubject { get; set; }
-
-        [ForeignKey(nameof(IncidentTokenId))]
-        public Token Token { get; set; }
-    }
-}
-
-
---Activity
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using InsiderOUT.Data.Models.Identity;
-
-namespace InsiderOUT.Data.Models.Incidents
-{
-    [Table("Activities")]
-    public class Activity
-    {
-        [Key]
-        [Column("ActivityId")]
-        public int ActivityId { get; set; }
-
-        [Required]
-        [Column("ActivityContent")]
-        public string ActivityContent { get; set; }
-
-        [Required]
-        [Column("ActivityDate")]
-        public DateTime ActivityDate { get; set; }
-
-        [Required]
-        [Column("ActivityEntityId")]
-        public int ActivityEntityId { get; set; }
-
-        [Required, MaxLength(50)]
-        [Column("ActivityEntityType")]
-        public string ActivityEntityType { get; set; }
-
-        [Column("ActivityUserId")]
-        public int? ActivityUserId { get; set; }
-
-        [ForeignKey(nameof(ActivityUserId))]
-        public User User { get; set; }
-    }
-}
-
-
-
---DBContext Update
-
-using Microsoft.EntityFrameworkCore;
-using InsiderOUT.Data.Models.Identity;
-using InsiderOUT.Data.Models.Tokens;
-using InsiderOUT.Data.Models.Incidents;
-
-namespace InsiderOUT.Data
-{
-    public class AppDbContext : DbContext
-    {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Subject> Subjects { get; set; }
-        public DbSet<Token> Tokens { get; set; }
-        public DbSet<Document> Documents { get; set; }
-        public DbSet<Email> Emails { get; set; }
-        public DbSet<Incident> Incidents { get; set; }
-        public DbSet<Activity> Activities { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // Token -> Document (one-to-one)
-            modelBuilder.Entity<Token>()
-                .HasOne(t => t.Document)
-                .WithOne(d => d.Token)
-                .HasForeignKey<Document>(d => d.DocumentTokenId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Token -> Email (one-to-one)
-            modelBuilder.Entity<Token>()
-                .HasOne(t => t.Email)
-                .WithOne(e => e.Token)
-                .HasForeignKey<Email>(e => e.EmailTokenId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Incident relationships
-            modelBuilder.Entity<Incident>()
-                .HasOne(i => i.AssignedUser)
-                .WithMany()
-                .HasForeignKey(i => i.IncidentAssignedUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Incident>()
-                .HasOne(i => i.TiedSubject)
-                .WithMany()
-                .HasForeignKey(i => i.IncidentTiedSubjectId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Incident>()
-                .HasOne(i => i.Token)
-                .WithMany()
-                .HasForeignKey(i => i.IncidentTokenId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Activity -> User
-            modelBuilder.Entity<Activity>()
-                .HasOne(a => a.User)
-                .WithMany()
-                .HasForeignKey(a => a.ActivityUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Indexes (match existing DB)
-            modelBuilder.Entity<Incident>()
-                .HasIndex(i => i.IncidentTokenId)
-                .HasDatabaseName("IX_Incidents_TokenId");
-
-            modelBuilder.Entity<Incident>()
-                .HasIndex(i => i.IncidentAssignedUserId)
-                .HasDatabaseName("IX_Incidents_AssignedUserId");
-
-            modelBuilder.Entity<Incident>()
-                .HasIndex(i => i.IncidentTiedSubjectId)
-                .HasDatabaseName("IX_Incidents_TiedSubjectId");
-
-            modelBuilder.Entity<Activity>()
-                .HasIndex(a => new { a.ActivityEntityId, a.ActivityEntityType })
-                .HasDatabaseName("IX_Activities_Entity");
-
-            modelBuilder.Entity<Token>()
-                .HasIndex(t => t.TokenType)
-                .HasDatabaseName("IX_Tokens_Type");
-
-            modelBuilder.Entity<Subject>()
-                .HasIndex(s => s.SubjectRiskScore)
-                .HasDatabaseName("IX_Subjects_RiskScore");
-
-            base.OnModelCreating(modelBuilder);
+-- Updated canary
+
+import os
+import zipfile
+from lxml import etree
+from docx import Document
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
+
+'''
+create_base_docx() function:
+Inputs:
+- content (the content to be added to the document)
+- header (the header for the document)
+- filename (the name of the file to be created)
+
+Outputs:
+- A base Word document with content. Thinking it should be saved in a folder named after its tokenID to manage it.
+
+
+inject_canary_xml() function:
+Inputs:
+- filename (the Directory path of the document to inject the canary token into)
+- tracking_url (the URL of the image stored on the Kali box that will be used for tracking when the document is opened)
+- rel_id (This will just be the tokenID pulled from tracking_url)
+
+Outputs:
+- The original document with the canary token injected and ready to be deployed.
+
+Note: The logic for how we want to handle the document naming is incomplete but is easy to tweak once we decide how to structure the server.
+'''
+
+TRACKING_URL = "http://192.120.1.124/tokens/{token_id}.png"  # this is the URL where the image will be hosted on the Kali box. The {token_id} will be replaced with the actual token ID for each document.
+REL_ID = "{token_id}"  # this is whatever the token id is. Can be taken from the image url above.
+
+
+# Creating a Word Doc
+def create_base_docx(content, header, filename):
+    document = Document()
+
+    document.add_heading(header, 0)  # the heading will also be generated by Gemini
+    document.add_paragraph(content)  # This is where we will add the content generated by the GenAi Tool.
+
+    document.save(filename)
+    return filename
+
+
+# Inject XML to Create the Canary Token
+def inject_canary_xml(filename, tracking_url, rel_id):
+    temp_dir = "temp_unzip"
+
+    try:
+        # Unzip the .docx file. This is how we access the correct XML file to inject the image
+        with zipfile.ZipFile(filename, 'r') as zip_ref:
+            zip_ref.extractall(temp_dir)
+
+        # The relationships file for the main document
+        rels_path = os.path.join(temp_dir, 'word', '_rels', 'document.xml.rels')
+
+        # Define the XML for the external link relationship
+        # TargetMode="External" is critical to make it a remote link. AKA tell word to pull down the image from our webserver.
+        RELATIONSHIP_XML = f"""
+        <Relationship Id="{rel_id}"
+                      Type="{RT.IMAGE}"
+                      Target="{tracking_url}"
+                      TargetMode="External"/>
+        """
+
+        #-------- The below code was made with the assistance of Gemini through a variety of prompts----------
+        # Append the new relationship XML
+        tree = etree.parse(rels_path)
+        root = tree.getroot()
+        root.append(etree.fromstring(RELATIONSHIP_XML.strip()))
+        tree.write(rels_path, pretty_print=True, xml_declaration=True, encoding='utf-8')
+        print(f"Tracking URL injected into '{rels_path}' with Id '{rel_id}'.")
+
+        # Standard namespaces used in document.xml (MUST be defined for lxml)
+        NAMESPACES = {
+            'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
+            'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
+            'v': 'urn:schemas-microsoft-com:vml',
+            'o': 'urn:schemas-microsoft-com:office:office',
         }
+
+        document_xml_path = os.path.join(temp_dir, 'word', 'document.xml')
+
+        # Parse the document XML tree
+        tree = etree.parse(document_xml_path)
+        root = tree.getroot()
+        body = root.find('w:body', NAMESPACES)
+
+        if body is not None:
+            # Create a new paragraph containing a VML image reference
+            p_tag = etree.Element(etree.QName(NAMESPACES['w'], 'p'))
+            r_tag = etree.SubElement(p_tag, etree.QName(NAMESPACES['w'], 'r'))
+            pict_tag = etree.SubElement(r_tag, etree.QName(NAMESPACES['w'], 'pict'))
+            shape_tag = etree.SubElement(
+                pict_tag,
+                etree.QName(NAMESPACES['v'], 'shape'),
+                id="_x0000_i1025",
+                type="#_x0000_t75",
+                style="width:1pt;height:1pt"
+            )
+
+            # CRITICAL: This links the image to the external relationship (r:id="{rel_id}")
+            etree.SubElement(
+                shape_tag,
+                etree.QName(NAMESPACES['v'], 'imagedata'),
+                {
+                    etree.QName(NAMESPACES['r'], 'id'): rel_id,
+                    etree.QName(NAMESPACES['o'], 'title'): ""
+                }
+            )
+
+            # Insert at top of document
+            body.insert(0, p_tag)
+
+            # Write the modified XML back to the file
+            tree.write(document_xml_path, pretty_print=True, xml_declaration=True, encoding='utf-8')
+            print("Token injected into 'document.xml'.")
+
+        else:
+            raise Exception("Could not find the <body> element in document.xml.")
+
+        #------------ End AI Generation --------------
+
+        # Create a new zip file with the modified contents
+        new_zip_filename = filename.replace(".docx", "_canary.docx")
+
+        with zipfile.ZipFile(new_zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, _, files in os.walk(temp_dir):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, temp_dir)
+                    zipf.write(file_path, arcname)
+
+        # Replace original file with canary version
+        if os.path.exists(filename):
+            os.remove(filename)
+        os.rename(new_zip_filename, filename)
+        print(f"Document injected and saved as '{filename}'.")
+
+    except Exception as e:
+        print(f"Failed to Inject XML: {e}")
+
+    finally:
+        # Cleanup the temporary directory
+        if os.path.exists(temp_dir):
+            import shutil
+            shutil.rmtree(temp_dir)
+            print("Cleaned up temporary directory.")
+
+
+--Updated Main
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from scripts.gen import generate_content
+from scripts.image_create import create_transparent_pixel_image
+from scripts.pdf_creation import preview_pdf
+from scripts.canary_inject import inject_canary_xml, create_base_docx
+
+app = FastAPI()
+
+
+# ---------------------------------------------------------
+# Health Check Endpoint
+# ---------------------------------------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+# ---------------------------------------------------------
+# Request / Response Models
+# ---------------------------------------------------------
+class GenerateContentRequest(BaseModel):
+    shortDescription: str
+    targetAudience: str
+    severityLevel: str
+    departments: list[str]
+
+
+class GenerateContentResponse(BaseModel):
+    content: str
+    header: str
+    fileName: str
+    department: str
+
+
+class TrackingImageResponse(BaseModel):
+    tokenId: str
+    fileName: str
+
+
+class PreviewPdfRequest(BaseModel):
+    content: str
+    header: str
+    fileName: str
+
+
+class PreviewPdfResponse(BaseModel):
+    pdfPath: str
+
+
+class InjectCanaryRequest(BaseModel):
+    content: str
+    header: str
+    fileName: str
+    tokenId: str
+
+
+class InjectCanaryResponse(BaseModel):
+    fileName: str
+
+
+# ---------------------------------------------------------
+# Generate Content Endpoint
+# ---------------------------------------------------------
+@app.post("/generate-content", response_model=GenerateContentResponse)
+def api_generate_content(req: GenerateContentRequest):
+
+    if len(req.departments) != 1:
+        raise HTTPException(
+            status_code=400,
+            detail="Exactly one department must be provided."
+        )
+
+    content, header, filename, department = generate_content(
+        req.shortDescription,
+        req.targetAudience,
+        req.severityLevel,
+        req.departments
+    )
+
+    return GenerateContentResponse(
+        content=content,
+        header=header,
+        fileName=filename,
+        department=department
+    )
+
+
+# ---------------------------------------------------------
+# Create Tracking Image Endpoint
+# ---------------------------------------------------------
+@app.post("/create-tracking-image", response_model=TrackingImageResponse)
+def api_create_tracking_image():
+
+    token_id = create_transparent_pixel_image()
+    file_name = f"{token_id}.png"
+
+    return TrackingImageResponse(
+        tokenId=token_id,
+        fileName=file_name
+    )
+
+
+# ---------------------------------------------------------
+# PDF Preview Endpoint
+# ---------------------------------------------------------
+@app.post("/preview-pdf", response_model=PreviewPdfResponse)
+def api_preview_pdf(req: PreviewPdfRequest):
+
+    pdf_path = preview_pdf(
+        req.content,
+        req.header,
+        req.fileName
+    )
+
+    if pdf_path is None:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to generate PDF preview."
+        )
+
+    return PreviewPdfResponse(pdfPath=pdf_path)
+
+
+# ---------------------------------------------------------
+# Canary Injection Endpoint
+# ---------------------------------------------------------
+@app.post("/inject-canary", response_model=InjectCanaryResponse)
+def api_inject_canary(req: InjectCanaryRequest):
+    try:
+        # 1. Create base DOCX
+        base_docx_path = create_base_docx(
+            req.content,
+            req.header,
+            req.fileName
+        )
+
+        # 2. Build tracking URL and rel_id from tokenId
+        tracking_url = f"http://192.120.1.124/tokens/{req.tokenId}.png"
+        rel_id = req.tokenId
+
+        # 3. Inject canary XML
+        inject_canary_xml(
+            filename=base_docx_path,
+            tracking_url=tracking_url,
+            rel_id=rel_id
+        )
+
+        # 4. Return final filename
+        return InjectCanaryResponse(fileName=base_docx_path)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to inject canary: {e}")
+
+
+--InjectCanaryRequest.cs   DTO
+
+public class InjectCanaryRequest
+{
+    public string Content { get; set; }
+    public string Header { get; set; }
+    public string FileName { get; set; }
+    public string TokenId { get; set; }
+}
+
+
+--InjectCanaryResponse.cs   DTO
+
+public class InjectCanaryResponse
+{
+    public string FileName { get; set; }
+}
+
+
+
+--Updated Python Service
+
+using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+
+public class PythonService
+{
+    private readonly HttpClient _http;
+
+    public PythonService(HttpClient http)
+    {
+        _http = http;
+        _http.BaseAddress = new Uri("http://localhost:5050/");
+    }
+
+    public async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("generate-content", request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<GenerateContentResponse>();
+    }
+
+    public async Task<TrackingImageResponse> CreateTrackingImageAsync()
+    {
+        var response = await _http.PostAsync("create-tracking-image", null);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<TrackingImageResponse>();
+    }
+
+    public async Task<PreviewPdfResponse> PreviewPdfAsync(PreviewPdfRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("preview-pdf", request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<PreviewPdfResponse>();
+    }
+
+    public async Task<InjectCanaryResponse> InjectCanaryAsync(InjectCanaryRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("inject-canary", request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<InjectCanaryResponse>();
+    }
+}
+
+
+
+--Updated Gener Controller
+
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("api/[controller]")]
+public class GenerationController : ControllerBase
+{
+    private readonly PythonService _python;
+
+    public GenerationController(PythonService python)
+    {
+        _python = python;
+    }
+
+    [HttpPost("generate")]
+    public async Task<IActionResult> GenerateDocument([FromBody] GenerateContentRequest request)
+    {
+        // Step 1 — Generate content
+        var contentResult = await _python.GenerateContentAsync(request);
+
+        // Step 2 — Generate tracking image
+        var trackingResult = await _python.CreateTrackingImageAsync();
+
+        // Step 3 — Generate PDF preview
+        var pdfRequest = new PreviewPdfRequest
+        {
+            Content = contentResult.Content,
+            Header = contentResult.Header,
+            FileName = contentResult.FileName
+        };
+
+        var pdfResult = await _python.PreviewPdfAsync(pdfRequest);
+
+        // Step 4 — Inject canary into DOCX
+        var canaryRequest = new InjectCanaryRequest
+        {
+            Content = contentResult.Content,
+            Header = contentResult.Header,
+            FileName = contentResult.FileName,
+            TokenId = trackingResult.TokenId
+        };
+
+        var canaryResult = await _python.InjectCanaryAsync(canaryRequest);
+
+        // Step 5 — Return unified response
+        return Ok(new
+        {
+            content = contentResult,
+            tracking = trackingResult,
+            pdf = pdfResult,
+            canary = canaryResult
+        });
     }
 }
