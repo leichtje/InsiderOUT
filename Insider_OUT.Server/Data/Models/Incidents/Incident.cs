@@ -64,8 +64,8 @@ namespace Insider_OUT.Server.Data.Models.Incidents
         [Column("IsActive")]
         public bool IsActive { get; set; }
 
-        [Column("IncidentRisk")]
-        public string? IncidentRisk { get; set; }
+        [Column("IncidentRiskScore")]
+        public decimal? IncidentRisk { get; set; }
 
         [Column("IncidentIP")]
         public string? IncidentIP { get; set; }
