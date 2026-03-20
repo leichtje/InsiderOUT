@@ -1,4 +1,4 @@
---Update to Main
+--Main 
 
 
 from fastapi import FastAPI, HTTPException
@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from scripts.gen import generate_content
 from scripts.image_create import create_transparent_pixel_image
 from scripts.pdf_creation import preview_pdf
-from scripts.canary_creation import inject_canary_xml, create_base_docx
+from scripts.final_doc import create_final_doc
 
 app = FastAPI()
 
@@ -16,52 +16,47 @@ def health():
     return {"status": "ok"}
 
 
-class GenerateContentRequest(BaseModel):
+# -----------------------------
+# MODELS
+# -----------------------------
+
+class GeneratePreviewRequest(BaseModel):
     shortDescription: str
     targetAudience: str
     severityLevel: str
     departments: list[str]
 
 
-class GenerateContentResponse(BaseModel):
+class GeneratePreviewResponse(BaseModel):
     content: str
     header: str
     fileName: str
-    department: str
-
-
-class TrackingImageResponse(BaseModel):
-    tokenId: str
-    fileName: str
-
-
-class PreviewPdfRequest(BaseModel):
-    content: str
-    header: str
-    fileName: str
-
-
-class PreviewPdfResponse(BaseModel):
     pdfPath: str
+    tokenId: str
 
 
-class InjectCanaryRequest(BaseModel):
+class FinalizeRequest(BaseModel):
     content: str
     header: str
     fileName: str
     tokenId: str
 
 
-class InjectCanaryResponse(BaseModel):
+class FinalizeResponse(BaseModel):
     fileName: str
 
 
-@app.post("/generate-content", response_model=GenerateContentResponse)
-def api_generate_content(req: GenerateContentRequest):
+# -----------------------------
+# STEP 1 — PREVIEW GENERATION
+# -----------------------------
+
+@app.post("/generate-preview", response_model=GeneratePreviewResponse)
+def api_generate_preview(req: GeneratePreviewRequest):
 
     if len(req.departments) != 1:
         raise HTTPException(status_code=400, detail="Exactly one department must be provided.")
 
+    # 1. Generate content
     content, header, filename, department = generate_content(
         req.shortDescription,
         req.targetAudience,
@@ -69,150 +64,190 @@ def api_generate_content(req: GenerateContentRequest):
         req.departments
     )
 
-    return GenerateContentResponse(
+    # 2. Create tracking image
+    token_id = create_transparent_pixel_image()
+
+    # 3. Generate PDF preview
+    pdf_path = preview_pdf(content, header, filename)
+
+    return GeneratePreviewResponse(
         content=content,
         header=header,
         fileName=filename,
-        department=department
+        pdfPath=pdf_path,
+        tokenId=token_id
     )
 
 
-@app.post("/create-tracking-image", response_model=TrackingImageResponse)
-def api_create_tracking_image():
+# -----------------------------
+# STEP 2 — FINAL DOCUMENT
+# -----------------------------
 
-    token_id = create_transparent_pixel_image()
-    file_name = f"{token_id}.png"
-
-    return TrackingImageResponse(tokenId=token_id, fileName=file_name)
-
-
-@app.post("/preview-pdf", response_model=PreviewPdfResponse)
-def api_preview_pdf(req: PreviewPdfRequest):
-
-    pdf_path = preview_pdf(req.content, req.header, req.fileName)
-
-    if pdf_path is None:
-        raise HTTPException(status_code=500, detail="Failed to generate PDF preview.")
-
-    return PreviewPdfResponse(pdfPath=pdf_path)
-
-
-@app.post("/inject-canary", response_model=InjectCanaryResponse)
-def api_inject_canary(req: InjectCanaryRequest):
+@app.post("/finalize-doc", response_model=FinalizeResponse)
+def api_finalize_doc(req: FinalizeRequest):
     try:
-        base_docx_path = create_base_docx(req.content, req.header, req.fileName)
-
-        tracking_url = f"http://192.120.1.124/tokens/{req.tokenId}.png"
-        rel_id = req.tokenId
-
-        inject_canary_xml(base_docx_path, tracking_url, rel_id)
-
-        return InjectCanaryResponse(fileName=base_docx_path)
+        final_file = create_final_doc(
+            req.content,
+            req.header,
+            req.fileName,
+            req.tokenId
+        )
+        return FinalizeResponse(fileName=final_file)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to inject canary: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to finalize document: {e}")
 
 
 
---Updated Service
+--pdf_creation
 
+import os
+from fpdf import FPDF
+
+PDF_FOLDER = "pdf_preview"
+
+def preview_pdf(content, header, filename_base):
+
+    os.makedirs(PDF_FOLDER, exist_ok=True)
+
+    pdf_path = os.path.join(PDF_FOLDER, f"{filename_base}.pdf")
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=14)
+    pdf.multi_cell(0, 10, header)
+    pdf.ln(10)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 8, content)
+
+    pdf.output(pdf_path)
+
+    return pdf_path
+
+
+
+--final_doc
+
+
+import os
+import zipfile
+from docx import Document
+
+def create_final_doc(content, header, filename_base, token_id):
+
+    filename = f"{filename_base}.docx"
+
+    # 1. Create base DOCX
+    doc = Document()
+    doc.add_heading(header, level=1)
+    doc.add_paragraph(content)
+    doc.save(filename)
+
+    # 2. Unzip
+    unzip_dir = "temp_unzip"
+    os.makedirs(unzip_dir, exist_ok=True)
+
+    with zipfile.ZipFile(filename, 'r') as zip_ref:
+        zip_ref.extractall(unzip_dir)
+
+    # 3. Inject canary XML
+    rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
+    with open(rels_path, "a", encoding="utf-8") as f:
+        f.write(f"""
+<Relationship Id="{token_id}"
+Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+Target="http://192.120.1.124/tokens/{token_id}.png"
+TargetMode="External"/>
+""")
+
+    # 4. Rezip
+    final_file = f"{filename_base}.docx"
+    with zipfile.ZipFile(final_file, 'w') as zipf:
+        for root, dirs, files in os.walk(unzip_dir):
+            for file in files:
+                full_path = os.path.join(root, file)
+                arcname = os.path.relpath(full_path, unzip_dir)
+                zipf.write(full_path, arcname)
+
+    return final_file
+
+
+
+--PythonService
 
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using InsiderOUT.Server.Python;
 
-public class PythonService
+namespace InsiderOUT.Server.Services
 {
-    private readonly HttpClient _http;
-
-    public PythonService(HttpClient http)
+    public class PythonService
     {
-        _http = http;
-        _http.BaseAddress = new Uri("http://localhost:5050/");
-    }
+        private readonly HttpClient _http;
 
-    public async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request)
-    {
-        var response = await _http.PostAsJsonAsync("generate-content", request);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<GenerateContentResponse>();
-    }
+        public PythonService(HttpClient http)
+        {
+            _http = http;
+            _http.BaseAddress = new Uri("http://localhost:5050/");
+        }
 
-    public async Task<TrackingImageResponse> CreateTrackingImageAsync()
-    {
-        var response = await _http.PostAsync("create-tracking-image", null);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<TrackingImageResponse>();
-    }
+        public async Task<GeneratePreviewResponse> GeneratePreviewAsync(GeneratePreviewRequest request)
+        {
+            var response = await _http.PostAsJsonAsync("generate-preview", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<GeneratePreviewResponse>();
+        }
 
-    public async Task<PreviewPdfResponse> PreviewPdfAsync(PreviewPdfRequest request)
-    {
-        var response = await _http.PostAsJsonAsync("preview-pdf", request);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<PreviewPdfResponse>();
-    }
-
-    public async Task<InjectCanaryResponse> InjectCanaryAsync(InjectCanaryRequest request)
-    {
-        var response = await _http.PostAsJsonAsync("inject-canary", request);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<InjectCanaryResponse>();
+        public async Task<FinalizeResponse> FinalizeDocumentAsync(FinalizeRequest request)
+        {
+            var response = await _http.PostAsJsonAsync("finalize-doc", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<FinalizeResponse>();
+        }
     }
 }
 
 
-
---Updated Controller
-
+--Generation
 
 using System.Threading.Tasks;
+using InsiderOUT.Server.Python;
+using InsiderOUT.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("api/[controller]")]
-public class GenerationController : ControllerBase
+namespace InsiderOUT.Server.Controllers
 {
-    private readonly PythonService _python;
-
-    public GenerationController(PythonService python)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class GenerationController : ControllerBase
     {
-        _python = python;
-    }
+        private readonly PythonService _python;
 
-    [HttpPost("generate")]
-    public async Task<IActionResult> GenerateDocument([FromBody] GenerateContentRequest request)
-    {
-        var contentResult = await _python.GenerateContentAsync(request);
-
-        var trackingResult = await _python.CreateTrackingImageAsync();
-
-        var pdfRequest = new PreviewPdfRequest
+        public GenerationController(PythonService python)
         {
-            Content = contentResult.Content,
-            Header = contentResult.Header,
-            FileName = contentResult.FileName
-        };
+            _python = python;
+        }
 
-        var pdfResult = await _python.PreviewPdfAsync(pdfRequest);
-
-        var canaryRequest = new InjectCanaryRequest
+        [HttpPost("generate-preview")]
+        public async Task<IActionResult> GeneratePreview([FromBody] GeneratePreviewRequest request)
         {
-            Content = contentResult.Content,
-            Header = contentResult.Header,
-            FileName = contentResult.FileName,
-            TokenId = trackingResult.TokenId
-        };
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        var canaryResult = await _python.InjectCanaryAsync(canaryRequest);
+            var preview = await _python.GeneratePreviewAsync(request);
+            return Ok(preview);
+        }
 
-        return Ok(new
+        [HttpPost("finalize")]
+        public async Task<IActionResult> FinalizeDocument([FromBody] FinalizeRequest request)
         {
-            content = contentResult,
-            tracking = trackingResult,
-            pdf = pdfResult,
-            canary = canaryResult
-        });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _python.FinalizeDocumentAsync(request);
+            return Ok(result);
+        }
     }
 }
-
