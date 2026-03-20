@@ -31,7 +31,10 @@ namespace InsiderOUT.Server.Services
                     Status = i.IncidentStatus,
                     AssignedUserId = i.IncidentAssignedUserId,
                     TiedSubjectId = i.IncidentTiedSubjectId,
-                    IsActive = i.IsActive
+                    IsActive = i.IsActive,
+                    
+                    IncidentRisk = i.IncidentRisk,
+                    IncidentIP = i.IncidentIP
                 })
                 .ToListAsync();
         }
@@ -57,7 +60,10 @@ namespace InsiderOUT.Server.Services
                 Status = i.IncidentStatus,
                 AssignedUserId = i.IncidentAssignedUserId,
                 TiedSubjectId = i.IncidentTiedSubjectId,
-                IsActive = i.IsActive
+                IsActive = i.IsActive,
+
+                IncidentRisk = i.IncidentRisk,
+                IncidentIP = i.IncidentIP
             };
         }
 
@@ -96,7 +102,10 @@ namespace InsiderOUT.Server.Services
                 Status = incident.IncidentStatus,
                 AssignedUserId = incident.IncidentAssignedUserId,
                 TiedSubjectId = incident.IncidentTiedSubjectId,
-                IsActive = incident.IsActive
+                IsActive = incident.IsActive,
+
+                IncidentRisk = incident.IncidentRisk,
+                IncidentIP = incident.IncidentIP
             };
 
             return new IncidentViewDto
@@ -147,7 +156,10 @@ namespace InsiderOUT.Server.Services
                 IncidentStatus = dto.Status,
                 IncidentAssignedUserId = dto.AssignedUserId,
                 IncidentTiedSubjectId = dto.TiedSubjectId,
-                IsActive = dto.IsActive
+                IsActive = dto.IsActive,
+
+                IncidentRisk = dto.IncidentRisk,
+                IncidentIP = dto.IncidentIP
             };
 
             _db.Incidents.Add(entity);
@@ -173,6 +185,9 @@ namespace InsiderOUT.Server.Services
             entity.IncidentAssignedUserId = dto.AssignedUserId;
             entity.IncidentTiedSubjectId = dto.TiedSubjectId;
             entity.IsActive = dto.IsActive;
+
+            entity.IncidentRisk = dto.IncidentRisk;
+            entity.IncidentIP = dto.IncidentIP;
 
             await _db.SaveChangesAsync();
             return true;
