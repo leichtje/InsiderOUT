@@ -31,3 +31,23 @@ namespace Insider_OUT.Server.Services
         }
     }
 }
+
+
+
+
+
+
+
+----
+
+rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
+    # Read the existing XML content
+    with open(rels_path, "r", encoding="utf-8") as f:
+        xml_content = f.read()
+    # Define your new relationship node
+    new_relationship = f"""<Relationship Id="{token_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
+    # Inject it right before the closing tag
+    xml_content = xml_content.replace('</Relationships>', f'{new_relationship}\n</Relationships>')
+    # Overwrite the file with the modified XML
+    with open(rels_path, "w", encoding="utf-8") as f:
+        f.write(xml_content)
