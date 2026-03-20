@@ -1,53 +1,74 @@
-using System;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Insider_OUT.Server.Data.Models.Python;
+-- SQL Update
 
-namespace Insider_OUT.Server.Services
-{
-    public class PythonService
-    {
-        private readonly HttpClient _http;
+ALTER TABLE Documents
+ADD DocumentDepartment NVARCHAR(200) NULL,
+    DocumentContent NVARCHAR(MAX) NULL,
+    DocumentHeader NVARCHAR(500) NULL,
+    DocumentFilepath NVARCHAR(500) NULL;
 
-        public PythonService(HttpClient http)
-        {
-            _http = http;
-            _http.BaseAddress = new Uri("http://localhost:5050/");
-        }
 
-        public async Task<GeneratePreviewResponse> GeneratePreviewAsync(GeneratePreviewRequest request)
-        {
-            var response = await _http.PostAsJsonAsync("generate-preview", request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<GeneratePreviewResponse>();
-        }
+-Document.cs
 
-        public async Task<FinalizeResponse> FinalizeDocumentAsync(FinalizeRequest request)
-        {
-            var response = await _http.PostAsJsonAsync("finalize-doc", request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<FinalizeResponse>();
-        }
-    }
-}
+
+[MaxLength(255)]
+        [Column("DocumentDepartment")]
+        public string DocumentDepartment { get; set; }
+
+        // Long text content
+        [Column("DocumentContent", TypeName = "nvarchar(max)")]
+        public string DocumentContent { get; set; }
+
+        [MaxLength(500)]
+        [Column("DocumentHeader")]
+        public string DocumentHeader { get; set; }
+
+        [MaxLength(500)]
+        [Column("DocumentFilepath")]
+        public string DocumentFilepath { get; set; }
 
 
 
+--Document DTO
+
+        public string DocumentDepartment { get; set; }
+
+        public string DocumentContent { get; set; }
+
+        public string DocumentHeader { get; set; }
+
+        public string DocumentFilepath { get; set; }
 
 
+--CDoc Ser
 
 
-----
+                    DocumentDepartment = d.DocumentDepartment,
+                    DocumentContent = d.DocumentContent,
+                    DocumentHeader = d.DocumentHeader,
+                    DocumentFilepath = d.DocumentFilepath
 
-rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
-    # Read the existing XML content
-    with open(rels_path, "r", encoding="utf-8") as f:
-        xml_content = f.read()
-    # Define your new relationship node
-    new_relationship = f"""<Relationship Id="{token_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
-    # Inject it right before the closing tag
-    xml_content = xml_content.replace('</Relationships>', f'{new_relationship}\n</Relationships>')
-    # Overwrite the file with the modified XML
-    with open(rels_path, "w", encoding="utf-8") as f:
-        f.write(xml_content)
+
+                DocumentDepartment = d.DocumentDepartment,
+                DocumentContent = d.DocumentContent,
+                DocumentHeader = d.DocumentHeader,
+                DocumentFilepath = d.DocumentFilepath
+
+
+                DocumentDepartment = dto.DocumentDepartment,
+                DocumentContent = dto.DocumentContent,
+                DocumentHeader = dto.DocumentHeader,
+                DocumentFilepath = dto.DocumentFilepath
+
+
+                DocumentDepartment = created.DocumentDepartment,
+                DocumentContent = created.DocumentContent,
+                DocumentHeader = created.DocumentHeader,
+                DocumentFilepath = created.DocumentFilepath
+
+
+            entity.DocumentDepartment = dto.DocumentDepartment;
+            entity.DocumentContent = dto.DocumentContent;
+            entity.DocumentHeader = dto.DocumentHeader;
+            entity.DocumentFilepath = dto.DocumentFilepath;
+
+
