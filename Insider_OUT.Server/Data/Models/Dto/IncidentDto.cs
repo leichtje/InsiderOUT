@@ -16,7 +16,7 @@
 
         public bool IsActive { get; set; }
 
-        public string? IncidentRisk { get; set; }
+        public decimal? IncidentRiskScore { get; set; }
         public string? IncidentIP { get; set; }
 
     }
