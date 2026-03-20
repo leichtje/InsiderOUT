@@ -15,6 +15,10 @@
         public int? TiedSubjectId { get; set; }
 
         public bool IsActive { get; set; }
+
+        public string? IncidentRisk { get; set; }
+        public string? IncidentIP { get; set; }
+
     }
 
     public class IncidentViewDto
