@@ -30,7 +30,12 @@ namespace InsiderOUT.Server.Services
                     TokenSeverity = d.Token.TokenSeverity,
 
                     CreatedDate = d.Token.CreatedDate,
-                    UpdatedDate = d.Token.UpdatedDate
+                    UpdatedDate = d.Token.UpdatedDate,
+
+                    DocumentDepartment = d.DocumentDepartment,
+                    DocumentContent = d.DocumentContent,
+                    DocumentHeader = d.DocumentHeader,
+                    DocumentFilepath = d.DocumentFilepath
                 })
                 .ToListAsync();
         }
@@ -55,7 +60,12 @@ namespace InsiderOUT.Server.Services
                 TokenSeverity = d.Token.TokenSeverity,
 
                 CreatedDate = d.Token.CreatedDate,
-                UpdatedDate = d.Token.UpdatedDate
+                UpdatedDate = d.Token.UpdatedDate,
+
+                DocumentDepartment = d.DocumentDepartment,
+                DocumentContent = d.DocumentContent,
+                DocumentHeader = d.DocumentHeader,
+                DocumentFilepath = d.DocumentFilepath
             };
         }
 
@@ -66,7 +76,11 @@ namespace InsiderOUT.Server.Services
             {
                 DocumentName = dto.DocumentName,
                 DocumentLocation = dto.DocumentLocation,
-                DocumentTokenId = dto.TokenId
+                DocumentTokenId = dto.TokenId,
+                DocumentDepartment = dto.DocumentDepartment,
+                DocumentContent = dto.DocumentContent,
+                DocumentHeader = dto.DocumentHeader,
+                DocumentFilepath = dto.DocumentFilepath
             };
 
             _db.Documents.Add(entity);
@@ -89,7 +103,13 @@ namespace InsiderOUT.Server.Services
                 TokenSeverity = created.Token.TokenSeverity,
 
                 CreatedDate = created.Token.CreatedDate,
-                UpdatedDate = created.Token.UpdatedDate
+                UpdatedDate = created.Token.UpdatedDate,
+
+                DocumentDepartment = created.DocumentDepartment,
+                DocumentContent = created.DocumentContent,
+                DocumentHeader = created.DocumentHeader,
+                DocumentFilepath = created.DocumentFilepath
+
             };
         }
 
@@ -101,6 +121,11 @@ namespace InsiderOUT.Server.Services
             entity.DocumentName = dto.DocumentName;
             entity.DocumentLocation = dto.DocumentLocation;
             entity.DocumentTokenId = dto.TokenId;
+
+            entity.DocumentDepartment = dto.DocumentDepartment;
+            entity.DocumentContent = dto.DocumentContent;
+            entity.DocumentHeader = dto.DocumentHeader;
+            entity.DocumentFilepath = dto.DocumentFilepath;
 
             await _db.SaveChangesAsync();
             return true;

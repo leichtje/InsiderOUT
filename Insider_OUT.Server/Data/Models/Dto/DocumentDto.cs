@@ -12,5 +12,13 @@
 
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+
+        public string? DocumentDepartment { get; set; }
+
+        public string? DocumentContent { get; set; }
+
+        public string? DocumentHeader { get; set; }
+
+        public string? DocumentFilepath { get; set; }
     }
 }

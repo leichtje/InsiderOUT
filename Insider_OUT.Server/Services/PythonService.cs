@@ -15,32 +15,61 @@ namespace Insider_OUT.Server.Services
             _http.BaseAddress = new Uri("http://localhost:5050/");
         }
 
-        public async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request)
+        public async Task<GeneratePreviewResponse> GeneratePreviewAsync(GeneratePreviewRequest request)
         {
-            var response = await _http.PostAsJsonAsync("generate-content", request);
+            var response = await _http.PostAsJsonAsync("generate-preview", request);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<GenerateContentResponse>();
+            return await response.Content.ReadFromJsonAsync<GeneratePreviewResponse>();
         }
 
-        public async Task<TrackingImageResponse> CreateTrackingImageAsync()
+        public async Task<FinalizeResponse> FinalizeDocumentAsync(FinalizeRequest request)
         {
-            var response = await _http.PostAsync("create-tracking-image", null);
+            var response = await _http.PostAsJsonAsync("finalize-doc", request);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TrackingImageResponse>();
-        }
-
-        public async Task<PreviewPdfResponse> PreviewPdfAsync(PreviewPdfRequest request)
-        {
-            var response = await _http.PostAsJsonAsync("preview-pdf", request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PreviewPdfResponse>();
-        }
-
-        public async Task<InjectCanaryResponse> InjectCanaryAsync(InjectCanaryRequest request)
-        {
-            var response = await _http.PostAsJsonAsync("inject-canary", request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<InjectCanaryResponse>();
+            return await response.Content.ReadFromJsonAsync<FinalizeResponse>();
         }
     }
 }
+
+
+//namespace Insider_OUT.Server.Services
+//{
+//    public class PythonService
+//    {
+//        private readonly HttpClient _http;
+
+//        public PythonService(HttpClient http)
+//        {
+//            _http = http;
+//            _http.BaseAddress = new Uri("http://localhost:5050/");
+//        }
+
+//        public async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request)
+//        {
+//            var response = await _http.PostAsJsonAsync("generate-content", request);
+//            response.EnsureSuccessStatusCode();
+//            return await response.Content.ReadFromJsonAsync<GenerateContentResponse>();
+//        }
+
+//        public async Task<TrackingImageResponse> CreateTrackingImageAsync()
+//        {
+//            var response = await _http.PostAsync("create-tracking-image", null);
+//            response.EnsureSuccessStatusCode();
+//            return await response.Content.ReadFromJsonAsync<TrackingImageResponse>();
+//        }
+
+//        public async Task<PreviewPdfResponse> PreviewPdfAsync(PreviewPdfRequest request)
+//        {
+//            var response = await _http.PostAsJsonAsync("preview-pdf", request);
+//            response.EnsureSuccessStatusCode();
+//            return await response.Content.ReadFromJsonAsync<PreviewPdfResponse>();
+//        }
+
+//        public async Task<InjectCanaryResponse> InjectCanaryAsync(InjectCanaryRequest request)
+//        {
+//            var response = await _http.PostAsJsonAsync("inject-canary", request);
+//            response.EnsureSuccessStatusCode();
+//            return await response.Content.ReadFromJsonAsync<InjectCanaryResponse>();
+//        }
+//    }
+//}

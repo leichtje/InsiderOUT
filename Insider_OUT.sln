@@ -23,10 +23,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{DDBB778A-1B87-4710-9954-497A9A7C5B2F}"
 	ProjectSection(SolutionItems) = preProject
 		InsiderOUT.PythonService\scripts\canary_creation.py = InsiderOUT.PythonService\scripts\canary_creation.py
+		final_doc.py = final_doc.py
 		InsiderOUT.PythonService\scripts\gen.py = InsiderOUT.PythonService\scripts\gen.py
 		InsiderOUT.PythonService\scripts\image_create.py = InsiderOUT.PythonService\scripts\image_create.py
 		InsiderOUT.PythonService\scripts\pdf_creation.py = InsiderOUT.PythonService\scripts\pdf_creation.py
-		_init_.py = _init_.py
+		__init__.py = __init__.py
 	EndProjectSection
 EndProject
 Global

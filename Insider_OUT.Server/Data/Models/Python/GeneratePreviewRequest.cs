@@ -1,6 +1,6 @@
 ﻿namespace Insider_OUT.Server.Data.Models.Python
 {
-    public class GenerateContentRequest
+    public class GeneratePreviewRequest
     {
         public string ShortDescription { get; set; }
         public string TargetAudience { get; set; }
