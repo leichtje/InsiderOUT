@@ -33,7 +33,7 @@ namespace InsiderOUT.Server.Services
                     TiedSubjectId = i.IncidentTiedSubjectId,
                     IsActive = i.IsActive,
                     
-                    IncidentRisk = i.IncidentRisk,
+                    IncidentRisk = i.IncidentRiskScore,
                     IncidentIP = i.IncidentIP
                 })
                 .ToListAsync();
@@ -62,7 +62,7 @@ namespace InsiderOUT.Server.Services
                 TiedSubjectId = i.IncidentTiedSubjectId,
                 IsActive = i.IsActive,
 
-                IncidentRisk = i.IncidentRisk,
+                IncidentRisk = i.IncidentRiskScore,
                 IncidentIP = i.IncidentIP
             };
         }
@@ -104,7 +104,7 @@ namespace InsiderOUT.Server.Services
                 TiedSubjectId = incident.IncidentTiedSubjectId,
                 IsActive = incident.IsActive,
 
-                IncidentRisk = incident.IncidentRisk,
+                IncidentRisk = incident.IncidentRiskScore,
                 IncidentIP = incident.IncidentIP
             };
 
@@ -158,7 +158,7 @@ namespace InsiderOUT.Server.Services
                 IncidentTiedSubjectId = dto.TiedSubjectId,
                 IsActive = dto.IsActive,
 
-                IncidentRisk = dto.IncidentRisk,
+                IncidentRisk = dto.IncidentRiskScore,
                 IncidentIP = dto.IncidentIP
             };
 
@@ -186,7 +186,7 @@ namespace InsiderOUT.Server.Services
             entity.IncidentTiedSubjectId = dto.TiedSubjectId;
             entity.IsActive = dto.IsActive;
 
-            entity.IncidentRisk = dto.IncidentRisk;
+            entity.IncidentRisk = dto.IncidentRiskScore;
             entity.IncidentIP = dto.IncidentIP;
 
             await _db.SaveChangesAsync();
