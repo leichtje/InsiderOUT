@@ -44,3 +44,10 @@ export interface DocumentDto {
     updatedDate: Date;
     createdDate: Date;
 }
+
+export interface documentData {
+    shortDescription: string;
+    targetAudience: string;
+    severityLevel: TokenSensitivity;
+    departments: string[];
+}

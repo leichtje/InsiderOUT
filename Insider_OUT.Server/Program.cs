@@ -1,4 +1,5 @@
 using Insider_OUT.Server.Data.Models.Incidents;
+using Insider_OUT.Server.Services;
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Services;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
+builder.Services.AddHttpClient<PythonService>();
 
 builder.Services.AddCors(options =>
 {

@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{DDBB
 		InsiderOUT.PythonService\scripts\gen.py = InsiderOUT.PythonService\scripts\gen.py
 		InsiderOUT.PythonService\scripts\image_create.py = InsiderOUT.PythonService\scripts\image_create.py
 		InsiderOUT.PythonService\scripts\pdf_creation.py = InsiderOUT.PythonService\scripts\pdf_creation.py
+		_init_.py = _init_.py
 	EndProjectSection
 EndProject
 Global

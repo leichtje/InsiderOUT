@@ -1,5 +1,5 @@
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { DocumentDto, DocumentModel, TokenSensitivity, TokenType } from "../models/token.model";
+import { documentData, DocumentDto, DocumentModel, TokenSensitivity, TokenType } from "../models/token.model";
 import { computed, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
@@ -205,6 +205,15 @@ export const DocumentStore = signalStore(
                                 return [];
                             })
                         );
+                    })
+                )
+            ),
+            documentPreview: rxMethod<{data: documentData}> (
+                pipe(
+                    tap(() => patchState(store, { isLoading: true, error: null })),
+                        switchMap(({ data }) => {
+
+                        return http.put(`http://localhost:5122/api/generation/generate`, data)
                     })
                 )
             ),
