@@ -1,5 +1,6 @@
 import os
 import zipfile
+from _pytest.recwarn import T
 from docx import Document
 
 def create_final_doc(content, header, filename_base, token_id):
@@ -21,16 +22,24 @@ def create_final_doc(content, header, filename_base, token_id):
 
     # 3. Inject canary XML
     rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
-    with open(rels_path, "a", encoding="utf-8") as f:
-        f.write(f"""
-<Relationship Id="{token_id}"
-Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
-Target="http://192.120.1.124/tokens/{token_id}.png"
-TargetMode="External"/>
-""")
+
+    with open(rels_path, "r", encoding="utf-8") as f:
+        xml_content = f.read()
+
+    new_relationship = f"""<Relationship Id="{token_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
+
+    xml_content = xml_content.replace('</Relationships>', f'{new_relationship}\n</Relationships>')
+
+    with open(rels_path, "w", encoding="utf-8") as f:
+        f.write(xml_content)
+
+    output_dir = r"C:\Users\Administrator\source\repos\leichtje\InsiderOUT\insider_out.client\src\assets\docs"
+
+    os.makedirs(output_dir, exist_ok=True)
 
     # 4. Rezip
-    final_file = f"{filename_base}.docx"
+    final_file = os.path.join(output_dir, f"{filename_base}.docx")
+
     with zipfile.ZipFile(final_file, 'w') as zipf:
         for root, dirs, files in os.walk(unzip_dir):
             for file in files:
