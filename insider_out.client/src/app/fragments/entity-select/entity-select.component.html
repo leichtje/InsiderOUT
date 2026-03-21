@@ -30,6 +30,17 @@
 
         </mat-select>
         
+        @if (value() !== null && value() !== undefined && value() !== '') {
+            <button 
+                mat-icon-button 
+                matSuffix 
+                (click)="clearSelection($event)" 
+                aria-label="Clear selection"
+                [disabled]="isDisabled()">
+                <mat-icon>close</mat-icon>
+            </button>
+        }
+
         <mat-error>{{ label() }} is required</mat-error>
 
     </mat-form-field>

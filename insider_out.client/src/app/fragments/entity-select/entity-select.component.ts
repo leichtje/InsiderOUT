@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'io-entity-select',
@@ -12,6 +13,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
         MatFormFieldModule,
         MatSelectModule,
         MatIconModule,
+        MatButtonModule,
         FormsModule
     ],
     templateUrl: './entity-select.component.html',
@@ -109,4 +111,19 @@ export class EntitySelectComponent<T> implements ControlValueAccessor, DoCheck {
             this.matSelect?.updateErrorState();
         });
     }
+
+    clearSelection(event: Event) {
+        event.stopPropagation();
+        
+        this.value.set(null);
+        this.onChange(null); 
+        this.onTouched();
+        
+        this.selectionChanged.emit(null); 
+
+        setTimeout(() => {
+            this.matSelect?.updateErrorState();
+        });
+    }
+    
 }
