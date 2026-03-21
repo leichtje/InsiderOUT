@@ -1,38 +1,42 @@
 .progress-node {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    gap: 8px;
+    
+    .ring-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    .progress-label {
-        position: absolute;
-        font-size: 14px;
-        color: var(--color-text);
-        z-index: 1;
-    }
-
-    .progress-ring {
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
-
-        .track {
-            stroke: var(--color-gray);
+        .progress-label {
+            position: absolute;
+            font-weight: bold;
+            color: var(--color-text-2, #333);
+            z-index: 1;
         }
 
-        .progress {
-            transition: stroke-dashoffset 0.5s ease-in-out, stroke 0.3s ease-in-out;
-            stroke-linecap: round;
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+
+            .track {
+                stroke: var(--color-gray, #e5e7eb);
+            }
+
+            .progress {
+                transition: stroke-dashoffset 0.5s ease-in-out, stroke 0.3s ease-in-out;
+                stroke-linecap: round;
+            }
         }
     }
 
     .progress-text {
-        position: absolute;
-        top: 55px;
         font-size: 12px;
         white-space: nowrap;
-        color: var(--color-text);
+        color: var(--color-text-2, #666);
+        text-align: center;
     }
 }
