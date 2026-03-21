@@ -3,24 +3,30 @@
 <div class="page-container">
 
     <div class="actions">
-        <div class="search-bar">
-            <input 
-                type="text" 
-                #searchInput
-                placeholder="Search Documents" 
-                (input)="searchQueryChange.emit(searchInput.value)"
-                [value]="searchQuery()"
-            />
-        </div>
 
-        <io-entity-select
-            label="Department"
-            labelIcon="business" 
-            [options]="departmentStore.activeSortedDepartments()"
-            labelKey="department"
-            valueKey="department"
-            (selectionChanged)="filterDepartmentChange.emit($event)">
-        </io-entity-select>
+        <div class="filters">
+
+            <div class="search-bar">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="input">
+                    <input 
+                        matInput
+                        type="text" 
+                        #searchInput
+                        placeholder="Search Documents" 
+                        (input)="searchQueryChange.emit(searchInput.value)"
+                        [value]="searchQuery()"
+                    />
+                </mat-form-field>
+            </div>
+
+            <io-entity-select
+                label="Department"
+                [options]="departmentStore.activeSortedDepartments()"
+                labelKey="department"
+                valueKey="department"
+                (selectionChanged)="filterDepartmentChange.emit($event)">
+            </io-entity-select>
+        </div>
                         
         <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
 
