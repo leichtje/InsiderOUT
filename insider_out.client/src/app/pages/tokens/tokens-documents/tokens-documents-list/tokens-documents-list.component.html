@@ -43,11 +43,22 @@
                         </div>
                     }
                 }
+                @if (isSkeleton) {
+                    <div class="skeleton-bar skeleton-label"></div>
+                    <div class="skeleton-bar skeleton-text"></div>
+                } @else {
+                    @if (doc?.location){
+                        <div class="item">
+                            <div class="label">Location</div>
+                            <div class="value">{{ doc?.location }}</div>
+                        </div>
+                    }
+                }
             </div>
         </div>
 
         <div class="documents-card__meta">
-            <div class="documents-card__header align-right">
+            <div class="documents-card__header align-left">
                 @if (isSkeleton) {
                     <div class="skeleton-bar skeleton-date"></div>
                 } @else {

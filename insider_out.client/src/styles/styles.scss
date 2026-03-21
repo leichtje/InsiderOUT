@@ -363,6 +363,13 @@ button {
     border-radius: 50%;
 }
 
+.skeleton-row {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 
 .empty-state {
     display: inline-flex;

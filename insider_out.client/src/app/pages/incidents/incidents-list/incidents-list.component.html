@@ -73,7 +73,7 @@
         </div>
 
         <div class="incident-card__subject">
-            <div class="incident-card__header align-right">
+            <div class="incident-card__header align-left">
                 @if (isSkeleton) {
                     <div class="skeleton-bar skeleton-date"></div>
                 } @else {
@@ -83,13 +83,14 @@
 
             <div class="incident-card__body">
                 <div class="item">
-                    <div class="label">Subject</div>
                     @if (isSkeleton) {
-                        <div class="skeleton-avatar-row">
-                            <div class="skeleton-bar skeleton-avatar"></div>
+                        <div class="skeleton-bar skeleton-text"></div>
+                        <div class="skeleton-row">
+                            <div class="skeleton-bar skeleton-icon"></div>
                             <div class="skeleton-bar skeleton-text"></div>
                         </div>
                     } @else {
+                        <div class="label">Subject</div>
                         <div class="profile-row">
                             <div class="avatar">
                                 <io-profile-avatar [profile]="vm?.subject || ''"></io-profile-avatar>
@@ -104,7 +105,7 @@
         </div>
 
         <div class="incident-card__user">
-            <div class="incident-card__header align-right">
+            <div class="incident-card__header align-left">
                 @if (isSkeleton) {
                     <div class="skeleton-bar skeleton-pill"></div>
                 } @else {
@@ -118,13 +119,14 @@
 
             <div class="incident-card__body">
                 <div class="item">
-                    <div class="label">Assignee</div>
                     @if (isSkeleton) {
-                        <div class="skeleton-avatar-row">
-                            <div class="skeleton-bar skeleton-avatar"></div>
+                        <div class="skeleton-bar skeleton-text"></div>
+                        <div class="skeleton-row">
+                            <div class="skeleton-bar skeleton-icon"></div>
                             <div class="skeleton-bar skeleton-text"></div>
                         </div>
                     } @else {
+                        <div class="label">Assignee</div>
                         <div class="profile-row">
                             <div class="avatar">
                                 <io-profile-avatar [profile]="vm?.user || ''"></io-profile-avatar>

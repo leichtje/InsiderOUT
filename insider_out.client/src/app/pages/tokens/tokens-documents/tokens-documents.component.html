@@ -1,8 +1,9 @@
 <io-tokens-documents-view
     [filteredDocuments]="filteredDocuments$()"
     [isLoading]="documentStore.isLoading()"
+    [searchQuery]="searchQuery()"
     (documentSelected)="onDocumentSelected($event)"
     (filterDepartmentChange)="onDepartmentFilterChange($event)"
-
+    (searchQueryChange)="onSearch($event)"
 >
 </io-tokens-documents-view>

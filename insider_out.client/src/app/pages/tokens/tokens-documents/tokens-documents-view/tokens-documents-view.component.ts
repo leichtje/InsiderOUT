@@ -26,7 +26,9 @@ export class TokensDocumentsViewComponent {
     readonly filteredDocuments$ = input.required<DocumentModel[]>({alias: 'filteredDocuments'});
     readonly isLoading$ = input<boolean>(false, {alias: "isLoading"});
 
+    readonly searchQuery = input<string>(''); 
 
+    readonly searchQueryChange = output<string>();
     readonly filterDepartmentChange = output<string>();
     readonly documentSelected = output<DocumentModel>();
 

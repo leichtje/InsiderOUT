@@ -21,37 +21,31 @@ export class TokensDocumentsComponent {
     private allDocumentTokens = this.documentStore.documents;
     protected currentDepartmentFilter = signal<string>('all');
 
+    readonly searchQuery = signal<string>('');
+
     protected filteredDocuments$ = computed(() => {
         const documents = this.allDocumentTokens();
         const departmentFilter = this.currentDepartmentFilter();
-        
+        const searchQuery = this.searchQuery();
+
         let result = documents; 
 
-        // switch (userFilter) {
-        //     case 'mine':
-        //         result = result.filter(i => i.assignedUserId === currentUser?.userId);
-        //         break;
-            
-        //     case 'unassigned':
-        //         result = result.filter(i => !i.assignedUserId);
-        //         break;            
-            
-        //     case 'all':
-        //     default:
-        //         break;
-        // }
+        if (departmentFilter !== 'all') {
+            result = result.filter(i => i.department === departmentFilter);
+        }
 
-        // switch (typeFilter) {
-        //     case 'document':
-        //         return result.filter(i => i.tokenType === TokenType.document);
-            
-        //     case 'email':
-        //         return result.filter(i => i.tokenType === TokenType.email);
-            
-        //     case 'all':
-        //     default:
-        //         return result;
-        // }
+
+        console.log(searchQuery)
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(r => 
+                (r.name || '').toLowerCase().includes(query) ||
+                (r.fileName || '').toLowerCase().includes(query) ||
+                (r.header || '').toLowerCase().includes(query) ||
+                (r.location || '').toLowerCase().includes(query)
+            );
+        }
+
         return result;
     });
 
@@ -65,5 +59,7 @@ export class TokensDocumentsComponent {
         this.router.navigate([id], { relativeTo: this.route });
     }
 
-
+    onSearch(searchQuery: string) {
+        this.searchQuery.set(searchQuery);
+    }
 }

@@ -2,19 +2,29 @@
 
 <div class="page-container">
 
-    *Find / Search for Doc*
+    <div class="actions">
+        <div class="search-bar">
+            <input 
+                type="text" 
+                #searchInput
+                placeholder="Search Documents" 
+                (input)="searchQueryChange.emit(searchInput.value)"
+                [value]="searchQuery()"
+            />
+        </div>
 
-    <io-entity-select
-        label="Department"
-        labelIcon="business" 
-        [options]="departmentStore.activeSortedDepartments()"
-        labelKey="department"
-        valueKey="department"
-        (selectionChanged)="filterDepartmentChange.emit($event)">
-    </io-entity-select>
-                    
-    <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
+        <io-entity-select
+            label="Department"
+            labelIcon="business" 
+            [options]="departmentStore.activeSortedDepartments()"
+            labelKey="department"
+            valueKey="department"
+            (selectionChanged)="filterDepartmentChange.emit($event)">
+        </io-entity-select>
+                        
+        <button (click)="openCreateDialog()"><mat-icon>add_circle</mat-icon><span>Create</span></button>
 
+    </div>
 
     <br>
     <br>

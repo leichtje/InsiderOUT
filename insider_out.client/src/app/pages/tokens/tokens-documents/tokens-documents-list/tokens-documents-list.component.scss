@@ -63,8 +63,8 @@
         border-bottom: 1px solid var(--global-border-color);
         min-height: 48px; 
         
-        &.align-right {
-            justify-content: flex-end;
+        &.align-left {
+            justify-content: flex-start;
         }
 
         mat-icon {
