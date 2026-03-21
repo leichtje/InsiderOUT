@@ -6,6 +6,7 @@ import { TokensDocumentsDialogComponent, TokensDocumentsDialogData } from '../to
 import { TokensDocumentsListComponent } from "../tokens-documents-list/tokens-documents-list.component";
 import { EntitySelectComponent } from "../../../../fragments/entity-select/entity-select.component";
 import { DepartmentStore } from '../../../../stores/department.store';
+import { MatInput, MatFormField } from "@angular/material/input";
 
 @Component({
     selector: 'io-tokens-documents-view',
@@ -15,7 +16,9 @@ import { DepartmentStore } from '../../../../stores/department.store';
     imports: [
     MatIcon,
     TokensDocumentsListComponent,
-    EntitySelectComponent
+    EntitySelectComponent,
+    MatInput,
+    MatFormField
 ]
 })
 export class TokensDocumentsViewComponent {

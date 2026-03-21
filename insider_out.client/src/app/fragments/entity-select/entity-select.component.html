@@ -32,11 +32,10 @@
         
         @if (value() !== null && value() !== undefined && value() !== '') {
             <button 
-                mat-icon-button 
+                class="flat"
                 matSuffix 
                 (click)="clearSelection($event)" 
-                aria-label="Clear selection"
-                [disabled]="isDisabled()">
+                aria-label="Clear filter">
                 <mat-icon>close</mat-icon>
             </button>
         }
