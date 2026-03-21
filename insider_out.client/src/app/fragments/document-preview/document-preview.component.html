@@ -1,12 +1,7 @@
 
 <div class="document-preview-container">
     @if (fileName$()) {
-        <button>
-            <mat-icon>download</mat-icon>
-            <span>
-                <a [href]="'src\\assets\\'+ fileName$()" [download]="fileName$()">Download</a>
-            </span>
-        </button>
+        <io-document-download [fileName]="fileName$()"></io-document-download>
     }
     
     <div class="document-preview-paper">

@@ -80,12 +80,12 @@
                     <h3>Preview Document</h3>
                     <p>Review the generated document, if you would like to modify the content of the document, select "<span><mat-icon>arrow_back</mat-icon>Redefine</span>" and adjust the parameters.</p>
                     <p>If the content of the document is good, select "<span><mat-icon>check</mat-icon>Finalize Document</span>" to finalize it.</p>
- 
-                    <io-preview-document 
+
+                    <io-document-preview 
                         [header]="documentStore.previewData()?.header" 
                         [content]="documentStore.previewData()?.content"
                         >
-                    </io-preview-document>
+                    </io-document-preview>
 
                 }
             </div>
@@ -118,12 +118,7 @@
                     </form>
 
                     <br>
-                <button>
-                    <mat-icon>download</mat-icon>
-                    <span>
-                        <a [href]="'src\\assets\\'+ documentStore.previewData()?.fileName" [download]="documentStore.previewData()?.fileName">Download</a>
-                    </span>
-                </button>
+                    <io-document-download [fileName]="documentStore.previewData()?.fileName"></io-document-download>
                 }
             </div>
         }

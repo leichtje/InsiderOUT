@@ -9,20 +9,20 @@
 }
 
 .document-preview-paper {
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: var(--color-back);
+    box-shadow: 0 4px 8px var(--color-gray-2);
     padding: 3rem;
     max-width: 800px;
     min-height: 600px;
-    border: 1px solid #ddd;
+    border: 2px solid var(--color-back-gray);
     border-radius: 4px;
     font-family: 'Times New Roman', Times, serif;
-    color: #333;
+    color: var(--color-text);
 }
 
 .document-preview-paper .doc-header {
     text-align: center;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid var(--color-text);
     padding-bottom: 1rem;
     margin-bottom: 2rem;
 }

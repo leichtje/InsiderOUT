@@ -1,0 +1,29 @@
+<div class="progress-node">
+    <span class="progress-label">{{ percentage }}%</span>
+    
+    <svg class="progress-ring" width="50" height="50">
+        <circle
+            class="track"
+            stroke-width="4"
+            fill="transparent"
+            [attr.r]="radius"
+            cx="25"
+            cy="25"
+        />
+        <circle
+            class="progress"
+            stroke-width="4"
+            fill="transparent"
+            [attr.r]="radius"
+            cx="25"
+            cy="25"
+            [style.stroke-dasharray]="circumference"
+            [style.stroke-dashoffset]="getDashOffset()"
+            [style.stroke]="getColor()"
+        />
+    </svg>
+
+    @if (label) {
+        <div class="progress-text">{{ label }}</div>
+    }
+</div>

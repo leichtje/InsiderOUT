@@ -18,7 +18,8 @@ import { DialogHeader } from "../../../../fragments/dialog/dialog-header/dialog-
 import { DepartmentStore } from "../../../../stores/department.store";
 import { EntitySelectComponent } from "../../../../fragments/entity-select/entity-select.component";
 import { DocumentStore } from "../../../../stores/documents.store";
-import { PreviewDocumentsDialogComponent } from "../../../../fragments/preview-document/preview-document.component";
+import { DocumentPreviewComponent } from "../../../../fragments/document-preview/document-preview.component";
+import { DocumentDownloadComponent } from "../../../../fragments/document-download/document-download.component";
 
 export interface TokensDocumentsDialogData {
 
@@ -42,7 +43,8 @@ export interface TokensDocumentsDialogData {
     GradientTextDirective,
     DialogHeader,
     EntitySelectComponent,
-    PreviewDocumentsDialogComponent
+    DocumentPreviewComponent,
+    DocumentDownloadComponent
 ],
     templateUrl: './tokens-documents-dialog.component.html',
     styleUrl: './tokens-documents-dialog.component.scss'

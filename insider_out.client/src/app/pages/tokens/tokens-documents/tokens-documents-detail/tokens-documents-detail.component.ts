@@ -19,7 +19,7 @@ import { PillComponent } from '../../../../fragments/pill/pill.component';
 import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/skeleton-loader.component';
 import { status_colors, status_text } from '../../../../fragments/pill/incident-status-constants';
 import { Title } from '@angular/platform-browser';
-import { PreviewDocumentsDialogComponent } from "../../../../fragments/preview-document/preview-document.component";
+import { DocumentPreviewComponent } from '../../../../fragments/document-preview/document-preview.component';
 
 @Component({
     selector: 'io-tokens-documents-detail',
@@ -38,7 +38,7 @@ import { PreviewDocumentsDialogComponent } from "../../../../fragments/preview-d
         TextFieldModule,
         SkeletonLoaderComponent,
         PillComponent,
-        PreviewDocumentsDialogComponent
+        DocumentPreviewComponent
     ],
     providers: [DocumentDetailStore]
 
