@@ -75,7 +75,7 @@ export class TokensDocumentsDialogComponent {
     readonly sensitivityOptions = Object.values(TokenSensitivity);
 
     currentStepIndex$ = signal(0);
-    isLoading$ = this.documentStore.isLoading;
+    isLoading$ = this.documentStore.isGenerationLoading;
 
     get steps(): StepDefinition[] {
         const step = this.currentStepIndex$(); 
