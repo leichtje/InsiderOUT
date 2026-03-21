@@ -25,22 +25,21 @@ import { PreviewDocumentsDialogComponent } from "../../../../fragments/preview-d
     selector: 'io-tokens-documents-detail',
     templateUrl: './tokens-documents-detail.component.html',
     styleUrl: './tokens-documents-detail.component.scss',
-    standalone: true,
     imports: [
-    CommonModule,
-    RouterLink,
-    ActionBarComponent,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
-    TextFieldModule,
-    SkeletonLoaderComponent,
-    PillComponent,
-    PreviewDocumentsDialogComponent
-],
+        CommonModule,
+        RouterLink,
+        ActionBarComponent,
+        MatIconModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatTooltipModule,
+        TextFieldModule,
+        SkeletonLoaderComponent,
+        PillComponent,
+        PreviewDocumentsDialogComponent
+    ],
     providers: [DocumentDetailStore]
 
 })

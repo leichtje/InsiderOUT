@@ -38,7 +38,7 @@
                 </div>
                 
                 <div class="document-control">
-                    <span class="info">Select the department the document is expected to be placed</span>
+                    <span class="info">Select the department the document is expected to be placed.</span>
                     <io-entity-select
                         formControlName="department"
                         label="Department"
@@ -80,26 +80,12 @@
                     <h3>Preview Document</h3>
                     <p>Review the generated document, if you would like to modify the content of the document, select "<span><mat-icon>arrow_back</mat-icon>Redefine</span>" and adjust the parameters.</p>
                     <p>If the content of the document is good, select "<span><mat-icon>check</mat-icon>Finalize Document</span>" to finalize it.</p>
-                    <p>Note: This document is for preview purposes only, do not deploy this document.</p>
-
-                    <br>
-
-                    <!-- <button mat-button (click)="toggleFullscreen()">
-                        <mat-icon>fullscreen</mat-icon>
-                        View Fullscreen
-                    </button>
-
-                    <br>
-                    <iframe 
-                        #pdfIframe
-                        class="preview-document" 
-                        src="../../../../../assets/temp/test.pdf"
-                        allowfullscreen>
-                        <a href="../../../../../assets/temp/test.pdf">Download PDF</a>
-                    </iframe> -->
-
-                    <io-preview-document [header]="documentStore.previewData()?.header" [content]="documentStore.previewData()?.content"></io-preview-document>
-
+ 
+                    <io-preview-document 
+                        [header]="documentStore.previewData()?.header" 
+                        [content]="documentStore.previewData()?.content"
+                        >
+                    </io-preview-document>
 
                 }
             </div>
@@ -132,8 +118,12 @@
                     </form>
 
                     <br>
-                    <button (click)="onDownload()"><mat-icon>download</mat-icon><span>Download</span></button>
-                    <p>*DOCX DOCUMENT*</p>
+                <button>
+                    <mat-icon>download</mat-icon>
+                    <span>
+                        <a [href]="'src\\assets\\'+ documentStore.previewData()?.fileName" [download]="documentStore.previewData()?.fileName">Download</a>
+                    </span>
+                </button>
                 }
             </div>
         }

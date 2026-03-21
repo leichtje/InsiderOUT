@@ -68,7 +68,6 @@
                             }
                         </div>         
 
-                        <io-preview-document [header]="document.header" [content]="document.content"></io-preview-document>
                     </div>
 
                 }
@@ -132,7 +131,14 @@
                         </div>
                     </div>
                 }
+                
             </div>
+            <io-preview-document
+                [header]="document.header"
+                [content]="document.content"
+                [fileName]="document.fileName"
+                >
+            </io-preview-document>
         } @else if (store.isLoading()) {
             <io-skeleton-loader [lines]="5" [showTitle]="true"></io-skeleton-loader>
         } @else {

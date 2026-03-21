@@ -1,4 +1,16 @@
-<div class="document-preview-paper">
-    <h1 class="doc-header">{{ header$() }}</h1>
-    <p class="doc-content">{{ content$() }}</p>
+
+<div class="document-preview-container">
+    @if (fileName$()) {
+        <button>
+            <mat-icon>download</mat-icon>
+            <span>
+                <a [href]="'src\\assets\\'+ fileName$()" [download]="fileName$()">Download</a>
+            </span>
+        </button>
+    }
+    
+    <div class="document-preview-paper">
+        <h1 class="doc-header">{{ header$() }}</h1>
+        <p class="doc-content">{{ content$() }}</p>
+    </div>
 </div>

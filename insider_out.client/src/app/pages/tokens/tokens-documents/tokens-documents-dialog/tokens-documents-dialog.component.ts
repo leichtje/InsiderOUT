@@ -126,19 +126,6 @@ export class TokensDocumentsDialogComponent {
         return (validCount / requiredFields.length) * 100;
     }
 
-
-    // toggleFullscreen() {
-    //     const elem = this.pdfIframe.nativeElement;
-
-    //     if (elem.requestFullscreen) {
-    //         elem.requestFullscreen();
-    //     } else if ((elem as any).webkitRequestFullscreen) {
-    //         (elem as any).webkitRequestFullscreen();
-    //     } else if ((elem as any).msRequestFullscreen) {
-    //         (elem as any).msRequestFullscreen();
-    //     }
-    // }
-
     onPreview() {
         if (this.documentForm.valid) {
             const formVals = this.documentForm.value

@@ -46,6 +46,14 @@
                             <div class="label">Location</div>
                             {{ doc.location }}
                         }
+
+                    }
+                </div>
+                <div class="item">
+                    @if (isSkeleton) {
+                        <div class="skeleton-bar skeleton-label"></div>
+                        <div class="skeleton-bar skeleton-text"></div>
+                    } @else {
                         @if (doc.department) {
                             <div class="label">Department</div>
                             {{ doc.department }}

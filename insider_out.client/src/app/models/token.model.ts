@@ -50,7 +50,7 @@ export interface DocumentDto {
     documentDepartment: string;
     documentContent: string;
     documentHeader: string;
-    documentFileName: string;
+    documentFilepath: string;
 }
 
 export interface documentGenerationData {

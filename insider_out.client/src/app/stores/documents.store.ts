@@ -35,7 +35,7 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
         department: dto.documentDepartment,
         content: dto.documentContent,
         header: dto.documentHeader,
-        fileName: dto.documentHeader
+        fileName: dto.documentFilepath
     };
 }
 
@@ -52,7 +52,7 @@ export function toDocumentDto(model: Partial<DocumentModel>): DocumentDto {
         documentDepartment: model.department ?? '',
         documentContent: model.content ?? '',
         documentHeader: model.header ?? '',
-        documentFileName: model.fileName ?? '',
+        documentFilepath: model.fileName ?? '',
     };
 }
 
