@@ -1,6 +1,6 @@
 
 import { Component, inject, OnInit } from '@angular/core';
-import { DashboardViewComponent } from "./dashboard-view/dashboard-view.component";
+import { DashboardViewComponent } from "./dashboard-company-risk/dashboard-company-risk.component";
 import { DashboardStore } from '../../stores/dashboard.store';
 
 @Component({

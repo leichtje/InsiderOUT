@@ -229,7 +229,7 @@ export const DocumentStore = signalStore(
                                 patchState(store, { previewData: response, isLoading: false });
                             }),
                             catchError((err) => {
-                                patchState(store, { isLoading: false, error: err.message });
+                                patchState(store, { isGenerationLoading: false, error: err.message });
                                 return [];
                             })
                         );
@@ -247,7 +247,7 @@ export const DocumentStore = signalStore(
                                 patchState(store, { previewData: updatedPreview, isLoading: false });
                             }),
                             catchError((err) => {
-                                patchState(store, { isLoading: false, error: err.message });
+                                patchState(store, { isGenerationLoading: false, error: err.message });
                                 return [];
                             })
                         );

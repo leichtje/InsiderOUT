@@ -28,7 +28,7 @@ export const DashboardStore = signalStore(
             const subjects = subjectStore.subjects();
 
             if (subjects.length == 0 || !subjects) {
-                return;
+                return 0;
             }
 
             const totalRisk = subjects.reduce((sum, subject) => {

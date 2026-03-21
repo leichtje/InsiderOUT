@@ -10,8 +10,7 @@ export class PercentRingComponent {
     @Input({ required: true }) percentage: number = 0; 
     @Input() label?: string; 
     @Input() size: number = 50; 
-    
-    strokeWidth: number = 4; 
+    @Input() strokeWidth: number = 4; 
 
     get center(): number {
         return this.size / 2;
@@ -32,9 +31,9 @@ export class PercentRingComponent {
 
     getColor(): string {
         const p = this.percentage;
-        if (p < 25) return 'var(--color-danger, #ef4444)';  
-        if (p < 50) return 'var(--color-warning, #f97316)'; 
-        if (p < 75) return 'var(--color-info, #eab308)';    
-        return 'var(--color-success, #22c55e)';             
+        if (p < 25) return 'var(--percent-0)';  
+        if (p < 50) return 'var(--percent-1)'; 
+        if (p < 75) return 'var(--percent-2)';    
+        return 'var(--percent-3)';             
     }
 }

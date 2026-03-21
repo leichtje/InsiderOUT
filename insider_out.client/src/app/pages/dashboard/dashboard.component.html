@@ -1,7 +1,4 @@
-<io-dashboard-view></io-dashboard-view>
-
-{{ dashboardStore.overallRisk() }}
-
+<io-dashboard-company-risk [overallRisk]="dashboardStore.overallRisk()"></io-dashboard-company-risk>
 
 @for (incident of dashboardStore.mostRecentIncidents(); track incident)
 {
