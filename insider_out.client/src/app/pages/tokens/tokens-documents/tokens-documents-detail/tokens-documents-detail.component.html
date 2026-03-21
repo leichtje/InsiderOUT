@@ -46,7 +46,7 @@
                             }
                         </div>    
 
-                        <div class="section-date">
+                        <div class="section-department">
                             @if (document.department) {
                                 <div>
                                     <span class="label">Department</span>
@@ -66,10 +66,10 @@
                                     </io-pill>
                                 </div>  
                             }
-                        </div>                    
-                    </div>
+                        </div>         
 
-                    <io-preview-document [header]="document.header" [content]="document.content"></io-preview-document>
+                        <io-preview-document [header]="document.header" [content]="document.content"></io-preview-document>
+                    </div>
 
                 }
 
