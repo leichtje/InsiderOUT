@@ -213,7 +213,7 @@ export const DocumentStore = signalStore(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                         switchMap(({ data }) => {
 
-                        return http.put(`http://localhost:5122/api/generation/generate`, data)
+                        return http.put(`http://localhost:5122/api/generation/generate-preview`, data)
                     })
                 )
             ),
