@@ -17,6 +17,7 @@ import { GradientTextDirective } from "../../../../fragments/gradient-text/gradi
 import { DialogHeader } from "../../../../fragments/dialog/dialog-header/dialog-header.component";
 import { DepartmentStore } from "../../../../stores/department.store";
 import { EntitySelectComponent } from "../../../../fragments/entity-select/entity-select.component";
+import { DocumentStore } from "../../../../stores/documents.store";
 
 export interface TokensDocumentsDialogData {
 
@@ -49,6 +50,7 @@ export class TokensDocumentsDialogComponent {
     private dialogRef = inject(MatDialogRef<TokensDocumentsDialogComponent>);
     public data = inject<TokensDocumentsDialogData>(MAT_DIALOG_DATA);
     private fb = inject(FormBuilder);
+    public documentStore = inject(DocumentStore);
     public departmentStore = inject(DepartmentStore);
 
     @ViewChild('pdfIframe') pdfIframe!: ElementRef<HTMLIFrameElement>;
@@ -122,40 +124,56 @@ export class TokensDocumentsDialogComponent {
         return (validCount / requiredFields.length) * 100;
     }
 
+
+    // toggleFullscreen() {
+    //     const elem = this.pdfIframe.nativeElement;
+
+    //     if (elem.requestFullscreen) {
+    //         elem.requestFullscreen();
+    //     } else if ((elem as any).webkitRequestFullscreen) {
+    //         (elem as any).webkitRequestFullscreen();
+    //     } else if ((elem as any).msRequestFullscreen) {
+    //         (elem as any).msRequestFullscreen();
+    //     }
+    // }
+
     onPreview() {
-        this.documentForm.markAllAsTouched();
-        
         if (this.documentForm.valid) {
-            this.currentStepIndex$.set(1); 
-            this.isLoading$.set(true);
-            
-            setTimeout(() => {
-                this.isLoading$.set(false); 
-            }, 5000);
-        }
-    }
-
-    toggleFullscreen() {
-        const elem = this.pdfIframe.nativeElement;
-
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-        } else if ((elem as any).webkitRequestFullscreen) {
-            (elem as any).webkitRequestFullscreen();
-        } else if ((elem as any).msRequestFullscreen) {
-            (elem as any).msRequestFullscreen();
+            // Triggers Step 1 -> Step 2
+            this.documentStore.documentPreview(this.documentForm.value);
+            this.currentStepIndex$.set(1);
         }
     }
 
     onFinalize() {
-        this.currentStepIndex$.set(2);
-        this.isLoading$.set(true);
+        const previewData = this.documentStore.previewData();
+        if (previewData) {
+            this.documentStore.finalizePreview(previewData);
+            this.currentStepIndex$.set(2);
+        }
+    }
 
-        //Need to save data to db at this point, because doc is final
+    onDone() {
+        if (this.locationForm.valid) {
+            const previewData = this.documentStore.previewData();
+            const formValues = this.documentForm.value;
+            const locationValue = this.locationForm.value.location;
 
-        setTimeout(() => {
-            this.isLoading$.set(false);
-        }, 10000);
+            const finalDocumentToSave = {
+                created: new Date(), 
+                name: formValues.description ?? '',
+                department: formValues.department ?? '',
+                location: locationValue ?? '',
+                sensitivity: (formValues.sensitivity ?? TokenSensitivity.Low) as TokenSensitivity,
+                content: previewData?.content ?? '',
+                header: previewData?.header ?? '',
+                fileName: previewData?.fileName ?? '',
+            };
+
+            this.documentStore.create(finalDocumentToSave);
+            
+            this.onCancel(); 
+        }
     }
 
     onDownload() {
@@ -168,14 +186,6 @@ export class TokensDocumentsDialogComponent {
 
     onCancel() {
         this.dialogRef.close();
-    }
-
-    onDone() {
-        //Need to save location to db if there is one, maybe auto save could be nice too? 
-
-        this.dialogRef.close(this.documentForm.value);
-        
-        //Navigate to doc
     }
 
 }

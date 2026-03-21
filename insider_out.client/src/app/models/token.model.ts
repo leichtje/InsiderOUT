@@ -16,6 +16,10 @@ export interface DocumentModel extends TokenModel {
     documentId: number;
     name: string;
     location: string;
+    department: string;
+    content: string;
+    header: string;
+    fileName: string;
 }
 
 export interface EmailModel extends TokenModel {
@@ -43,11 +47,15 @@ export interface DocumentDto {
     tokenSeverity: string;
     updatedDate: Date;
     createdDate: Date;
+    documentDepartment: string;
+    documentContent: string;
+    documentHeader: string;
+    documentFileName: string;
 }
 
-export interface documentData {
-    shortDescription: string;
-    targetAudience: string;
-    severityLevel: TokenSensitivity;
-    departments: string[];
+export interface documentGenerationData {
+    content: string;
+    header: string;
+    fileName: string; 
+    tokenId: string;
 }

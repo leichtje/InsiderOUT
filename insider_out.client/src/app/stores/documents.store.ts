@@ -1,5 +1,5 @@
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { documentData, DocumentDto, DocumentModel, TokenSensitivity, TokenType } from "../models/token.model";
+import { documentGenerationData, DocumentDto, DocumentModel, TokenSensitivity, TokenType } from "../models/token.model";
 import { computed, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
@@ -9,6 +9,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 type DocumentState = {
     documents: DocumentModel[];
     selectedDocument: DocumentModel | null;
+    previewData: documentGenerationData | null;
     isLoading: boolean;
     error: string | null;
 };
@@ -16,6 +17,7 @@ type DocumentState = {
 const initialState: DocumentState = {
     documents: [],
     selectedDocument: null,
+    previewData: null,
     isLoading: false,
     error: null,
 };
@@ -30,6 +32,10 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
         sensitivity: dto.tokenSeverity.toLowerCase() as TokenSensitivity, 
         updated: dto.updatedDate, 
         created: dto.createdDate,
+        department: dto.documentDepartment,
+        content: dto.documentContent,
+        header: dto.documentHeader,
+        fileName: dto.documentHeader
     };
 }
 
@@ -43,6 +49,10 @@ export function toDocumentDto(model: Partial<DocumentModel>): DocumentDto {
         tokenSeverity: model.sensitivity?.toString() || TokenSensitivity.Low.toString(),
         updatedDate: model.updated ?? new Date(),
         createdDate: model.created ?? new Date(),
+        documentDepartment: model.department ?? '',
+        documentContent: model.content ?? '',
+        documentHeader: model.header ?? '',
+        documentFileName: model.fileName ?? '',
     };
 }
 
@@ -208,12 +218,37 @@ export const DocumentStore = signalStore(
                     })
                 )
             ),
-            documentPreview: rxMethod<{data: documentData}> (
+            documentPreview: rxMethod<any>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
-                        switchMap(({ data }) => {
+                    switchMap((formData) => {
+                        return http.post<documentGenerationData>(`http://localhost:5122/api/generation/generate-preview`, formData).pipe(
+                            tap((response) => {
+                                patchState(store, { previewData: response, isLoading: false });
+                            }),
+                            catchError((err) => {
+                                patchState(store, { isLoading: false, error: err.message });
+                                return [];
+                            })
+                        );
+                    })
+                )
+            ),
 
-                        return http.put(`http://localhost:5122/api/generation/generate-preview`, data)
+            finalizePreview: rxMethod<documentGenerationData>(
+                pipe(
+                    tap(() => patchState(store, { isLoading: true, error: null })),
+                    switchMap((previewData) => {
+                        return http.post<{ fileName: string }>(`http://localhost:5122/api/generation/finalize`, previewData).pipe(
+                            tap((response) => {
+                                const updatedPreview = { ...previewData, fileName: response.fileName };
+                                patchState(store, { previewData: updatedPreview, isLoading: false });
+                            }),
+                            catchError((err) => {
+                                patchState(store, { isLoading: false, error: err.message });
+                                return [];
+                            })
+                        );
                     })
                 )
             ),

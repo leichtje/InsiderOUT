@@ -84,7 +84,7 @@
 
                     <br>
 
-                    <button mat-button (click)="toggleFullscreen()">
+                    <!-- <button mat-button (click)="toggleFullscreen()">
                         <mat-icon>fullscreen</mat-icon>
                         View Fullscreen
                     </button>
@@ -96,7 +96,12 @@
                         src="../../../../../assets/temp/test.pdf"
                         allowfullscreen>
                         <a href="../../../../../assets/temp/test.pdf">Download PDF</a>
-                    </iframe>
+                    </iframe> -->
+
+                    <div class="document-preview-paper">
+                        <h1 class="doc-header">{{ documentStore.previewData()?.header }}</h1>
+                        <p class="doc-content">{{ documentStore.previewData()?.content }}</p>
+                    </div>
                 }
             </div>
         }
