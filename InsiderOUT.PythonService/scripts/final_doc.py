@@ -1,49 +1,86 @@
 import os
-import zipfile
-from docx import Document
 
+import zipfile
+
+from docx import Document
+ 
 def create_final_doc(content, header, filename_base, token_id):
 
     filename = f"{filename_base}"
-
+ 
     # 1. Create base DOCX
+
     doc = Document()
+
     doc.add_heading(header, level=1)
+
     doc.add_paragraph(content)
+
     doc.save(filename)
-
+ 
     # 2. Unzip
+
     unzip_dir = "temp_unzip"
+
     os.makedirs(unzip_dir, exist_ok=True)
-
+ 
     with zipfile.ZipFile(filename, 'r') as zip_ref:
-        zip_ref.extractall(unzip_dir)
 
-    # 3. Inject canary XML
+        zip_ref.extractall(unzip_dir)
+ 
+
+    safe_rel_id = f"rIdCanary{token_id.replace('-', '')}"
+ 
+    # 3. Inject canary XML into Relationships
+
     rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
 
     with open(rels_path, "r", encoding="utf-8") as f:
-        xml_content = f.read()
 
-    new_relationship = f"""<Relationship Id="{token_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
+        xml_content = f.read()
+ 
+    new_relationship = f"""<Relationship Id="{safe_rel_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
 
     xml_content = xml_content.replace('</Relationships>', f'{new_relationship}\n</Relationships>')
-
+ 
     with open(rels_path, "w", encoding="utf-8") as f:
-        f.write(xml_content)
 
+        f.write(xml_content)
+ 
+    # 4. Inject the actual image block into the Document body
+
+    doc_xml_path = os.path.join(unzip_dir, "word/document.xml")
+
+    with open(doc_xml_path, "r", encoding="utf-8") as f:
+
+        doc_xml = f.read()
+
+    drawing_xml = f"""<w:p><w:r><w:drawing><wp:inline><wp:extent cx="1" cy="1"/><wp:docPr id="999" name="CanaryToken"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="0" name="Canary"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:link="{safe_rel_id}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:ext cx="1" cy="1"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>"""
+ 
+    doc_xml = doc_xml.replace('</w:body>', f'{drawing_xml}</w:body>')
+ 
+    with open(doc_xml_path, "w", encoding="utf-8") as f:
+
+        f.write(doc_xml)
+ 
     output_dir = r"C:\Users\Administrator\source\repos\leichtje\InsiderOUT\insider_out.client\src\assets\docs"
 
     os.makedirs(output_dir, exist_ok=True)
+ 
+    # 5. Rezip using correct DOCX compression (ZIP_DEFLATED)
 
-    # 4. Rezip
     final_file = os.path.join(output_dir, f"{filename_base}")
+ 
+    with zipfile.ZipFile(final_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
 
-    with zipfile.ZipFile(final_file, 'w') as zipf:
         for root, dirs, files in os.walk(unzip_dir):
-            for file in files:
-                full_path = os.path.join(root, file)
-                arcname = os.path.relpath(full_path, unzip_dir)
-                zipf.write(full_path, arcname)
 
-    return f"{filename_base}"
+            for file in files:
+
+                full_path = os.path.join(root, file)
+
+                arcname = os.path.relpath(full_path, unzip_dir)
+
+                zipf.write(full_path, arcname)
+ 
+    return f"{filename_base}.docx"
