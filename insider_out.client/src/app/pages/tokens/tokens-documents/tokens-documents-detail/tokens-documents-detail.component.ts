@@ -19,6 +19,7 @@ import { PillComponent } from '../../../../fragments/pill/pill.component';
 import { SkeletonLoaderComponent } from '../../../../fragments/skeleton-loader/skeleton-loader.component';
 import { status_colors, status_text } from '../../../../fragments/pill/incident-status-constants';
 import { Title } from '@angular/platform-browser';
+import { PreviewDocumentsDialogComponent } from "../../../../fragments/preview-document/preview-document.component";
 
 @Component({
     selector: 'io-tokens-documents-detail',
@@ -26,19 +27,20 @@ import { Title } from '@angular/platform-browser';
     styleUrl: './tokens-documents-detail.component.scss',
     standalone: true,
     imports: [
-        CommonModule,
-        RouterLink,
-        ActionBarComponent,
-        MatIconModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatTooltipModule,
-        TextFieldModule,
-        SkeletonLoaderComponent,
-        PillComponent
-    ],
+    CommonModule,
+    RouterLink,
+    ActionBarComponent,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTooltipModule,
+    TextFieldModule,
+    SkeletonLoaderComponent,
+    PillComponent,
+    PreviewDocumentsDialogComponent
+],
     providers: [DocumentDetailStore]
 
 })

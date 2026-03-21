@@ -38,7 +38,7 @@
                 </div>
                 
                 <div class="document-control">
-                    <span class="info">Select the deparment the document is expected to be placed</span>
+                    <span class="info">Select the department the document is expected to be placed</span>
                     <io-entity-select
                         formControlName="department"
                         label="Department"
@@ -98,10 +98,9 @@
                         <a href="../../../../../assets/temp/test.pdf">Download PDF</a>
                     </iframe> -->
 
-                    <div class="document-preview-paper">
-                        <h1 class="doc-header">{{ documentStore.previewData()?.header }}</h1>
-                        <p class="doc-content">{{ documentStore.previewData()?.content }}</p>
-                    </div>
+                    <io-preview-document [header]="documentStore.previewData()?.header" [content]="documentStore.previewData()?.content"></io-preview-document>
+
+
                 }
             </div>
         }

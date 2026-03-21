@@ -18,6 +18,7 @@ import { DialogHeader } from "../../../../fragments/dialog/dialog-header/dialog-
 import { DepartmentStore } from "../../../../stores/department.store";
 import { EntitySelectComponent } from "../../../../fragments/entity-select/entity-select.component";
 import { DocumentStore } from "../../../../stores/documents.store";
+import { PreviewDocumentsDialogComponent } from "../../../../fragments/preview-document/preview-document.component";
 
 export interface TokensDocumentsDialogData {
 
@@ -27,21 +28,22 @@ export interface TokensDocumentsDialogData {
     selector: 'io-tokens-documents-dialog',
     standalone: true,
     imports: [
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatListModule,
-        PillSelectComponent,
-        MatTooltipModule,
-        StepProgressComponent,
-        SkeletonLoaderComponent,
-        GradientTextDirective,
-        DialogHeader,
-        EntitySelectComponent
-    ],
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
+    PillSelectComponent,
+    MatTooltipModule,
+    StepProgressComponent,
+    SkeletonLoaderComponent,
+    GradientTextDirective,
+    DialogHeader,
+    EntitySelectComponent,
+    PreviewDocumentsDialogComponent
+],
     templateUrl: './tokens-documents-dialog.component.html',
     styleUrl: './tokens-documents-dialog.component.scss'
 })

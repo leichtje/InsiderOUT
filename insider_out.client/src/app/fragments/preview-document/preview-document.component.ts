@@ -10,4 +10,8 @@ import { Component, input } from "@angular/core";
 })
 export class PreviewDocumentsDialogComponent {
 
+    readonly header$ = input.required<string | undefined>({alias: 'header'});
+    readonly content$ = input.required<string | undefined>({alias: 'content'});
+
+
 }

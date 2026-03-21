@@ -42,8 +42,14 @@
                         <div class="skeleton-bar skeleton-label"></div>
                         <div class="skeleton-bar skeleton-text"></div>
                     } @else {
-                        <div class="label">Doc Location</div>
-                        {{ doc.location }}
+                        @if (doc.location) {
+                            <div class="label">Doc Location</div>
+                            {{ doc.location }}
+                        }
+                        @if (doc.department) {
+                            <div class="label">Doc Location</div>
+                            {{ doc.department }}
+                        }
                     }
                 </div>
             </div>

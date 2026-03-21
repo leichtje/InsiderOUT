@@ -45,6 +45,16 @@
                                 </div>
                             }
                         </div>    
+
+                        <div class="section-date">
+                            @if (document.department) {
+                                <div>
+                                    <span class="label">Department</span>
+                                    <span>{{ document.department }}</span>
+                                </div>
+                            }
+                        </div>    
+
                         <div class="section-sensitivity">
                             @if (document.sensitivity) {
                                 <div>
@@ -58,6 +68,9 @@
                             }
                         </div>                    
                     </div>
+
+                    <io-preview-document [header]="document.header" [content]="document.content"></io-preview-document>
+
                 }
 
                 @if (!isPhone() || activeTab() === 'right') {
