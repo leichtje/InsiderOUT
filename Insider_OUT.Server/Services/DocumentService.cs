@@ -1,4 +1,4 @@
-﻿using Insider_OUT.Server.Data.Models.Tokens;
+using Insider_OUT.Server.Data.Models.Tokens;
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -71,12 +71,23 @@ namespace InsiderOUT.Server.Services
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
-            // We trust frontend to send a valid TokenId; FK enforces correctness.
+            var token = new Token
+            {
+                TokenType = "document",
+                TokenSeverity = dto.TokenSeverity ?? "Low",
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+
+            _db.Tokens.Add(token);
+            await _db.SaveChangesAsync();
+
             var entity = new Document
             {
                 DocumentName = dto.DocumentName,
                 DocumentLocation = dto.DocumentLocation,
-                DocumentTokenId = dto.TokenId,
+                DocumentTokenId = token.TokenId,
+
                 DocumentDepartment = dto.DocumentDepartment,
                 DocumentContent = dto.DocumentContent,
                 DocumentHeader = dto.DocumentHeader,
@@ -86,7 +97,6 @@ namespace InsiderOUT.Server.Services
             _db.Documents.Add(entity);
             await _db.SaveChangesAsync();
 
-            // Reload with token to populate dates and token info
             var created = await _db.Documents
                 .AsNoTracking()
                 .Include(d => d.Token)
@@ -109,7 +119,6 @@ namespace InsiderOUT.Server.Services
                 DocumentContent = created.DocumentContent,
                 DocumentHeader = created.DocumentHeader,
                 DocumentFilepath = created.DocumentFilepath
-
             };
         }
 
@@ -120,7 +129,6 @@ namespace InsiderOUT.Server.Services
 
             entity.DocumentName = dto.DocumentName;
             entity.DocumentLocation = dto.DocumentLocation;
-            entity.DocumentTokenId = dto.TokenId;
 
             entity.DocumentDepartment = dto.DocumentDepartment;
             entity.DocumentContent = dto.DocumentContent;
