@@ -71,7 +71,7 @@ export class TokensDocumentsDialogComponent {
     readonly sensitivityOptions = Object.values(TokenSensitivity);
 
     currentStepIndex$ = signal(0);
-    isLoading$ = signal(false);
+    isLoading$ = this.documentStore.isLoading;
 
     get steps(): StepDefinition[] {
         const step = this.currentStepIndex$(); 
@@ -139,8 +139,16 @@ export class TokensDocumentsDialogComponent {
 
     onPreview() {
         if (this.documentForm.valid) {
-            // Triggers Step 1 -> Step 2
-            this.documentStore.documentPreview(this.documentForm.value);
+            const formVals = this.documentForm.value
+
+            const requestPayload = {
+                shortDescription: formVals.description ?? '',
+                targetAudience: formVals.audience ?? '',
+                severityLevel: formVals.sensitivity ?? '',
+                departments: [formVals.department ?? '']
+            }
+
+            this.documentStore.documentPreview(requestPayload);
             this.currentStepIndex$.set(1);
         }
     }

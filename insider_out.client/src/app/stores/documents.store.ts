@@ -218,11 +218,11 @@ export const DocumentStore = signalStore(
                     })
                 )
             ),
-            documentPreview: rxMethod<any>(
+            documentPreview: rxMethod<{shortDescription: string | null, targetAudience: string | null, severityLevel: string | null, departments: string[] | null}>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                     switchMap((formData) => {
-                        return http.post<documentGenerationData>(`http://localhost:5122/api/generation/generate-preview`, formData).pipe(
+                        return http.post<documentGenerationData>(`https://localhost:7244/api/generation/generate-preview`, formData).pipe(
                             tap((response) => {
                                 patchState(store, { previewData: response, isLoading: false });
                             }),
@@ -239,7 +239,7 @@ export const DocumentStore = signalStore(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                     switchMap((previewData) => {
-                        return http.post<{ fileName: string }>(`http://localhost:5122/api/generation/finalize`, previewData).pipe(
+                        return http.post<{ fileName: string }>(`https://localhost:7244/api/generation/finalize`, previewData).pipe(
                             tap((response) => {
                                 const updatedPreview = { ...previewData, fileName: response.fileName };
                                 patchState(store, { previewData: updatedPreview, isLoading: false });
