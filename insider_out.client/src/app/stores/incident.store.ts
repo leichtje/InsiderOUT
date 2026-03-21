@@ -75,6 +75,18 @@ export const IncidentStore = signalStore(
             store.incidents().filter(inc => inc.isActive === false)
         ),
 
+        sortedIncidents: computed(() => {
+            const sortedIncidents = [...store.incidents()]
+            .sort((a, b ) => {
+                const dateA = new Date(a.date).getTime();
+                const dateB = new Date(b.date).getTime();
+                return dateA - dateB;
+            })
+
+            console.log(sortedIncidents)
+            return sortedIncidents
+        }),
+
         entityMap: computed(() => {
             const map: Record<number, IncidentModel> = {};
             for (const incident of store.incidents()) {

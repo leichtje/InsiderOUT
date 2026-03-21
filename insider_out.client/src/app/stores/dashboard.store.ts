@@ -25,10 +25,35 @@ export const DashboardStore = signalStore(
     ) => {
 
         const overallRisk = computed(() => {
-            const subjects = subjectStore.subjects;
+            const subjects = subjectStore.subjects();
 
-            console.log(subjects);
+            if (subjects.length == 0 || !subjects) {
+                return;
+            }
 
+            const totalRisk = subjects.reduce((sum, subject) => {
+                return sum + subject.riskScore;
+            }, 0)
+
+            return Math.round(totalRisk / subjects.length);
+        })
+
+        const mostRecentIncidents = computed(() => {
+            const sortedIncidents = incidentStore.sortedIncidents();
+            console.log( sortedIncidents)
+            return sortedIncidents.slice(0, 10);
+        })
+
+        const assignedIncidents = computed(() => {
+            const currentUser = userStore.currentUser();
+            const sortedIncidents = incidentStore.sortedIncidents();
+
+            if (sortedIncidents.length == 0 || !sortedIncidents) {
+                return [];
+            }
+
+            return sortedIncidents 
+                .filter(i => i.assignedUserId === currentUser?.userId)
         })
 
 
@@ -43,6 +68,8 @@ export const DashboardStore = signalStore(
         return {
             isLoading,
             overallRisk,
+            mostRecentIncidents,
+            assignedIncidents,
         };
     }),
 

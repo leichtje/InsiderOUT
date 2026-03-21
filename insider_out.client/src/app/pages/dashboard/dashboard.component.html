@@ -1,3 +1,17 @@
 <io-dashboard-view></io-dashboard-view>
 
 {{ dashboardStore.overallRisk() }}
+
+
+@for (incident of dashboardStore.mostRecentIncidents(); track incident)
+{
+    {{incident.incidentId}}
+
+}
+
+
+@for (incident of dashboardStore.assignedIncidents(); track incident)
+{
+    {{incident.incidentId}}
+
+}
