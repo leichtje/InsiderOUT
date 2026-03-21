@@ -1,74 +1,102 @@
--- SQL Update
-
-ALTER TABLE Documents
-ADD DocumentDepartment NVARCHAR(200) NULL,
-    DocumentContent NVARCHAR(MAX) NULL,
-    DocumentHeader NVARCHAR(500) NULL,
-    DocumentFilepath NVARCHAR(500) NULL;
-
-
--Document.cs
-
-
-[MaxLength(255)]
-        [Column("DocumentDepartment")]
-        public string DocumentDepartment { get; set; }
-
-        // Long text content
-        [Column("DocumentContent", TypeName = "nvarchar(max)")]
-        public string DocumentContent { get; set; }
-
-        [MaxLength(500)]
-        [Column("DocumentHeader")]
-        public string DocumentHeader { get; set; }
-
-        [MaxLength(500)]
-        [Column("DocumentFilepath")]
-        public string DocumentFilepath { get; set; }
+-- Possible Correction
 
 
 
---Document DTO
+import os
 
-        public string DocumentDepartment { get; set; }
+import zipfile
 
-        public string DocumentContent { get; set; }
+from docx import Document
+ 
+def create_final_doc(content, header, filename_base, token_id):
 
-        public string DocumentHeader { get; set; }
+    filename = f"{filename_base}.docx" # Added extension just to be safe
+ 
+    # 1. Create base DOCX
 
-        public string DocumentFilepath { get; set; }
+    doc = Document()
 
+    doc.add_heading(header, level=1)
 
---CDoc Ser
+    doc.add_paragraph(content)
 
+    doc.save(filename)
+ 
+    # 2. Unzip
 
-                    DocumentDepartment = d.DocumentDepartment,
-                    DocumentContent = d.DocumentContent,
-                    DocumentHeader = d.DocumentHeader,
-                    DocumentFilepath = d.DocumentFilepath
+    unzip_dir = "temp_unzip"
 
+    os.makedirs(unzip_dir, exist_ok=True)
+ 
+    with zipfile.ZipFile(filename, 'r') as zip_ref:
 
-                DocumentDepartment = d.DocumentDepartment,
-                DocumentContent = d.DocumentContent,
-                DocumentHeader = d.DocumentHeader,
-                DocumentFilepath = d.DocumentFilepath
+        zip_ref.extractall(unzip_dir)
+ 
+    # IMPORTANT: Word can be picky about Relationship IDs. They should start with letters.
 
+    # Let's create a safe, alphanumeric ID for the XML by stripping dashes.
 
-                DocumentDepartment = dto.DocumentDepartment,
-                DocumentContent = dto.DocumentContent,
-                DocumentHeader = dto.DocumentHeader,
-                DocumentFilepath = dto.DocumentFilepath
+    safe_rel_id = f"rIdCanary{token_id.replace('-', '')}"
+ 
+    # 3. Inject canary XML into Relationships
 
+    rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
 
-                DocumentDepartment = created.DocumentDepartment,
-                DocumentContent = created.DocumentContent,
-                DocumentHeader = created.DocumentHeader,
-                DocumentFilepath = created.DocumentFilepath
+    with open(rels_path, "r", encoding="utf-8") as f:
 
+        xml_content = f.read()
+ 
+    new_relationship = f"""<Relationship Id="{safe_rel_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
 
-            entity.DocumentDepartment = dto.DocumentDepartment;
-            entity.DocumentContent = dto.DocumentContent;
-            entity.DocumentHeader = dto.DocumentHeader;
-            entity.DocumentFilepath = dto.DocumentFilepath;
+    xml_content = xml_content.replace('</Relationships>', f'{new_relationship}\n</Relationships>')
+ 
+    with open(rels_path, "w", encoding="utf-8") as f:
 
+        f.write(xml_content)
+ 
+    # 4. NEW FIX: Inject the actual image block into the Document body
+
+    doc_xml_path = os.path.join(unzip_dir, "word/document.xml")
+
+    with open(doc_xml_path, "r", encoding="utf-8") as f:
+
+        doc_xml = f.read()
+ 
+    # This is standard DrawingML for a 1x1 pixel invisible image referencing our safe_rel_id.
+
+    # We use r:link instead of r:embed because it is an External TargetMode.
+
+    drawing_xml = f"""<w:p><w:r><w:drawing><wp:inline><wp:extent cx="1" cy="1"/><wp:docPr id="999" name="CanaryToken"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="0" name="Canary"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:link="{safe_rel_id}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:ext cx="1" cy="1"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>"""
+ 
+    # Inject it right at the end of the document body
+
+    doc_xml = doc_xml.replace('</w:body>', f'{drawing_xml}</w:body>')
+ 
+    with open(doc_xml_path, "w", encoding="utf-8") as f:
+
+        f.write(doc_xml)
+ 
+    output_dir = r"C:\Users\Administrator\source\repos\leichtje\InsiderOUT\insider_out.client\src\assets\docs"
+
+    os.makedirs(output_dir, exist_ok=True)
+ 
+    # 5. Rezip using correct DOCX compression (ZIP_DEFLATED)
+
+    final_file = os.path.join(output_dir, f"{filename_base}.docx")
+ 
+    # Added zipfile.ZIP_DEFLATED here
+
+    with zipfile.ZipFile(final_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+
+        for root, dirs, files in os.walk(unzip_dir):
+
+            for file in files:
+
+                full_path = os.path.join(root, file)
+
+                arcname = os.path.relpath(full_path, unzip_dir)
+
+                zipf.write(full_path, arcname)
+ 
+    return f"{filename_base}.docx"
 
