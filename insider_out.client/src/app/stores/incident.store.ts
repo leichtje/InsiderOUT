@@ -76,15 +76,8 @@ export const IncidentStore = signalStore(
         ),
 
         sortedIncidents: computed(() => {
-            const sortedIncidents = [...store.incidents()]
-            .sort((a, b ) => {
-                const dateA = new Date(a.date).getTime();
-                const dateB = new Date(b.date).getTime();
-                return dateA - dateB;
-            })
-
-            console.log(sortedIncidents)
-            return sortedIncidents
+            return [...store.incidents()]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         }),
 
         entityMap: computed(() => {

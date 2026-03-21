@@ -57,6 +57,40 @@ export const DashboardStore = signalStore(
         })
 
 
+        const departmentDashboards = computed(() => {
+            const allDepartments = departmentStore.departments();
+            const allSubjects = subjectStore.subjects();
+            const allIncidents = incidentStore.incidents();
+
+            if (!allDepartments || !allSubjects || !allIncidents) return [];
+
+            return allDepartments.map(department => {
+                const deptSubjects = allSubjects.filter(sub => sub.department === department.department);
+
+                let averageRisk = 0;
+
+                if (deptSubjects.length > 0) {
+                    const totalRisk = deptSubjects.reduce((sum, sub) => sum + sub.riskScore, 0);
+                    averageRisk = totalRisk / deptSubjects.length;
+                }
+
+                const deptSubjectIds = deptSubjects.map(sub => sub.subjectId);
+
+                const recentIncidents = allIncidents
+                    .filter(incident => deptSubjectIds.includes(incident.tiedSubjectId ?? 0))
+                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                    .slice(0, 10);
+
+                return {
+                    departmentId: department.departmentId,
+                    departmentName: department.department,
+                    averageRiskScore: averageRisk,
+                    recentIncidents: recentIncidents,
+                    totalSubjects: deptSubjects.length
+                };
+            });
+        });
+
         const isLoading = computed(() => 
             incidentStore.isLoading() || 
             userStore.isLoading() || 
@@ -70,6 +104,7 @@ export const DashboardStore = signalStore(
             overallRisk,
             mostRecentIncidents,
             assignedIncidents,
+            departmentDashboards,
         };
     }),
 
