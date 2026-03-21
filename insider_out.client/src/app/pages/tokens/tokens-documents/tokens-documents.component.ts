@@ -1,11 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { TokensDocumentsViewComponent } from "./tokens-documents-view/tokens-documents-view.component";
-import { TokenService } from '../../../services/token.service';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FilterValue } from '../../../models/filter.model';
-import { DocumentModel, TokenModel } from '../../../models/token.model';
+import { DocumentModel } from '../../../models/token.model';
 import { DocumentStore } from '../../../stores/documents.store';
 
 @Component({
