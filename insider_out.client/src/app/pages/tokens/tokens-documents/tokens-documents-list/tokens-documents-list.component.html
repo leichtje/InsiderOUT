@@ -1,100 +1,54 @@
-@let documents = documents$();        
-@let loading = isLoading();
-        
-<div class="documents-list">
-
-    @if (loading) {
-        @for (i of [1, 2, 3, 4]; track i) {
-            <ng-container *ngTemplateOutlet="cardLayout; context: { isSkeleton: true }"></ng-container>
-        }
-    } @else {
-        @for (document of documents; track document.tokenId) {
-            <ng-container *ngTemplateOutlet="cardLayout; context: { doc: document, isSkeleton: false }"></ng-container>
-        } @empty {
-            <div class="empty-state"><mat-icon>info</mat-icon>No documents available.</div>
-        }
-    }       
-</div>
-
 <ng-template #cardLayout let-doc="doc" let-isSkeleton="isSkeleton">
-    
     <div class="documents-card" 
         [class.skeleton-card]="isSkeleton" 
         (click)="!isSkeleton && doc ? onDocumentClicked(doc) : null">
 
-        <div class="documents-card__info">
-            
-            <div class="documents-card__title">
+        <div class="documents-card__main">
+            <div class="documents-card__header">
                 @if (isSkeleton) {
                     <div class="skeleton-bar skeleton-icon"></div>
                     <div class="skeleton-bar skeleton-text"></div>
                 } @else {
                     <mat-icon>description</mat-icon>
-                    {{doc.name}}
+                    <span class="title-text" [title]="doc.name">{{doc.name}}</span>
                 }
             </div>
 
-            <div class="divider"></div>
-
-            <div class="documents-card__details">
-                <div class="item">
-                    @if (isSkeleton) {
-                        <div class="skeleton-bar skeleton-label"></div>
-                        <div class="skeleton-bar skeleton-text"></div>
-                    } @else {
-                        @if (doc.location) {
-                            <div class="item">
-                                <div class="label">Location</div>
-                                {{ doc.location }}
-                            </div>
-                        }
-
+            <div class="documents-card__body">
+                @if (isSkeleton) {
+                    <div class="skeleton-bar skeleton-label"></div>
+                    <div class="skeleton-bar skeleton-text"></div>
+                } @else {
+                    @if (doc.department) {
+                        <div class="item">
+                            <div class="label">Department</div>
+                            <div class="value">{{ doc.department }}</div>
+                        </div>
                     }
-                </div>
-                <div class="item">
-                    @if (isSkeleton) {
-                        <div class="skeleton-bar skeleton-label"></div>
-                        <div class="skeleton-bar skeleton-text"></div>
-                    } @else {
-                        @if (doc.department) {
-                            <div class="item">
-                                <div class="label">Department</div>
-                                {{ doc.department }}
-                            </div>
-                        }
                     }
-                </div>
             </div>
         </div>
 
-        <div class="documents-card__meta-row">
-
-            <div class="documents-card__date">
-                <div class="documents-card__title">
-                    @if (isSkeleton) {
-                        <div class="skeleton-bar skeleton-date"></div>
-                    } @else {
-                        {{ doc.updated | date:'short' }}
-                    }
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="documents-card__details">
-                    <div class="item">
-                        @if (isSkeleton) {
-                            <div class="skeleton-bar skeleton-pill"></div>
-                        } @else {
-                            <io-pill 
-                                [pill]="doc.sensitivity"
-                                [varMap]="sensitivityColors"
-                                [textMap]="sensitivityText">
-                            </io-pill>
-                        }
-                    </div>
-                </div>
+        <div class="documents-card__meta">
+            <div class="documents-card__header align-right">
+                @if (isSkeleton) {
+                    <div class="skeleton-bar skeleton-date"></div>
+                } @else {
+                    <span class="date-text">{{ doc.updated | date:'short' }}</span>
+                }
             </div>
 
+            <div class="documents-card__body">
+                @if (isSkeleton) {
+                    <div class="skeleton-bar skeleton-pill"></div>
+                } @else {
+                    <io-pill 
+                        [pill]="doc.sensitivity"
+                        [varMap]="sensitivityColors"
+                        [textMap]="sensitivityText">
+                    </io-pill>
+                }
+            </div>
         </div>
     </div>
 </ng-template>
