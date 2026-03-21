@@ -1,6 +1,5 @@
 @use '../../../../../styles/mixins' as mixins;
 
-/* Keep your list styling */
 .documents-list {
     display: flex;
     flex-wrap: wrap;
@@ -14,17 +13,15 @@
     }
 }
 
-/* Updated Card Styling */
 .documents-card {
     display: grid;
-    /* Main section takes remaining space (1fr), Meta section takes what it needs (auto) */
     grid-template-columns: 1fr auto; 
     width: 400px;
     background-color: var(--color-primary-4);
     border: 2px solid var(--global-border-color);
     border-radius: 5px;
     cursor: pointer;
-    overflow: hidden; /* Ensures borders don't bleed out of the rounded corners */
+    overflow: hidden;
     transition: all 0.2s ease-in-out;
 
     @include mixins.mobile() {
@@ -33,7 +30,7 @@
 
     @include mixins.phone() {
         width: calc(100vw - 50px);
-        grid-template-columns: 1fr; /* Stack vertically on phones */
+        grid-template-columns: 1fr;
     }
 
     &:hover {
