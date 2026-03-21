@@ -1,11 +1,10 @@
 import os
 import zipfile
-from _pytest.recwarn import T
 from docx import Document
 
 def create_final_doc(content, header, filename_base, token_id):
 
-    filename = f"{filename_base}.docx"
+    filename = f"{filename_base}"
 
     # 1. Create base DOCX
     doc = Document()
@@ -38,7 +37,7 @@ def create_final_doc(content, header, filename_base, token_id):
     os.makedirs(output_dir, exist_ok=True)
 
     # 4. Rezip
-    final_file = os.path.join(output_dir, f"{filename_base}.docx")
+    final_file = os.path.join(output_dir, f"{filename_base}")
 
     with zipfile.ZipFile(final_file, 'w') as zipf:
         for root, dirs, files in os.walk(unzip_dir):
@@ -47,4 +46,4 @@ def create_final_doc(content, header, filename_base, token_id):
                 arcname = os.path.relpath(full_path, unzip_dir)
                 zipf.write(full_path, arcname)
 
-    return final_file
+    return f"{filename_base}"
