@@ -1,6 +1,7 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DashboardViewComponent } from "./dashboard-view/dashboard-view.component";
+import { DashboardStore } from '../../stores/dashboard.store';
 
 @Component({
     selector: 'io-dashboard',
@@ -9,5 +10,9 @@ import { DashboardViewComponent } from "./dashboard-view/dashboard-view.componen
     imports: [DashboardViewComponent]
 })
 export class DashboardComponent {
+
+    readonly dashboardStore = inject(DashboardStore);
+
+    
 
 }
