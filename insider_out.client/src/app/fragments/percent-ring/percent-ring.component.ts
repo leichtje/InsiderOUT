@@ -20,9 +20,9 @@ export class PercentRingComponent {
 
     getColor(): string {
         const p = this.percentage;
-        if (p < 25) return 'var(--avatar-0)';
-        if (p < 50) return 'var(--avatar-1)';
-        if (p < 75) return 'var(--avatar-2)';
-        return 'var(--avatar-3)';
+        if (p < 25) return 'var(--percent-0)';
+        if (p < 50) return 'var(--percent-1)';
+        if (p < 75) return 'var(--percent-2)';
+        return 'var(--percent-3)';
     }
 }

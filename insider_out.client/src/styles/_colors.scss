@@ -53,6 +53,11 @@ $light-theme: (
     avatar-8: #bfc7cbff, // Blue Grey
     avatar-9: #A5D6A7,  // Green
 
+    percent-0: #31b335,
+    percent-1: var(--color-primary-6),
+    percent-2: #d87d06,
+    percent-3: #ff4b15,
+
     //Global vars
     global-border-color: var(--color-gray),
 
@@ -111,6 +116,10 @@ $dark-theme: (
     avatar-8: #4e6770ff,
     avatar-9: #2f9232ff,
 
+    percent-0: #31b335,
+    percent-1: var(--color-primary-6),
+    percent-2: #d87d06,
+    percent-3: #ff4b15,
 
     //Global vars
     global-border-color: var(--color-gray),
