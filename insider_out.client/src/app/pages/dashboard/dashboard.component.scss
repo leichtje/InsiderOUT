@@ -4,8 +4,8 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
         grid-template-areas: 
-            "top-left   right-side"
-            "bottom-left    right-side";
+            "top-left right-left right-side"
+            "bottom-left bottom-left right-side";
     }
 
     .panel-1 {
@@ -13,11 +13,15 @@
     }
 
     .panel-2 {
-        grid-area: right-side;
+        grid-area: right-left;
     }
 
     .panel-3 {
         grid-area: bottom-left;
+    }
+
+    .panel-4 {
+        grid-area: right-side;
     }
 
     .page-container {

@@ -11,5 +11,5 @@ import { PercentRingComponent } from "../../../fragments/percent-ring/percent-ri
 })
 export class DashboardCompanyRiskComponent {
 
-    readonly overallRisk$ = input.required<number>({alias: 'overallRisk'})
+    readonly overallCompanyRisk$ = input.required<number>({alias: 'overallCompanyRisk'})
 }

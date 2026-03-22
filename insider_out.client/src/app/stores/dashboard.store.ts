@@ -33,7 +33,7 @@ export const DashboardStore = signalStore(
         departmentStore = inject(DepartmentStore)
     ) => {
 
-        const overallRisk = computed(() => {
+        const overallCompanyRisk = computed(() => {
             const subjects = subjectStore.subjects();
 
             if (subjects.length == 0 || !subjects) {
@@ -46,6 +46,20 @@ export const DashboardStore = signalStore(
 
             return Math.round(totalRisk / subjects.length);
         })
+
+        const overallDepartmentRisk = computed(() => {
+            const dashboards = departmentDashboards();
+
+            if (!dashboards || dashboards.length === 0) {
+                return 0;
+            }
+
+            const totalDepartmentRisk = dashboards.reduce((sum, dept) => {
+                return sum + dept.averageRiskScore;
+            }, 0);
+
+            return Math.round(totalDepartmentRisk / dashboards.length);
+        });
 
         const recentIncidents = computed(() => {
             const sortedIncidents = incidentStore.sortedIncidents();
@@ -110,7 +124,8 @@ export const DashboardStore = signalStore(
 
         return {
             isLoading,
-            overallRisk,
+            overallCompanyRisk,
+            overallDepartmentRisk,
             recentIncidents,
             assignedIncidents,
             departmentDashboards,
