@@ -94,5 +94,17 @@ export class IncidentsHeatMapComponent {
             this.viewingMonth.update(month => month + 1);
         }
     }
+
+    isCurrentMonth = computed(() => {
+        const now = new Date();
+        return this.viewingYear() === now.getFullYear() && 
+            this.viewingMonth() === now.getMonth();
+    });
+
+    goToCurrentMonth() {
+        const now = new Date();
+        this.viewingYear.set(now.getFullYear());
+        this.viewingMonth.set(now.getMonth());
+    }
 }
 

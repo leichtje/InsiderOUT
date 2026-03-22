@@ -1,7 +1,12 @@
 <div class="calendar-wrapper">
     <div class="calendar-header">
         <button (click)="previousMonth()" class="nav-btn">&larr;</button>
-        <h3>{{ currentMonthName() }}</h3>
+        <div class="title-group">
+            <h3>{{ currentMonthName() }}</h3>
+            @if (!isCurrentMonth()) {
+                <button (click)="goToCurrentMonth()" class="today-btn">Back to Today</button>
+            }
+        </div>
         <button (click)="nextMonth()" class="nav-btn">&rarr;</button>
     </div>
 
