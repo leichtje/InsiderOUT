@@ -53,7 +53,7 @@ export const DashboardStore = signalStore(
 
             return [...subjects]
                 .sort((a, b) => b.riskScore - a.riskScore)
-                .slice(0, 5);
+                .slice(0, 3);
         });
 
         const recentIncidents = computed(() => {

@@ -3,6 +3,7 @@
 :host {
     .dashboard-title { 
         @include mixins.font();
+        margin-bottom: 15px;
     }
 
     .accordion-container {

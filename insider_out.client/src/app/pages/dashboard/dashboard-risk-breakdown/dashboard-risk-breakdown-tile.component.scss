@@ -7,14 +7,40 @@
         margin-bottom: 15px;
     }
 
-    .tile-container {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas: 
+            "top-left top-right"
+            "bottom-left bottom-right";
+    }
+
+    .panel-1 {
+        grid-area: top-left;
+    }
+
+    .panel-2 {
+        grid-area: top-right;
+
+    }
+
+    .panel-3 {
+        grid-area: bottom-left;
+
+    }
+
+    .panel-4 {
+        grid-area: bottom-right;
     }
 
     .overall-company-risk {
-        --percent-ring-alignment: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        io-percent-ring {
+            --percent-ring-alignment: center;
+        }
     }
         
     .risk-section {
@@ -40,6 +66,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 30px;
         padding: 8px 12px;
         background-color: var(--color-back-gray);
         border-radius: 6px;

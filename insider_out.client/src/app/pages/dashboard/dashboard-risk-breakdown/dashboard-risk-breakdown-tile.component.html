@@ -1,15 +1,13 @@
 <div class="tile-container">
-    <div>
-        <div class="dashboard-title">Overall Company Risk</div>
-        <io-percent-ring class="overall-company-risk" [percentage]="overallCompanyRisk$()" [size]="100" [strokeWidth]="5"></io-percent-ring>
-    </div>
+    <div class="grid">
+        <div class="dashboard-title panel-1">Overall Company Risk</div>
+        <div class="overall-company-risk panel-3">
+            <io-percent-ring [percentage]="overallCompanyRisk$()" [size]="100" [strokeWidth]="5"></io-percent-ring>
+        </div>
 
-    <div class="divider"></div>
-
-    <div>
-        <div class="dashboard-title">Riskiest Employees</div>
+        <div class="dashboard-title panel-2">Riskiest Employees</div>
                 
-        <div class="risk-section">
+        <div class="risk-section panel-4">
             <div class="risk-list">
                 @for (subject of topSubjects$(); track subject.subjectId) {
                     <div class="risk-list-item">
@@ -17,10 +15,10 @@
                         <span class="item-name">{{ subject.firstName + ' ' + subject.lastName}}</span>
                         
                         <io-percent-ring 
-                        [percentage]="subject.riskScore" 
-                        [size]="40" 
-                        [strokeWidth]="4">
-                    </io-percent-ring>
+                            [percentage]="subject.riskScore" 
+                            [size]="40" 
+                            [strokeWidth]="4">
+                        </io-percent-ring>
                 </div>
             } @empty {
                 <p class="empty-state">No employee data available.</p>
