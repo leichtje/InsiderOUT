@@ -1,14 +1,40 @@
-<div class="calendar-wrapper">    
-    <div class="calendar-grid">
-        @for (day of daysInCurrentMonth(); track day.date) {
-        <div 
-            class="calendar-day" 
-            [class]="getColorTier(incidentCountsByDay().get(day.date) || 0)"
-            [title]="(incidentCountsByDay().get(day.date) || 0) + ' incidents'">
-            
-            {{ day.dayOfMonth }}
-            
-        </div>
+<div class="calendar-wrapper">
+    <div class="calendar-header">
+        <button (click)="previousMonth()" class="nav-btn">&larr;</button>
+        <h3>{{ currentMonthName() }}</h3>
+        <button (click)="nextMonth()" class="nav-btn">&rarr;</button>
+    </div>
+
+    <div class="calendar-weekdays">
+        @for (day of weekdays; track day) {
+        <div class="weekday-label">{{ day }}</div>
         }
     </div>
+
+    <div class="calendar-grid">
+        @for (cell of calendarGrid(); track cell.id) {
+        
+        @if (cell.isPadding) {
+            <div class="calendar-day empty-day"></div>
+        } @else {
+            <div 
+                class="calendar-day" 
+                [class]="getColorTier(incidentCountsByDay().get(cell.date!) || 0)"
+                [title]="(incidentCountsByDay().get(cell.date!) || 0) + ' incidents'">
+                {{ cell.dayOfMonth }}
+            </div>
+        }
+
+        }
+    </div>
+
+    <div class="calendar-legend">
+        <span class="legend-label">Less</span>
+        <div class="legend-item"><span class="legend-color tier-0"></span></div>
+        <div class="legend-item"><span class="legend-color tier-1"></span></div>
+        <div class="legend-item"><span class="legend-color tier-2"></span></div>
+        <div class="legend-item"><span class="legend-color tier-3"></span></div>
+        <span class="legend-label">More</span>
+    </div>
+
 </div>
