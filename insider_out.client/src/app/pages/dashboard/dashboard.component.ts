@@ -1,19 +1,22 @@
 
 import { Component, inject, OnInit } from '@angular/core';
-import { DashboardViewComponent } from "./dashboard-company-risk/dashboard-company-risk.component";
 import { DashboardStore } from '../../stores/dashboard.store';
+import { DashboardCompanyRiskComponent } from './dashboard-company-risk/dashboard-company-risk-tile.component';
+import { DashboardIncidentsTileComponent } from "./dashboard-incidents/dashboard-incidents-tile.component";
+import { IncidentStore } from '../../stores/incident.store';
 
 @Component({
     selector: 'io-dashboard',
     templateUrl: './dashboard.component.html',
     standalone: true,
-    imports: [DashboardViewComponent],
+    imports: [DashboardCompanyRiskComponent, DashboardIncidentsTileComponent],
     providers: [DashboardStore]
 
 })
 export class DashboardComponent {
 
     readonly dashboardStore = inject(DashboardStore);
+    readonly incidentsStore = inject(IncidentStore);
 
     
 

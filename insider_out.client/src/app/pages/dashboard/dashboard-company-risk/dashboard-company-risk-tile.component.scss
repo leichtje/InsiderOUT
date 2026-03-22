@@ -1,0 +1,7 @@
+@use '../../../../styles/mixins' as mixins;
+
+:host {
+    .dashboard-title { 
+        @include mixins.font();
+    }
+}

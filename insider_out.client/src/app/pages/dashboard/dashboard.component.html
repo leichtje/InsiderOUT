@@ -1,5 +1,12 @@
-<io-dashboard-company-risk [overallRisk]="dashboardStore.overallRisk()"></io-dashboard-company-risk>
+<io-dashboard-company-risk-tile [overallRisk]="dashboardStore.overallRisk()"></io-dashboard-company-risk-tile>
 
+<io-dashboard-incidents-tile 
+    [mostRecentIncidents]="dashboardStore.mostRecentIncidents()" 
+    [assignedIncidents]="dashboardStore.assignedIncidents()"
+    [allIncidents]="incidentsStore.incidents()"
+    ></io-dashboard-incidents-tile>
+
+<!-- 
 @for (incident of dashboardStore.mostRecentIncidents(); track incident)
 {
     {{incident.incidentId}}
@@ -11,4 +18,4 @@
 {
     {{incident.incidentId}}
 
-}
+} -->
