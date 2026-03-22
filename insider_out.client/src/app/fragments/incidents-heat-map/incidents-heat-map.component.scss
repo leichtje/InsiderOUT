@@ -1,10 +1,10 @@
 .calendar-wrapper {
   max-width: 450px;
   font-family: sans-serif;
-  background: white;
+  background: var(--color-back);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+//   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .calendar-header {
@@ -16,12 +16,11 @@
 
 .calendar-header h3 {
     margin: 0;
-    color: #333;
 }
 
 .nav-btn {
-    background: none;
-    border: 1px solid #ccc;
+    background: var(--color-primary-5);
+    color: var(--color-text);
     border-radius: 4px;
     padding: 4px 12px;
     cursor: pointer;
@@ -29,7 +28,7 @@
 }
 
 .nav-btn:hover {
-    background: #f0f0f0;
+    background: var(--color-primary);
 }
 
 .calendar-weekdays {
@@ -40,7 +39,7 @@
     text-align: center;
     font-weight: 600;
     font-size: 0.85rem;
-    color: #666;
+    color: var(--color-text);
 }
 
 .calendar-grid {
@@ -57,14 +56,14 @@
     border-radius: 4px;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #333;
+    color: var(--color-text);
     transition: transform 0.1s ease;
     cursor: pointer;
 }
 
 .calendar-day:not(.empty-day):hover {
     transform: scale(1.1);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px var(--color-primary-5);
 }
 
 .calendar-day.empty-day {
@@ -72,10 +71,10 @@
     cursor: default;
 }
 
-.tier-0 { background-color: #ebedf0; } 
-.tier-1 { background-color: #ffcda5; } 
-.tier-2 { background-color: #ff9852; } 
-.tier-3 { background-color: #e03a00; color: white; }
+.tier-0 { background-color: var(--tier-0); } 
+.tier-1 { background-color: var(--tier-1); } 
+.tier-2 { background-color: var(--tier-2); } 
+.tier-3 { background-color: var(--tier-3); color: var(--color-bw); }
 
 .calendar-legend {
     display: flex;

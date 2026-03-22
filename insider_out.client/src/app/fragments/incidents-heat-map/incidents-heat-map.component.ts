@@ -1,5 +1,6 @@
 import { Component, computed, input, signal } from "@angular/core";
 import { IncidentModel } from "../../models/incidents.model";
+import { MatIcon } from "@angular/material/icon";
 
 export interface CalendarCell {
     id: string;
@@ -12,7 +13,7 @@ export interface CalendarCell {
     templateUrl: './incidents-heat-map.component.html',
     styleUrl: './incidents-heat-map.component.scss',
     standalone: true,
-    imports: []
+    imports: [MatIcon]
 })
 export class IncidentsHeatMapComponent {
 
