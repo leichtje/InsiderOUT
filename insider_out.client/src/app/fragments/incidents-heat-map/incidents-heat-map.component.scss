@@ -18,6 +18,23 @@
     margin: 0;
 }
 
+.title-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 45px;
+    .today-btn {
+        background-color: transparent;
+        border: none;
+        mat-icon {
+            color: var(--color-primary-5) !important;
+            width: 20px;
+            height: 20px;
+            font-size: 20px;
+        }
+    }
+}
+
 .nav-btn {
     background: var(--color-primary-5);
     color: var(--color-text);
