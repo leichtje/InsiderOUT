@@ -7,10 +7,19 @@ import { DocumentStore } from "./documents.store";
 import { computed, effect, inject } from "@angular/core";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { pipe, tap } from "rxjs";
+import { IncidentModel } from "../models/incidents.model";
 
 type LocalDetailState = {
     
 };
+
+export interface DepartmentDashboards {
+    departmentId: number;
+    departmentName: string; 
+    averageRiskScore: number;
+    recentIncidents: IncidentModel[];
+    totalSubjects: number;
+}
 
 export const DashboardStore = signalStore(
     // withState<LocalDetailState>({ id: null }),
@@ -57,7 +66,7 @@ export const DashboardStore = signalStore(
         })
 
 
-        const departmentDashboards = computed(() => {
+        const departmentDashboards = computed<DepartmentDashboards[]>(() => {
             const allDepartments = departmentStore.departments();
             const allSubjects = subjectStore.subjects();
             const allIncidents = incidentStore.incidents();
@@ -83,7 +92,7 @@ export const DashboardStore = signalStore(
 
                 return {
                     departmentId: department.departmentId,
-                    departmentName: department.department,
+                    departmentName: department.department ?? '',
                     averageRiskScore: averageRisk,
                     recentIncidents: recentIncidents,
                     totalSubjects: deptSubjects.length

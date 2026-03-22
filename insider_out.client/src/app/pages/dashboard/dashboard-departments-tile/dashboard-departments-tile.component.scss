@@ -1,0 +1,29 @@
+@use '../../../../styles/mixins' as mixins;
+
+:host {
+    .dashboard-title { 
+        @include mixins.font();
+    }
+
+    // .tab-content {
+    //     padding-top: 16px;
+    //     display: flex;
+    //     flex-direction: column;
+    //     gap: 20px;
+
+    //     .related-incident {
+    //         display: flex;
+    //         gap: 15px;
+
+    //         .incident-title {
+    //             @include mixins.ellipsis();
+    //         }
+    //     }
+    // }
+
+    // .tile-container {
+    //     display: flex;
+    //     flex-direction: column;
+    //     gap: 30px;
+    // }
+}
