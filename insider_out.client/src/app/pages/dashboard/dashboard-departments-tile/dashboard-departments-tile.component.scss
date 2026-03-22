@@ -5,25 +5,76 @@
         @include mixins.font();
     }
 
-    // .tab-content {
-    //     padding-top: 16px;
-    //     display: flex;
-    //     flex-direction: column;
-    //     gap: 20px;
+    .accordion-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px; 
+    }
 
-    //     .related-incident {
-    //         display: flex;
-    //         gap: 15px;
+    .department-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: #ffffff;
+        overflow: hidden;
+    }
 
-    //         .incident-title {
-    //             @include mixins.ellipsis();
-    //         }
-    //     }
-    // }
+    .department-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
 
-    // .tile-container {
-    //     display: flex;
-    //     flex-direction: column;
-    //     gap: 30px;
-    // }
+    .department-header:hover {
+        background-color: #f9fafb;
+    }
+
+    .dept-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dept-name {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .dept-meta {
+        font-size: 0.75rem;
+        color: #666;
+    }
+
+    .dept-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .chevron {
+        font-size: 0.8rem;
+        color: #666;
+        transition: transform 0.3s ease;
+    }
+
+    .department-card.is-open .chevron {
+        transform: rotate(-180deg);
+    }
+
+    .department-body {
+        padding: 0 16px 16px 16px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .related-incident {
+        display: flex;
+        gap: 15px;
+
+        .incident-title {
+            @include mixins.ellipsis();
+        }
+    }
 }
