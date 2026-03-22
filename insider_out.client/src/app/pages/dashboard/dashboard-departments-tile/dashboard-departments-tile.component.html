@@ -1,53 +1,51 @@
 <div class="tile-container">
     <div class="dashboard-title">Departments</div>
 
-    <div class="tile-container">
-        <div class="dashboard-title">Departments</div>
-
-        <div class="accordion-container">
-            @for (department of departmentDashboards$(); track department.departmentId) {
+    <div class="accordion-container">
+        @for (department of departmentDashboards$(); track department.departmentId) {
+        
+        <div class="department-card" [class.is-open]="expandedDepartmentId() === department.departmentId">
             
-            <div class="department-card" [class.is-open]="expandedDepartmentId() === department.departmentId">
+            <div class="department-header" (click)="toggleDepartment(department.departmentId)">
+                <div class="dept-info">
+                    <h3 class="dept-name">{{ department.departmentName }}</h3>
+                    <span class="dept-meta">{{ department.totalSubjects }} Employees</span>
+                </div>
                 
-                <div class="department-header" (click)="toggleDepartment(department.departmentId)">
-                    <div class="dept-info">
-                        <h3 class="dept-name">{{ department.departmentName }}</h3>
-                        <span class="dept-meta">{{ department.totalSubjects }} Subjects</span>
-                    </div>
+                <div class="dept-right">
+                    <io-percent-ring [percentage]="department.averageRiskScore"></io-percent-ring>
                     
                     <div class="dept-actions">
-                        <io-percent-ring [percentage]="department.averageRiskScore"></io-percent-ring>
-                        
                         <span class="chevron">&#x25BC;</span>
                     </div>
                 </div>
-
-                @if (expandedDepartmentId() === department.departmentId) {
-                <div class="department-body">
-                    <div class="section-title">
-                    <span class="label">Recent Incidents</span>
-                    </div>
-                    
-                    <div class="related-incidents">
-                    @for (incident of department.recentIncidents; track incident.incidentId) {
-                        
-                        <a [routerLink]="['/incidents/open', incident.incidentId]" class="related-incident">
-                        <span class="incident-title">{{ incident.title }}</span>
-                        </a>
-
-                    } @empty {
-                        <p class="empty-state">No recent incidents for this department.</p>
-                    }
-                    </div>
-                </div>
-                }
-                
             </div>
 
-            } @empty {
-                <p class="empty-state">No departments available.</p>
-            }
-        </div>
-    </div>
+            @if (expandedDepartmentId() === department.departmentId) {
+            <div class="department-body">
+                <div class="section-title">
+                <span class="label">Recent Incidents</span>
+                </div>
+                
+                <div class="related-incidents">
+                @for (incident of department.recentIncidents; track incident.incidentId) {
+                    
+                    <a [routerLink]="['/incidents/open', incident.incidentId]" class="related-incident">
+                    <span class="incident-title">{{ incident.title }}</span>
+                    </a>
 
+                } @empty {
+                    <p class="empty-state">No recent incidents for this department.</p>
+                }
+                </div>
+            </div>
+            }
+            
+        </div>
+
+        } @empty {
+            <p class="empty-state">No departments available.</p>
+        }
+    </div>
 </div>
+

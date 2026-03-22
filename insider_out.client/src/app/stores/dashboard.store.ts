@@ -80,7 +80,7 @@ export const DashboardStore = signalStore(
 
                 if (deptSubjects.length > 0) {
                     const totalRisk = deptSubjects.reduce((sum, sub) => sum + sub.riskScore, 0);
-                    averageRisk = totalRisk / deptSubjects.length;
+                    averageRisk = Math.round(totalRisk / deptSubjects.length);
                 }
 
                 const deptSubjectIds = deptSubjects.map(sub => sub.subjectId);

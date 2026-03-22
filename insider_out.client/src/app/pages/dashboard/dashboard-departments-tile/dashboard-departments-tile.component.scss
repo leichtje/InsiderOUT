@@ -36,6 +36,11 @@
         flex-direction: column;
     }
 
+    .dept-right {
+        display: flex;
+        gap: 15px;
+    }
+
     .dept-name {
         margin: 0;
         font-size: 1rem;
