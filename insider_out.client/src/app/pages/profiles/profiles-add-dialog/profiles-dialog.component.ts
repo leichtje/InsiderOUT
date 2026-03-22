@@ -65,6 +65,7 @@ export class ProfileDialogComponent {
                 phone: this.profileToEdit.phone,
                 department: this.profileToEdit.department,
                 role: 'role' in this.profileToEdit ? this.profileToEdit.role : '',
+                riskScore: 'riskScore' in this.profileToEdit ? this.profileToEdit.riskScore : 0
             });
         }
     }
@@ -100,7 +101,8 @@ export class ProfileDialogComponent {
                 phone: val.phone || undefined,
                 department: val.department || undefined,
                 role: val.role || 'Standard',
-                subjectId: isEdit ? (this.profileToEdit as SubjectModel).subjectId : 0
+                subjectId: isEdit ? (this.profileToEdit as SubjectModel).subjectId : 0,
+                riskScore: val.riskScore || 0 
             };
 
             if (isEdit) this.subjectStore.update({ id: subjectData.subjectId, data: subjectData });
