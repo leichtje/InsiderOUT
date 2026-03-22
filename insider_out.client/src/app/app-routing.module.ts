@@ -17,8 +17,8 @@ import { DepartmentComponent } from './pages/department/department.component';
 
 const routes: Routes = [
     /* Home */
-    { path: '', title: 'Home - InsiderOUT', component: HomeComponent },
-    { path: 'home', title: 'Home - InsiderOUT', component: HomeComponent},
+    { path: '', title: 'Home - InsiderOUT', component: DashboardComponent },
+    { path: 'home', title: 'Home - InsiderOUT', component: DashboardComponent},
 
     /* Dashboard */
     { path: 'dashboard', title: 'Dashboard - InsiderOUT', component: DashboardComponent },

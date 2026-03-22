@@ -121,6 +121,11 @@
                                         }
                                         @else {
                                             <a [routerLink]="['/incidents/closed', incident.incidentId ]" >{{incident.title}}</a>
+                                            <io-pill
+                                                    [pill]="incident.status"
+                                                    [varMap]="statusColors"
+                                                    [textMap]="statusText">
+                                                </io-pill>
                                         }
                                     }
                                     @empty {

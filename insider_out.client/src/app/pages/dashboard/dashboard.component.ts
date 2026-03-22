@@ -8,6 +8,7 @@ import { IncidentStore } from '../../stores/incident.store';
 @Component({
     selector: 'io-dashboard',
     templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss',
     standalone: true,
     imports: [DashboardCompanyRiskComponent, DashboardIncidentsTileComponent],
     providers: [DashboardStore]

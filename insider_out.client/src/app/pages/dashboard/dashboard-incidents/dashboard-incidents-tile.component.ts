@@ -6,13 +6,14 @@ import { IncidentsHeatMapComponent } from "../../../fragments/incidents-heat-map
 import { PillComponent } from "../../../fragments/pill/pill.component";
 import { status_colors, status_text } from '../../../fragments/pill/incident-status-constants';
 import { AppRoutingModule } from "../../../app-routing.module";
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'io-dashboard-incidents-tile',
     templateUrl: './dashboard-incidents-tile.component.html',
     styleUrl: './dashboard-incidents-tile.component.scss',
     standalone: true,
-    imports: [MatTabsModule, IncidentsHeatMapComponent, PillComponent, AppRoutingModule]
+    imports: [MatTabsModule, IncidentsHeatMapComponent, PillComponent, RouterLink]
 })
 export class DashboardIncidentsTileComponent {
 

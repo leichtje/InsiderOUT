@@ -1,21 +1,19 @@
-<io-dashboard-company-risk-tile [overallRisk]="dashboardStore.overallRisk()"></io-dashboard-company-risk-tile>
+<div class="dashboard-grid">
 
-<io-dashboard-incidents-tile 
-    [recentIncidents]="dashboardStore.recentIncidents()" 
-    [assignedIncidents]="dashboardStore.assignedIncidents()"
-    [allIncidents]="incidentsStore.incidents()"
-    ></io-dashboard-incidents-tile>
+    <div class="page-container panel-1">
+        <io-dashboard-company-risk-tile [overallRisk]="dashboardStore.overallRisk()"></io-dashboard-company-risk-tile>
+    </div>
+    
+    <div class="page-container panel-2">
+        <io-dashboard-incidents-tile 
+            [recentIncidents]="dashboardStore.recentIncidents()" 
+            [assignedIncidents]="dashboardStore.assignedIncidents()"
+            [allIncidents]="incidentsStore.incidents()"
+        ></io-dashboard-incidents-tile>
+    </div>
 
-<!-- 
-@for (incident of dashboardStore.mostRecentIncidents(); track incident)
-{
-    {{incident.incidentId}}
+    <div class="page-container panel-3">
+        <div>Deparments</div>
+    </div>
 
-}
-
-
-@for (incident of dashboardStore.assignedIncidents(); track incident)
-{
-    {{incident.incidentId}}
-
-} -->
+</div>

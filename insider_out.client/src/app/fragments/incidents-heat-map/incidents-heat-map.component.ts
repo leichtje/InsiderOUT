@@ -1,6 +1,7 @@
 import { Component, computed, input, signal } from "@angular/core";
 import { IncidentModel } from "../../models/incidents.model";
 import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
 
 export interface CalendarCell {
     id: string;
@@ -13,7 +14,7 @@ export interface CalendarCell {
     templateUrl: './incidents-heat-map.component.html',
     styleUrl: './incidents-heat-map.component.scss',
     standalone: true,
-    imports: [MatIcon]
+    imports: [MatIcon, MatTooltip]
 })
 export class IncidentsHeatMapComponent {
 
@@ -39,9 +40,15 @@ export class IncidentsHeatMapComponent {
 
     getColorTier(count: number): string {
         if (count === 0) return 'tier-0'; // No incidents
-        if (count <= 2) return 'tier-1';  // Low
-        if (count <= 5) return 'tier-2';  // Medium
-        return 'tier-3';                  // High
+        if (count <= 2) return 'tier-1 incidents';  // Low
+        if (count <= 5) return 'tier-2 incidents';  // Medium
+        return 'tier-3 incidents';                  // High
+    }
+
+    getToolTipText(date: string): string {
+        const count = this.incidentCountsByDay().get(date) || 0;
+
+        return count === 1 ? '1 incident' : `${count} incidents`
     }
 
     weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

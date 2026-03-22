@@ -1,3 +1,9 @@
+@use '../../../styles/mixins' as mixins;
+
+.title {
+    @include mixins.font();
+}
+
 .calendar-wrapper {
   max-width: 450px;
   font-family: sans-serif;
@@ -36,12 +42,15 @@
 }
 
 .nav-btn {
-    background: var(--color-primary-5);
-    color: var(--color-text);
+    background: transparent;
     border-radius: 4px;
     padding: 4px 12px;
-    cursor: pointer;
+    border: none;
     transition: background 0.2s;
+
+    mat-icon {
+        color: var(--color-primary-5) !important;
+    }
 }
 
 .nav-btn:hover {
@@ -78,7 +87,7 @@
     cursor: pointer;
 }
 
-.calendar-day:not(.empty-day):hover {
+.calendar-day:not(.empty-day):has(.incidents):hover {
     transform: scale(1.1);
     box-shadow: 0 2px 5px var(--color-primary-5);
 }
@@ -100,7 +109,7 @@
     gap: 6px;
     margin-top: 16px;
     font-size: 0.8rem;
-    color: #666;
+    color: var(--color-text-2);
 }
 
 .legend-label {
