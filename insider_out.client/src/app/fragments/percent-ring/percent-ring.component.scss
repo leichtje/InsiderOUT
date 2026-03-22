@@ -18,7 +18,7 @@
             .progress-label {
                 position: absolute;
                 font-weight: bold;
-                color: var(--color-text-2, #333);
+                color: var(--color-text);
                 z-index: 1;
             }
             
@@ -27,7 +27,7 @@
                 transform-origin: 50% 50%;
                 
                 .track {
-                    stroke: var(--color-gray, #e5e7eb);
+                    stroke: var(--color-gray);
                 }
 
                 .progress {
@@ -40,7 +40,7 @@
         .progress-text {
             font-size: 12px;
             white-space: nowrap;
-            color: var(--color-text-2, #666);
+            color: var(--color-text-2);
             text-align: center;
         }
     }

@@ -12,9 +12,8 @@
     }
 
     .department-card {
-        border: 1px solid #e0e0e0;
         border-radius: 8px;
-        background: #ffffff;
+        background: var(--color-back-gray);
         overflow: hidden;
     }
 
@@ -28,7 +27,7 @@
     }
 
     .department-header:hover {
-        background-color: #f9fafb;
+        background-color: var(--color-gray);
     }
 
     .dept-info {
@@ -45,12 +44,12 @@
         margin: 0;
         font-size: 1rem;
         font-weight: 600;
-        color: #333;
+        color: var(--color-text);
     }
 
     .dept-meta {
         font-size: 0.75rem;
-        color: #666;
+        color: var(--color-text-2);
     }
 
     .dept-actions {
@@ -61,7 +60,7 @@
 
     .chevron {
         font-size: 0.8rem;
-        color: #666;
+        color: var(--color-text-2);
         transition: transform 0.3s ease;
     }
 
@@ -71,7 +70,7 @@
 
     .department-body {
         padding: 0 16px 16px 16px;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid var(--color-back-gray);
     }
 
     .related-incident {

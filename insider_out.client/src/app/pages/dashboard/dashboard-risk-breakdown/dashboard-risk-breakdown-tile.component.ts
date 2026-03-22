@@ -13,7 +13,7 @@ import { SubjectModel } from '../../../models/profile.model';
 })
 export class DashboardRiskBreakdownComponent {
 
-    readonly topDepartments$ = input.required<DepartmentDashboards[] | null>({alias: 'topDepartments'})
+    readonly overallCompanyRisk$ = input.required<number>({alias: 'overallCompanyRisk'})
     readonly topSubjects$ = input.required<SubjectModel[] | null>({alias: 'topSubjects'})
 
 }

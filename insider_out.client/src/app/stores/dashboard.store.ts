@@ -47,15 +47,6 @@ export const DashboardStore = signalStore(
             return Math.round(totalRisk / subjects.length);
         })
 
-        const topDepartments = computed(() => {
-            const dashboards = departmentDashboards();
-            if (!dashboards || dashboards.length === 0) return [];
-
-            return [...dashboards]
-                .sort((a, b) => b.averageRiskScore - a.averageRiskScore)
-                .slice(0, 3);
-        });
-
         const topSubjects = computed(() => {
             const subjects = subjectStore.subjects();
             if (!subjects || subjects.length === 0) return [];
@@ -129,7 +120,6 @@ export const DashboardStore = signalStore(
         return {
             isLoading,
             overallCompanyRisk,
-            topDepartments,
             topSubjects,
             recentIncidents,
             assignedIncidents,

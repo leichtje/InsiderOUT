@@ -1,14 +1,18 @@
 <div class="dashboard-grid">
-
-    <div class="page-container panel-1">
-        <io-dashboard-company-risk-tile [overallCompanyRisk]="dashboardStore.overallCompanyRisk()"></io-dashboard-company-risk-tile>
-    </div>
     
-    <div class="page-container panel-2">
-        <io-dashboard-risk-breakdown-tile 
-            [topDepartments]="dashboardStore.topDepartments()" 
+    <div class="page-container panel-1">
+        <io-dashboard-risk-breakdown-tile
+            [overallCompanyRisk]="dashboardStore.overallCompanyRisk()" 
             [topSubjects]="dashboardStore.topSubjects()">
         </io-dashboard-risk-breakdown-tile>
+    </div>
+
+    <div class="page-container panel-2">
+        <io-dashboard-incidents-tile 
+            [recentIncidents]="dashboardStore.recentIncidents()" 
+            [assignedIncidents]="dashboardStore.assignedIncidents()"
+            [allIncidents]="incidentsStore.incidents()"
+        ></io-dashboard-incidents-tile>
     </div>
 
     <div class="page-container panel-3">
@@ -17,12 +21,5 @@
         ></io-dashboard-departments-tile>    
     </div>
 
-    <div class="page-container panel-4">
-        <io-dashboard-incidents-tile 
-            [recentIncidents]="dashboardStore.recentIncidents()" 
-            [assignedIncidents]="dashboardStore.assignedIncidents()"
-            [allIncidents]="incidentsStore.incidents()"
-        ></io-dashboard-incidents-tile>
-    </div>
 
 </div>
