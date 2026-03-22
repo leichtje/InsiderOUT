@@ -4,4 +4,11 @@
     .dashboard-title { 
         @include mixins.font();
     }
+
+    .tab-content {
+        padding-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 }

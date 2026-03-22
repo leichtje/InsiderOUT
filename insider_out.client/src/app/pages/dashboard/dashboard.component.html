@@ -1,7 +1,7 @@
 <io-dashboard-company-risk-tile [overallRisk]="dashboardStore.overallRisk()"></io-dashboard-company-risk-tile>
 
 <io-dashboard-incidents-tile 
-    [mostRecentIncidents]="dashboardStore.mostRecentIncidents()" 
+    [recentIncidents]="dashboardStore.recentIncidents()" 
     [assignedIncidents]="dashboardStore.assignedIncidents()"
     [allIncidents]="incidentsStore.incidents()"
     ></io-dashboard-incidents-tile>

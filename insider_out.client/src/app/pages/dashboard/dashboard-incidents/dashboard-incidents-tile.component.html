@@ -3,6 +3,56 @@
     
     <!-- Mat tab group to switch between Recent Incidents and My Assigned Incidents -->
 
+    <mat-tab-group dynamicHeight>
+        
+        <mat-tab label="Assigned Incidents">
+        <div class="related-incidents tab-content">
+            @for (incident of assignedIncidents$(); track incident.incidentId) {
+                @if (incident.isActive) {
+                    <a [routerLink]="['/incidents/open', incident.incidentId ]" class="related-incident">
+                        {{incident.title}}                                            
+                        <io-pill
+                            [pill]="incident.status"
+                            [varMap]="statusColors"
+                            [textMap]="statusText">
+                        </io-pill>
+                    </a>
+                } @else {
+                    <a [routerLink]="['/incidents/closed', incident.incidentId ]">
+                        {{incident.title}}
+                    </a>
+                }
+            } @empty {
+                <p class="empty-state">No Assigned Incidents Found.</p> 
+            }
+        </div>
+        </mat-tab>
+
+        <mat-tab label="Recent Incidents">
+        <div class="related-incidents tab-content">
+            @for (incident of recentIncidents$(); track incident.incidentId) {
+                @if (incident.isActive) {
+                    <a [routerLink]="['/incidents/open', incident.incidentId ]" class="related-incident">
+                        {{incident.title}}                                            
+                        <io-pill
+                            [pill]="incident.status"
+                            [varMap]="statusColors"
+                            [textMap]="statusText">
+                        </io-pill>
+                    </a>
+                } @else {
+                    <a [routerLink]="['/incidents/closed', incident.incidentId ]">
+                        {{incident.title}}
+                    </a>
+                }
+            } @empty {
+                <p class="empty-state">No Recent Incidents Found.</p> 
+            }
+        </div>
+        </mat-tab>
+
+    </mat-tab-group>
+
     <!-- Calendar Heat Map for Incidents -->
 
     <io-incidents-heat-map [allIncidents]="allIncidents$()"></io-incidents-heat-map>

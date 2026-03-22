@@ -38,7 +38,7 @@ export const DashboardStore = signalStore(
             return Math.round(totalRisk / subjects.length);
         })
 
-        const mostRecentIncidents = computed(() => {
+        const recentIncidents = computed(() => {
             const sortedIncidents = incidentStore.sortedIncidents();
             console.log( sortedIncidents)
             return sortedIncidents.slice(0, 10);
@@ -102,7 +102,7 @@ export const DashboardStore = signalStore(
         return {
             isLoading,
             overallRisk,
-            mostRecentIncidents,
+            recentIncidents,
             assignedIncidents,
             departmentDashboards,
         };
