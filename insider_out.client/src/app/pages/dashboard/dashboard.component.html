@@ -5,21 +5,21 @@
     </div>
     
     <div class="page-container panel-2">
-        <io-dashboard-department-risk-tile [overallDepartmentRisk]="dashboardStore.overallDepartmentRisk()"></io-dashboard-department-risk-tile>
+        <io-dashboard-department-risk-tile [topDepartmentRisk]="dashboardStore.topDepartmentRisk()"></io-dashboard-department-risk-tile>
     </div>
-
+   
     <div class="page-container panel-3">
+        <io-dashboard-departments-tile
+        [departmentDashboards]="dashboardStore.departmentDashboards()" 
+        ></io-dashboard-departments-tile>    
+    </div>
+ 
+    <div class="page-container panel-4">
         <io-dashboard-incidents-tile 
             [recentIncidents]="dashboardStore.recentIncidents()" 
             [assignedIncidents]="dashboardStore.assignedIncidents()"
             [allIncidents]="incidentsStore.incidents()"
         ></io-dashboard-incidents-tile>
-    </div>
-
-    <div class="page-container panel-4">
-        <io-dashboard-departments-tile
-            [departmentDashboards]="dashboardStore.departmentDashboards()" 
-        ></io-dashboard-departments-tile>    
     </div>
 
 </div>

@@ -1,6 +1,7 @@
 
 import { Component, input } from '@angular/core';
 import { PercentRingComponent } from "../../../fragments/percent-ring/percent-ring.component";
+import { DepartmentDashboards } from '../../../stores/dashboard.store';
 
 @Component({
     selector: 'io-dashboard-department-risk-tile',
@@ -11,5 +12,5 @@ import { PercentRingComponent } from "../../../fragments/percent-ring/percent-ri
 })
 export class DashboardDepartmentRiskComponent {
 
-    readonly overallDepartmentRisk$ = input.required<number>({alias: 'overallDepartmentRisk'})
+    readonly topDepartmentRisk$ = input.required<DepartmentDashboards | null>({alias: 'topDepartmentRisk'})
 }
