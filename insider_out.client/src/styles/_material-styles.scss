@@ -188,13 +188,14 @@ mat-nav-list {
     }
 }
 
+.mdc-tab-indicator__content--underline {
+    --mdc-tab-indicator-active-indicator-color: var(--color-primary);
+}
 
 .cdk-overlay-backdrop {
     backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
 }
-
-
 
 .snackbar {
     .mdc-snackbar__surface {
@@ -209,7 +210,6 @@ mat-nav-list {
         @include mixins.font();
     }
 }
-
 
 .cdk-drag-preview { 
     box-sizing: border-box; 
