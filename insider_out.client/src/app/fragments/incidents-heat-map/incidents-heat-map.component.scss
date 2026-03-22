@@ -1,0 +1,28 @@
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    max-width: 400px;
+}
+
+.calendar-day {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+    transition: transform 0.1s ease;
+    cursor: pointer;
+}
+
+.calendar-day:hover {
+    transform: scale(1.1); 
+}
+
+.tier-0 { background-color: #ebedf0; }
+.tier-1 { background-color: #ffcda5; }
+.tier-2 { background-color: #ff9852; }
+.tier-3 { background-color: #e03a00; color: white; }

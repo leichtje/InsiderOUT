@@ -1,0 +1,14 @@
+<div class="calendar-wrapper">    
+    <div class="calendar-grid">
+        @for (day of daysInCurrentMonth(); track day.date) {
+        <div 
+            class="calendar-day" 
+            [class]="getColorTier(incidentCountsByDay().get(day.date) || 0)"
+            [title]="(incidentCountsByDay().get(day.date) || 0) + ' incidents'">
+            
+            {{ day.dayOfMonth }}
+            
+        </div>
+        }
+    </div>
+</div>
