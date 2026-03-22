@@ -7,7 +7,39 @@
         margin-bottom: 15px;
     }
 
-    io-percent-ring {
-        --percent-ring-alignment: center;
+    .risk-section {
+        margin-top: 12px;
     }
+
+    .section-header {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .risk-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .risk-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background-color: #f9fafb;
+        border-radius: 6px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .item-name {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #333;
+    }
+
 }
