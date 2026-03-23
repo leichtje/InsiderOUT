@@ -243,3 +243,45 @@ mat-nav-list {
 .mdc-switch__track::after {
     background: var(--color-primary-5) !important;
 }
+
+.month-selector {
+    width: fit-content;
+    
+    .mat-mdc-text-field-wrapper {
+        padding: 0 4px 0 0 !important;
+    }
+
+    .mat-mdc-form-field-infix {
+        padding: 0 !important;
+        width: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .mat-mdc-select-value {
+        font-size: 1.17em; 
+        font-weight: bold;
+        color: var(--color-text, var(--color-text)); 
+    }
+
+    .mat-mdc-select-arrow-wrapper {
+        display: flex;
+        align-items: center;
+        transform: translateY(1px); 
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+        border: none !important;
+    }
+}
+
+.month-dropdown-panel {
+    min-width: 140px !important; 
+
+    .mdc-list-item__primary-text {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+}

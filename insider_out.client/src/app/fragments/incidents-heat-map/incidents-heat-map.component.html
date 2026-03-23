@@ -6,7 +6,7 @@
         <div class="title-group">
             <div class="month-year-picker">
                 <mat-form-field appearance="outline" subscriptSizing="dynamic" class="month-selector">
-                    <mat-select [value]="viewingMonth()" (selectionChange)="onMonthSelect($event.value)">
+                    <mat-select [value]="viewingMonth()" (selectionChange)="onMonthSelect($event.value)" panelClass="month-dropdown-panel">
                         @for (month of months; track $index) {
                             <mat-option [value]="$index">{{ month }}</mat-option>
                         }
