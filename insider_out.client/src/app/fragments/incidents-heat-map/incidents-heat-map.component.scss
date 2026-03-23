@@ -101,6 +101,12 @@
     cursor: default;
 }
 
+.calendar-day.future-day {
+    background-color: transparent;
+    color: var(--color-text-2); 
+    pointer-events: none; 
+}
+
 .calendar-day.selected {
     outline: 2px solid var(--color-primary-5);
     outline-offset: 2px;

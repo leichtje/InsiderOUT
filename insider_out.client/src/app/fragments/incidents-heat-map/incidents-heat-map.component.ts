@@ -10,6 +10,7 @@ export interface CalendarCell {
     isPadding: boolean;
     date?: string;
     dayOfMonth?: number;
+    isFuture?: boolean;
 }
 @Component({
     selector: 'io-incidents-heat-map',
@@ -63,6 +64,9 @@ export class IncidentsHeatMapComponent {
     calendarGrid = computed<CalendarCell[]>(() => {
         const year = this.viewingYear();
         const month = this.viewingMonth();
+        
+        const now = new Date();
+        const todayString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
         const firstDayOfWeek = new Date(year, month, 1).getDay();
         const totalDays = new Date(year, month + 1, 0).getDate();
@@ -80,12 +84,13 @@ export class IncidentsHeatMapComponent {
                 id: `day-${dateString}`, 
                 isPadding: false,
                 date: dateString, 
-                dayOfMonth: day 
+                dayOfMonth: day,
+                isFuture: dateString > todayString 
             };
         });
 
         return [...paddingDays, ...actualDays];
-    });
+    })
 
     selectedDate = signal<string | null>(null);
 
