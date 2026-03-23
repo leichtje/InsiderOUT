@@ -30,6 +30,8 @@
     justify-content: center;
     min-height: 45px;
     .today-btn {
+        padding: 0;
+        margin: 0;
         background-color: transparent;
         border: none;
         mat-icon {
@@ -188,7 +190,7 @@
 }
 
 .month-selector {
-    width: 140px;
+    width: fit-content;
 }
 
 .month-selector ::ng-deep .mat-mdc-select-value {

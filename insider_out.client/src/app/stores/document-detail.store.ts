@@ -66,11 +66,6 @@ export const DocumentDetailStore = signalStore(
             effect(() => {
                 const document = store.document();
                 if (!document) return;
-
-                if (incidentStore.incidents().length === 0) {
-                    incidentStore.loadAll(); 
-                }
-
             });
         },  
         onDestroy(store) {
