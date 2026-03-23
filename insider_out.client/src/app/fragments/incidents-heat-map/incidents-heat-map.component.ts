@@ -6,6 +6,8 @@ import { RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { PillComponent } from "../pill/pill.component";
 import { status_colors, status_text } from "../pill/incident-status-constants";
+import { MatFormField } from "@angular/material/form-field";
+import { MatSelect, MatOption } from "@angular/material/select";
 
 export interface CalendarCell {
     id: string;
@@ -19,7 +21,7 @@ export interface CalendarCell {
     templateUrl: './incidents-heat-map.component.html',
     styleUrl: './incidents-heat-map.component.scss',
     standalone: true,
-    imports: [MatIcon, MatTooltip, RouterLink, DatePipe, PillComponent]
+    imports: [MatIcon, MatTooltip, RouterLink, DatePipe, PillComponent, MatFormField, MatSelect, MatOption]
 })
 export class IncidentsHeatMapComponent {
 
@@ -60,6 +62,11 @@ export class IncidentsHeatMapComponent {
     }
 
     weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    months = [
+        'January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
 
     currentMonthName = computed(() => {
         const date = new Date(this.viewingYear(), this.viewingMonth(), 1);
@@ -141,6 +148,10 @@ export class IncidentsHeatMapComponent {
         const now = new Date();
         this.viewingYear.set(now.getFullYear());
         this.viewingMonth.set(now.getMonth());
+    }
+        
+    onMonthSelect(monthIndex: number) {
+        this.viewingMonth.set(monthIndex);
     }
 
     onDayClick(date: string | undefined, count: number) {

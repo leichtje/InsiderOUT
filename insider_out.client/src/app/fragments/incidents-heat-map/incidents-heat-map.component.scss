@@ -180,3 +180,32 @@
     border-radius: 2px;
     display: inline-block;
 }
+
+.month-year-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.month-selector {
+    width: 140px;
+}
+
+.month-selector ::ng-deep .mat-mdc-select-value {
+    font-size: 1.17em; 
+    font-weight: bold;
+    color: #333;
+}
+
+.month-selector ::ng-deep .mdc-notched-outline__leading,
+.month-selector ::ng-deep .mdc-notched-outline__notch,
+.month-selector ::ng-deep .mdc-notched-outline__trailing {
+    border: none !important;
+}
+
+.year-label {
+    font-size: 1.17em;
+    font-weight: bold;
+    color: #333;
+    padding-bottom: 2px;
+}
