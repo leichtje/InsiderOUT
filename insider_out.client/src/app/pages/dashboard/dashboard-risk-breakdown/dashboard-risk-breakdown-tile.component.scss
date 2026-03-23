@@ -35,7 +35,7 @@
 
     .info-grid {
         background: var(--color-back-gray);
-        padding: 20px;
+        padding: 10px 20px;
         border-radius: 5px;
 
         span {
@@ -76,7 +76,6 @@
         background-color: var(--color-back-gray);
         border-radius: 6px;
         overflow: hidden;
-        transition: all 0.2s ease;
     }
 
     .risk-list-item {

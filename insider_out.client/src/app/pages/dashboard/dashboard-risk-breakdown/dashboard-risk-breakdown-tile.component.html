@@ -8,7 +8,6 @@
         <div class="dashboard-title panel-2">Riskiest Employees</div>
                 
         <div class="risk-section panel-4">
-            <div class="section-header">Riskiest Employees</div>
             <div class="risk-list">
                 @for (subject of topSubjects$(); track subject.subjectId) {
                 
@@ -33,16 +32,6 @@
                             @if (subject.department) {
                                 <span class="sub-label">Dept</span>
                                 <span>{{ subject.department }}</span>
-                            }
-
-                            @if (subject.email) {
-                                <span class="sub-label">Email</span>
-                                <span>{{ subject.email }}</span>
-                            }
-
-                            @if (subject.phone) {
-                                <span class="sub-label">Phone</span>
-                                <span>{{ subject.phone }}</span>
                             }
 
                         </div>
