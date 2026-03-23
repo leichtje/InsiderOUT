@@ -19,7 +19,7 @@ export class TokensDocumentsComponent {
     private route = inject(ActivatedRoute);
 
     private allDocumentTokens = this.documentStore.documents;
-    protected currentDepartmentFilter = signal<string>('all');
+    protected currentDepartmentFilter = signal<string>('');
 
     readonly searchQuery = signal<string>('');
 
@@ -30,12 +30,10 @@ export class TokensDocumentsComponent {
 
         let result = documents; 
 
-        if (departmentFilter !== 'all') {
+        if (departmentFilter !== '') {
             result = result.filter(i => i.department === departmentFilter);
         }
 
-
-        console.log(searchQuery)
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             result = result.filter(r => 
