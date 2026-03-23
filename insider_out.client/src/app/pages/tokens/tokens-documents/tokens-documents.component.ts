@@ -30,7 +30,7 @@ export class TokensDocumentsComponent {
 
         let result = documents; 
 
-        if (departmentFilter !== '') {
+        if (departmentFilter) {
             result = result.filter(i => i.department === departmentFilter);
         }
 
