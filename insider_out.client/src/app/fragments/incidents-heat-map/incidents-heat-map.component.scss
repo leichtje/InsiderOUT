@@ -187,7 +187,7 @@
 .month-year-picker {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .month-selector {
@@ -197,7 +197,7 @@
 .month-selector ::ng-deep .mat-mdc-select-value {
     font-size: 1.17em; 
     font-weight: bold;
-    color: #333;
+    color: var(--color-text);
 }
 
 .month-selector ::ng-deep .mdc-notched-outline__leading,
@@ -209,6 +209,6 @@
 .year-label {
     font-size: 1.17em;
     font-weight: bold;
-    color: #333;
+    color: var(--color-text);
     padding-bottom: 2px;
 }
