@@ -24,11 +24,33 @@
             <div class="calendar-day empty-day"></div>
         } @else {
             <div 
-                class="calendar-day" 
+                class="calendar-day"
                 [class]="getColorTier(incidentCountsByDay().get(cell.date!) || 0)"
-                [matTooltip]="getToolTipText(cell.date!)">
+                [class.incidents]="(incidentCountsByDay().get(cell.date!) || 0) > 0"
+                [class.selected]="selectedDate() === cell.date" 
+                [matTooltip]="getToolTipText(cell.date!)"
+                (click)="onDayClick(cell.date, incidentCountsByDay().get(cell.date!) || 0)">
                 {{ cell.dayOfMonth }}
             </div>
+
+            @if (selectedDate()) {
+                <div class="selected-day-container">
+                    <div class="section-title">
+                    <span class="label">Incidents on {{ selectedDate() | date:'mediumDate' }}</span>
+                    <button class="close-btn" (click)="selectedDate.set(null)">✕</button>
+                    </div>
+                    
+                    <div class="related-incidents">
+                    @for (incident of selectedDayIncidents(); track incident.incidentId) {
+                        
+                        <a [routerLink]="['/incidents/open', incident.incidentId]" class="related-incident">
+                        <span class="incident-title">{{ incident.title }}</span>
+                        </a>
+
+                    }
+                    </div>
+                </div>
+            }
         }
 
         }

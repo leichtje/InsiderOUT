@@ -101,6 +101,48 @@
     cursor: default;
 }
 
+.calendar-day.selected {
+    outline: 2px solid var(--color-primary-5);
+    outline-offset: 2px;
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+.selected-day-container {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eaeaea;
+    animation: slideDown 0.2s ease-out forwards;
+}
+
+.selected-day-container .section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .tier-0 { background-color: var(--tier-0); } 
 .tier-1 { background-color: var(--tier-1); } 
 .tier-2 { background-color: var(--tier-2); } 

@@ -2,6 +2,8 @@ import { Component, computed, input, signal } from "@angular/core";
 import { IncidentModel } from "../../models/incidents.model";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
+import { RouterLink } from "@angular/router";
+import { DatePipe } from "@angular/common";
 
 export interface CalendarCell {
     id: string;
@@ -14,7 +16,7 @@ export interface CalendarCell {
     templateUrl: './incidents-heat-map.component.html',
     styleUrl: './incidents-heat-map.component.scss',
     standalone: true,
-    imports: [MatIcon, MatTooltip]
+    imports: [MatIcon, MatTooltip, RouterLink, DatePipe]
 })
 export class IncidentsHeatMapComponent {
 
@@ -85,6 +87,22 @@ export class IncidentsHeatMapComponent {
         return [...paddingDays, ...actualDays];
     });
 
+    selectedDate = signal<string | null>(null);
+
+    selectedDayIncidents = computed(() => {
+        const date = this.selectedDate();
+        if (!date) return [];
+
+        const all = this.allIncidents$();
+        if (!all) return [];
+
+        return all.filter(incident => {
+            const incidentDateString = new Date(incident.date).toISOString().split('T')[0];
+            return incidentDateString === date;
+        });
+    });
+
+
     previousMonth() {
         if (this.viewingMonth() === 0) {
             this.viewingMonth.set(11);
@@ -114,5 +132,12 @@ export class IncidentsHeatMapComponent {
         this.viewingYear.set(now.getFullYear());
         this.viewingMonth.set(now.getMonth());
     }
+
+    onDayClick(date: string | undefined, count: number) {
+        if (date && count > 0) {
+            this.selectedDate.update(current => current === date ? null : date);
+        }
+    }
+
 }
 
