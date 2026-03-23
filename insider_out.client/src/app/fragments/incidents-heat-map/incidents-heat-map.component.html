@@ -5,7 +5,7 @@
         <div class="title-group">
             <h3>{{ currentMonthName() }}</h3>
             @if (!isCurrentMonth()) {
-                <button (click)="goToCurrentMonth()" class="today-btn"><mat-icon>today</mat-icon></button>
+                <button (click)="goToCurrentMonth()" matTooltip="View Current Month" class="today-btn"><mat-icon>today</mat-icon></button>
             }
         </div>
         <button (click)="nextMonth()" class="nav-btn"><mat-icon>keyboard_arrow_right</mat-icon></button>

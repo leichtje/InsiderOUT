@@ -25,9 +25,9 @@
                             </io-percent-ring>
                             <span class="chevron">&#x25BC;</span>
                         </div>
-                        </div>
+                    </div>
 
-                        @if (expandedSubjectId() === subject.subjectId) {
+                    @if (expandedSubjectId() === subject.subjectId) {
                         <div class="info-grid">
                         
                             @if (subject.department) {
@@ -45,17 +45,17 @@
                                 <span>{{ subject.phone }}</span>
                             }
 
-                            <button class="view-profile-btn" [routerLink]="['/subjects', subject.subjectId]">
-                                View Full Profile
-                            </button>
-
                         </div>
-                        }
-                    </div>
-
-                    } @empty {
-                        <p class="empty-state">No subject data available.</p>
+                            
+                        <button class="view-profile-btn" [routerLink]="['/settings/profiles/subject', subject.subjectId]">
+                            View Full Profile
+                        </button>
                     }
+                </div>
+
+                } @empty {
+                    <p class="empty-state">No subject data available.</p>
+                }
             </div>
         </div>
     </div>

@@ -84,10 +84,14 @@
     font-weight: 500;
     color: var(--color-text);
     transition: transform 0.1s ease;
+    cursor: default;
+}
+
+.calendar-day.incidents {
     cursor: pointer;
 }
 
-.calendar-day:not(.empty-day):has(.incidents):hover {
+.calendar-day:not(.empty-day).incidents:hover {
     transform: scale(1.1);
     box-shadow: 0 2px 5px var(--color-primary-5);
 }
