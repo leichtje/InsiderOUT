@@ -1,102 +1,352 @@
--- Possible Correction
+--SQL(Risk Score)
 
 
+------------------------------------------------------------
+-- InsiderOUT Risk Engine – Optimized Version (iTVFs)
+-- Target DB: InsiderOut
+------------------------------------------------------------
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
 
-import os
+------------------------------------------------------------
+-- 1. Baseline risk by subject role (iTVF)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_get_baseline_risk', 'IF') IS NOT NULL
+    DROP FUNCTION dbo.fn_get_baseline_risk;
+GO
 
-import zipfile
+CREATE FUNCTION dbo.fn_get_baseline_risk(@subject_id INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT
+        CASE s.SubjectRole
+            WHEN 'Elevated' THEN 10.0
+            WHEN 'Admin'    THEN 15.0
+            ELSE 0.0
+        END AS BaselineRisk
+    FROM dbo.Subjects s
+    WHERE s.SubjectId = @subject_id
+);
+GO
 
-from docx import Document
- 
-def create_final_doc(content, header, filename_base, token_id):
+------------------------------------------------------------
+-- 2. Time multiplier (day of week + hour) (iTVF)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_get_time_multiplier', 'IF') IS NOT NULL
+    DROP FUNCTION dbo.fn_get_time_multiplier;
+GO
 
-    filename = f"{filename_base}.docx" # Added extension just to be safe
- 
-    # 1. Create base DOCX
+CREATE FUNCTION dbo.fn_get_time_multiplier(@timestamp DATETIME)
+RETURNS TABLE
+AS
+RETURN
+(
+    WITH t AS
+    (
+        SELECT
+            DATEPART(HOUR, @timestamp)   AS HourOfDay,
+            DATEPART(WEEKDAY, @timestamp) AS DayOfWeek
+    )
+    SELECT
+        CASE
+            WHEN t.DayOfWeek = 1 OR t.DayOfWeek = 7 THEN 1.3   -- weekend
+            WHEN t.HourOfDay < 9 OR t.HourOfDay >= 18 THEN 1.2 -- off-hours
+            ELSE 1.0
+        END AS TimeMultiplier
+    FROM t
+);
+GO
 
-    doc = Document()
+------------------------------------------------------------
+-- 3. Sensitivity value from token severity (iTVF)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_get_sensitivity_value', 'IF') IS NOT NULL
+    DROP FUNCTION dbo.fn_get_sensitivity_value;
+GO
 
-    doc.add_heading(header, level=1)
+CREATE FUNCTION dbo.fn_get_sensitivity_value(@token_severity VARCHAR(20))
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT
+        CASE @token_severity
+            WHEN 'Low'    THEN 15
+            WHEN 'Medium' THEN 35
+            WHEN 'High'   THEN 75
+            ELSE 0
+        END AS SensitivityValue
+);
+GO
 
-    doc.add_paragraph(content)
+------------------------------------------------------------
+-- 4. Context multiplier (subject dept vs document dept) (iTVF)
+--    Uses department names to match schema:
+--    Subjects.SubjectDepartment (string)
+--    Documents.DocumentDepartment (string)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_calculate_context_multiplier', 'IF') IS NOT NULL
+    DROP FUNCTION dbo.fn_calculate_context_multiplier;
+GO
 
-    doc.save(filename)
- 
-    # 2. Unzip
+CREATE FUNCTION dbo.fn_calculate_context_multiplier(@subject_id INT, @document_id INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    WITH ctx AS
+    (
+        SELECT
+            s.SubjectDepartment AS SubjectDept,
+            d.DocumentDepartment AS DocumentDept
+        FROM dbo.Subjects  s
+        CROSS JOIN dbo.Documents d
+        WHERE s.SubjectId = @subject_id
+          AND d.DocumentId = @document_id
+    )
+    SELECT
+        CASE
+            WHEN ctx.SubjectDept IS NOT NULL
+             AND ctx.DocumentDept IS NOT NULL
+             AND ctx.SubjectDept = ctx.DocumentDept
+                THEN 0.75
+            ELSE 2.0
+        END AS ContextMultiplier
+    FROM ctx
+);
+GO
 
-    unzip_dir = "temp_unzip"
+------------------------------------------------------------
+-- 5. Time decay (older incidents have less impact) (iTVF)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_calculate_time_decay', 'IF') IS NOT NULL
+    DROP FUNCTION dbo.fn_calculate_time_decay;
+GO
 
-    os.makedirs(unzip_dir, exist_ok=True)
- 
-    with zipfile.ZipFile(filename, 'r') as zip_ref:
+CREATE FUNCTION dbo.fn_calculate_time_decay(@incident_time DATETIME)
+RETURNS TABLE
+AS
+RETURN
+(
+    WITH d AS
+    (
+        SELECT DATEDIFF(DAY, @incident_time, GETDATE()) AS DaysOld
+    )
+    SELECT
+        CASE
+            WHEN d.DaysOld < 7 THEN 1.0
+            WHEN d.DaysOld > 30 THEN 0.05
+            ELSE 1.0 - ((d.DaysOld - 7) / 23.0) * 0.95
+        END AS TimeDecay
+    FROM d
+);
+GO
 
-        zip_ref.extractall(unzip_dir)
- 
-    # IMPORTANT: Word can be picky about Relationship IDs. They should start with letters.
+------------------------------------------------------------
+-- 6. Normalize risk score to 0–100 (sigmoid) (iTVF)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_normalize_risk_score', 'IF') IS NOT NULL
+    DROP FUNCTION dbo.fn_normalize_risk_score;
+GO
 
-    # Let's create a safe, alphanumeric ID for the XML by stripping dashes.
+CREATE FUNCTION dbo.fn_normalize_risk_score(@raw_score FLOAT)
+RETURNS TABLE
+AS
+RETURN
+(
+    WITH n AS
+    (
+        SELECT 100.0 / (1.0 + EXP(-0.1 * (@raw_score - 50))) AS Normalized
+    )
+    SELECT
+        CAST(
+            ROUND(
+                CASE
+                    WHEN n.Normalized > 100 THEN 100
+                    WHEN n.Normalized < 0   THEN 0
+                    ELSE n.Normalized
+                END,
+                0
+            ) AS INT
+        ) AS NormalizedScore
+    FROM n
+);
+GO
 
-    safe_rel_id = f"rIdCanary{token_id.replace('-', '')}"
- 
-    # 3. Inject canary XML into Relationships
+------------------------------------------------------------
+-- 7. Incident score (scalar, uses iTVFs)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_calculate_incident_score', 'FN') IS NOT NULL
+    DROP FUNCTION dbo.fn_calculate_incident_score;
+GO
 
-    rels_path = os.path.join(unzip_dir, "word/_rels/document.xml.rels")
+CREATE FUNCTION dbo.fn_calculate_incident_score(
+    @subject_id INT,
+    @token_id INT,
+    @incident_timestamp DATETIME2
+)
+RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @incident_score   FLOAT;
+    DECLARE @sensitivity_value INT;
+    DECLARE @context_mult     FLOAT;
+    DECLARE @time_mult        FLOAT;
+    DECLARE @document_id      INT;
+    DECLARE @token_severity   NVARCHAR(50);
 
-    with open(rels_path, "r", encoding="utf-8") as f:
+    -- Token severity
+    SELECT @token_severity = t.TokenSeverity
+    FROM dbo.Tokens t
+    WHERE t.TokenId = @token_id;
 
-        xml_content = f.read()
- 
-    new_relationship = f"""<Relationship Id="{safe_rel_id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="http://192.120.1.124/tokens/{token_id}.png" TargetMode="External"/>"""
+    -- Sensitivity value (from iTVF)
+    SELECT @sensitivity_value = sv.SensitivityValue
+    FROM dbo.fn_get_sensitivity_value(@token_severity) sv;
 
-    xml_content = xml_content.replace('</Relationships>', f'{new_relationship}\n</Relationships>')
- 
-    with open(rels_path, "w", encoding="utf-8") as f:
+    -- Document tied to this token
+    SELECT @document_id = d.DocumentId
+    FROM dbo.Documents d
+    WHERE d.DocumentTokenId = @token_id;
 
-        f.write(xml_content)
- 
-    # 4. NEW FIX: Inject the actual image block into the Document body
+    -- Context multiplier (from iTVF)
+    SELECT @context_mult = cm.ContextMultiplier
+    FROM dbo.fn_calculate_context_multiplier(@subject_id, @document_id) cm;
 
-    doc_xml_path = os.path.join(unzip_dir, "word/document.xml")
+    -- Time multiplier (from iTVF)
+    SELECT @time_mult = tm.TimeMultiplier
+    FROM dbo.fn_get_time_multiplier(@incident_timestamp) tm;
 
-    with open(doc_xml_path, "r", encoding="utf-8") as f:
+    -- Incident score (same math as original)
+    SET @incident_score = @sensitivity_value * @context_mult * @time_mult;
 
-        doc_xml = f.read()
- 
-    # This is standard DrawingML for a 1x1 pixel invisible image referencing our safe_rel_id.
+    RETURN @incident_score;
+END;
+GO
 
-    # We use r:link instead of r:embed because it is an External TargetMode.
+------------------------------------------------------------
+-- 8. Subject risk score (scalar, uses iTVFs + incident fn)
+------------------------------------------------------------
+IF OBJECT_ID('dbo.fn_calculate_subject_risk_score', 'FN') IS NOT NULL
+    DROP FUNCTION dbo.fn_calculate_subject_risk_score;
+GO
 
-    drawing_xml = f"""<w:p><w:r><w:drawing><wp:inline><wp:extent cx="1" cy="1"/><wp:docPr id="999" name="CanaryToken"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="0" name="Canary"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:link="{safe_rel_id}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:ext cx="1" cy="1"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>"""
- 
-    # Inject it right at the end of the document body
+CREATE FUNCTION dbo.fn_calculate_subject_risk_score(@subject_id INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @total_risk           FLOAT = 0.0;
+    DECLARE @baseline_risk        FLOAT;
+    DECLARE @time_window_hours    INT   = 1;
+    DECLARE @frequency_threshold  INT   = 3;
+    DECLARE @recent_incident_count INT  = 0;
+    DECLARE @normalized_score     INT;
 
-    doc_xml = doc_xml.replace('</w:body>', f'{drawing_xml}</w:body>')
- 
-    with open(doc_xml_path, "w", encoding="utf-8") as f:
+    -- Baseline (from iTVF)
+    SELECT @baseline_risk = br.BaselineRisk
+    FROM dbo.fn_get_baseline_risk(@subject_id) br;
 
-        f.write(doc_xml)
- 
-    output_dir = r"C:\Users\Administrator\source\repos\leichtje\InsiderOUT\insider_out.client\src\assets\docs"
+    SET @total_risk = @baseline_risk;
 
-    os.makedirs(output_dir, exist_ok=True)
- 
-    # 5. Rezip using correct DOCX compression (ZIP_DEFLATED)
+    -- Aggregate incident scores with decay (same math)
+    SELECT @total_risk = @total_risk + SUM(
+        dbo.fn_calculate_incident_score(i.IncidentTiedSubjectId, i.IncidentTokenId, i.IncidentCreatedDate) *
+        td.TimeDecay
+    )
+    FROM dbo.Incidents i
+    CROSS APPLY dbo.fn_calculate_time_decay(i.IncidentCreatedDate) td
+    WHERE i.IncidentTiedSubjectId = @subject_id;
 
-    final_file = os.path.join(output_dir, f"{filename_base}.docx")
- 
-    # Added zipfile.ZIP_DEFLATED here
+    -- Velocity check (incidents in last N hours)
+    SELECT @recent_incident_count = COUNT(*)
+    FROM dbo.Incidents i
+    WHERE i.IncidentTiedSubjectId = @subject_id
+      AND i.IncidentCreatedDate >= DATEADD(HOUR, -@time_window_hours, GETDATE());
 
-    with zipfile.ZipFile(final_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    IF @recent_incident_count >= @frequency_threshold
+        SET @total_risk = @total_risk * 1.5;
 
-        for root, dirs, files in os.walk(unzip_dir):
+    -- Normalize 0–100 (from iTVF, same sigmoid)
+    SELECT @normalized_score = ns.NormalizedScore
+    FROM dbo.fn_normalize_risk_score(@total_risk) ns;
 
-            for file in files:
+    RETURN @normalized_score;
+END;
+GO
 
-                full_path = os.path.join(root, file)
+------------------------------------------------------------
+-- 9. Stored procedure – manual recalculation of subject risk
+------------------------------------------------------------
+IF OBJECT_ID('dbo.sp_update_subject_risk_scores', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_update_subject_risk_scores;
+GO
 
-                arcname = os.path.relpath(full_path, unzip_dir)
+CREATE PROCEDURE dbo.sp_update_subject_risk_scores
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-                zipf.write(full_path, arcname)
- 
-    return f"{filename_base}.docx"
+    UPDATE s
+    SET s.SubjectRiskScore = dbo.fn_calculate_subject_risk_score(s.SubjectId)
+    FROM dbo.Subjects s
+    WHERE s.SubjectId IN (
+        SELECT DISTINCT i.IncidentTiedSubjectId
+        FROM dbo.Incidents i
+    );
+END;
+GO
 
+------------------------------------------------------------
+-- 10. Trigger – real-time incident + subject risk updates
+------------------------------------------------------------
+IF OBJECT_ID('dbo.tr_incidents_calculate_score', 'TR') IS NOT NULL
+    DROP TRIGGER dbo.tr_incidents_calculate_score;
+GO
+
+CREATE TRIGGER dbo.tr_incidents_calculate_score
+ON dbo.Incidents
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update IncidentRiskScore for inserted/updated incidents
+    UPDATE i
+    SET i.IncidentRiskScore = dbo.fn_calculate_incident_score(
+        i.IncidentTiedSubjectId,
+        i.IncidentTokenId,
+        i.IncidentCreatedDate
+    )
+    FROM dbo.Incidents i
+    INNER JOIN inserted ins ON i.IncidentId = ins.IncidentId;
+
+    -- Collect affected subjects from inserted + deleted
+    DECLARE @affected_subjects TABLE (SubjectId INT);
+
+    INSERT INTO @affected_subjects (SubjectId)
+    SELECT DISTINCT IncidentTiedSubjectId FROM inserted
+    UNION
+    SELECT DISTINCT IncidentTiedSubjectId FROM deleted;
+
+    -- Update SubjectRiskScore for affected subjects
+    UPDATE s
+    SET s.SubjectRiskScore = dbo.fn_calculate_subject_risk_score(s.SubjectId)
+    FROM dbo.Subjects s
+    WHERE s.SubjectId IN (SELECT SubjectId FROM @affected_subjects);
+END;
+GO
+
+------------------------------------------------------------
+-- 11. Example query – risk for all subjects (for dashboards)
+------------------------------------------------------------
+-- SELECT 
+--     s.SubjectId,
+--     s.SubjectDepartment,
+--     s.SubjectRole,
+--     dbo.fn_calculate_subject_risk_score(s.SubjectId) AS risk_score
+-- FROM dbo.Subjects s
+-- ORDER BY dbo.fn_calculate_subject_risk_score(s.SubjectId) DESC;
+------------------------------------------------------------
