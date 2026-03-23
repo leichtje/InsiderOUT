@@ -226,7 +226,7 @@ export const DocumentStore = signalStore(
                     switchMap((formData) => {
                         return http.post<documentGenerationData>(`https://localhost:7244/api/generation/generate-preview`, formData).pipe(
                             tap((response) => {
-                                patchState(store, { previewData: response, isLoading: false });
+                                patchState(store, { previewData: response, isGenerationLoading: false });
                             }),
                             catchError((err) => {
                                 patchState(store, { isGenerationLoading: false, error: err.message });
@@ -244,7 +244,7 @@ export const DocumentStore = signalStore(
                         return http.post<{ fileName: string }>(`https://localhost:7244/api/generation/finalize`, previewData).pipe(
                             tap((response) => {
                                 const updatedPreview = { ...previewData, fileName: response.fileName };
-                                patchState(store, { previewData: updatedPreview, isLoading: false });
+                                patchState(store, { previewData: updatedPreview, isGenerationLoading: false });
                             }),
                             catchError((err) => {
                                 patchState(store, { isGenerationLoading: false, error: err.message });

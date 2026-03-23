@@ -2,10 +2,10 @@
     <div class="grid">
         <div class="dashboard-title panel-1">Overall Company Risk</div>
         <div class="overall-company-risk panel-3">
-            <io-percent-ring [percentage]="overallCompanyRisk$()" [size]="100" [strokeWidth]="5"></io-percent-ring>
+            <io-percent-ring [percentage]="overallCompanyRisk$()" [size]="130" [strokeWidth]="6"></io-percent-ring>
         </div>
 
-        <div class="dashboard-title panel-2">Riskiest Employees</div>
+        <div class="dashboard-title panel-2">Elevated Risk Employees</div>
                 
         <div class="risk-section panel-4">
             <div class="risk-list">
@@ -20,7 +20,7 @@
                             <io-percent-ring 
                                 [percentage]="subject.riskScore" 
                                 [size]="40" 
-                                [strokeWidth]="4">
+                                [strokeWidth]="3">
                             </io-percent-ring>
                             <span class="chevron">&#x25BC;</span>
                         </div>
