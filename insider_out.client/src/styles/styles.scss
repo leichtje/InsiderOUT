@@ -406,3 +406,20 @@ button {
         transition: transform 0.2s ease;
     }
 }
+
+
+.related-incidents {
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+}
+
+.related-incident {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .incident-title {
+        @include mixins.ellipsis();
+    }
+}

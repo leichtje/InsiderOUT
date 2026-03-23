@@ -4,6 +4,8 @@ import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
+import { PillComponent } from "../pill/pill.component";
+import { status_colors, status_text } from "../pill/incident-status-constants";
 
 export interface CalendarCell {
     id: string;
@@ -17,11 +19,14 @@ export interface CalendarCell {
     templateUrl: './incidents-heat-map.component.html',
     styleUrl: './incidents-heat-map.component.scss',
     standalone: true,
-    imports: [MatIcon, MatTooltip, RouterLink, DatePipe]
+    imports: [MatIcon, MatTooltip, RouterLink, DatePipe, PillComponent]
 })
 export class IncidentsHeatMapComponent {
 
     readonly allIncidents$ = input.required<IncidentModel[]>({alias: 'allIncidents'});
+
+    statusColors = status_colors;
+    statusText = status_text;
 
     viewingYear = signal(new Date().getFullYear());
     viewingMonth = signal(new Date().getMonth());
@@ -140,7 +145,20 @@ export class IncidentsHeatMapComponent {
 
     onDayClick(date: string | undefined, count: number) {
         if (date && count > 0) {
+            const isOpening = this.selectedDate() !== date; 
+
             this.selectedDate.update(current => current === date ? null : date);
+        
+            if(isOpening) {
+                setTimeout(() => {
+                    const listElement = document.getElementById('incident-list-container');
+
+                    if(listElement) {
+                        listElement.scrollIntoView({behavior: "smooth", block:"end"})
+                    }
+                }, 10);
+            }
+        
         }
     }
 

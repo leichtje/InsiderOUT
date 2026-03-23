@@ -31,7 +31,13 @@
                 @for (incident of department.recentIncidents; track incident.incidentId) {
                     
                     <a [routerLink]="['/incidents/open', incident.incidentId]" class="related-incident">
-                    <span class="incident-title">{{ incident.title }}</span>
+                        <span class="incident-title">{{ incident.title }}</span>
+                    
+                        <io-pill
+                            [pill]="incident.status"
+                            [varMap]="statusColors"
+                            [textMap]="statusText">
+                        </io-pill>
                     </a>
 
                 } @empty {

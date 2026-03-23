@@ -31,7 +31,7 @@
                         @if (incident.isActive) {
                             <a [routerLink]="['/incidents/open', incident.incidentId ]" class="related-incident">
                                 {{incident.title}}                                            
-                                <io-pill
+                            <io-pill
                                 [pill]="incident.status"
                                 [varMap]="statusColors"
                                 [textMap]="statusText">

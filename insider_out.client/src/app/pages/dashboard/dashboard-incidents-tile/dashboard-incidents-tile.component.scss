@@ -10,15 +10,6 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
-
-        .related-incident {
-            display: flex;
-            gap: 15px;
-
-            .incident-title {
-                @include mixins.ellipsis();
-            }
-        }
     }
 
     .tile-container {
