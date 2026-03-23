@@ -33,6 +33,16 @@
         grid-area: bottom-right;
     }
 
+    .info-grid {
+        background: var(--color-back-gray);
+        padding: 20px;
+        border-radius: 5px;
+
+        span {
+            color: var(--color-text); 
+        }
+    }
+
     .overall-company-risk {
         display: flex;
         align-items: center;
@@ -62,6 +72,13 @@
         gap: 6px;
     }
 
+    .risk-card {
+        background-color: var(--color-back-gray);
+        border-radius: 6px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
     .risk-list-item {
         display: flex;
         justify-content: space-between;
@@ -72,10 +89,36 @@
         border-radius: 6px;
     }
 
+    .risk-list-item.clickable-header {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .risk-list-item.clickable-header:hover {
+        background-color: #f1f3f5;
+    }
+    
     .item-name {
         font-size: 0.95rem;
         font-weight: 500;
         color: var(--color-text);
     }
 
+    .risk-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .chevron {
+        font-size: 0.75rem;
+        color: var(--color-text-2);
+        transition: transform 0.3s ease;
+    }
+
+    .risk-card.is-open .chevron {
+        transform: rotate(-180deg);
+    }
 }

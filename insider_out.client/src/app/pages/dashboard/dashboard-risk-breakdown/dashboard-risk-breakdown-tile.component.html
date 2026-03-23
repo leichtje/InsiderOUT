@@ -8,23 +8,56 @@
         <div class="dashboard-title panel-2">Riskiest Employees</div>
                 
         <div class="risk-section panel-4">
+            <div class="section-header">Riskiest Employees</div>
             <div class="risk-list">
                 @for (subject of topSubjects$(); track subject.subjectId) {
-                    <div class="risk-list-item">
+                
+                    <div class="risk-card" [class.is-open]="expandedSubjectId() === subject.subjectId">
                         
-                        <span class="item-name">{{ subject.firstName + ' ' + subject.lastName}}</span>
+                        <div class="risk-list-item clickable-header" (click)="toggleSubject(subject.subjectId)">
+                        <span class="item-name">{{ subject.firstName }} {{ subject.lastName }}</span>
                         
-                        <io-percent-ring 
-                            [percentage]="subject.riskScore" 
-                            [size]="40" 
-                            [strokeWidth]="4">
-                        </io-percent-ring>
-                </div>
-            } @empty {
-                <p class="empty-state">No employee data available.</p>
-            }
+                        <div class="risk-actions">
+                            <io-percent-ring 
+                                [percentage]="subject.riskScore" 
+                                [size]="40" 
+                                [strokeWidth]="4">
+                            </io-percent-ring>
+                            <span class="chevron">&#x25BC;</span>
+                        </div>
+                        </div>
+
+                        @if (expandedSubjectId() === subject.subjectId) {
+                        <div class="info-grid">
+                        
+                            @if (subject.department) {
+                                <span class="sub-label">Dept</span>
+                                <span>{{ subject.department }}</span>
+                            }
+
+                            @if (subject.email) {
+                                <span class="sub-label">Email</span>
+                                <span>{{ subject.email }}</span>
+                            }
+
+                            @if (subject.phone) {
+                                <span class="sub-label">Phone</span>
+                                <span>{{ subject.phone }}</span>
+                            }
+
+                            <button class="view-profile-btn" [routerLink]="['/subjects', subject.subjectId]">
+                                View Full Profile
+                            </button>
+
+                        </div>
+                        }
+                    </div>
+
+                    } @empty {
+                        <p class="empty-state">No subject data available.</p>
+                    }
+            </div>
         </div>
     </div>
 </div>
 
-</div>
