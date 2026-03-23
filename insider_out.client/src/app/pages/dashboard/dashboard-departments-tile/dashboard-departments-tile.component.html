@@ -9,7 +9,7 @@
             <div class="department-header" (click)="toggleDepartment(department.departmentId)">
                 <div class="dept-info">
                     <h3 class="dept-name">{{ department.departmentName }}</h3>
-                    <span class="dept-meta">{{ department.totalSubjects }} Employees</span>
+                    <span class="dept-meta">{{ department.totalSubjects }} {{(department.totalSubjects !== 1) ? 'Employees' : 'Employee'}}</span>
                 </div>
                 
                 <div class="dept-right">
