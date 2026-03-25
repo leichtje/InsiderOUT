@@ -1,132 +1,166 @@
--- GenerateContentRequest.cs
+INSERT INTO dbo.Incidents
+(
+    IncidentTitle,
+    IncidentDescription,
+    IncidentCreatedDate,
+    IncidentUpdatedDate,
+    IncidentAgent,
+    IncidentTokenId,
+    IncidentTokenType,
+    IncidentStatus,
+    IncidentAssignedUserId,
+    IncidentTiedSubjectId,
+    IsActive,
+    IncidentRiskScore,
+    IncidentIP
+)
+VALUES
+-- Incident #5 – Document 1
+('Incident #5',
+ NULL,
+ DATEADD(DAY, -2, GETDATE()),
+ DATEADD(DAY, -2, GETDATE()),
+ 'system-monitor',
+ 1,
+ 'document',
+ 'New',
+ 1,
+ 18,
+ 1,
+ NULL,
+ '192.168.1.45'),
 
-public class GenerateContentRequest
-{
-    public string ShortDescription { get; set; }
-    public string TargetAudience { get; set; }
-    public string SeverityLevel { get; set; }
-    public List<string> Departments { get; set; }
-}
+-- Incident #6 – Document 2
+('Incident #6',
+ NULL,
+ DATEADD(DAY, -2, GETDATE()),
+ DATEADD(HOUR, -30, GETDATE()),
+ 'activity-monitor',
+ 2,
+ 'document',
+ 'InProgress',
+ 8,
+ NULL,
+ 1,
+ NULL,
+ '10.0.0.22'),
 
+-- Incident #7 – Document 3
+('Incident #7',
+ NULL,
+ DATEADD(DAY, -1, GETDATE()),
+ DATEADD(DAY, -1, GETDATE()),
+ 'file-audit',
+ 3,
+ 'document',
+ 'Resolved',
+ 3,
+ 17,
+ 1,
+ NULL,
+ '172.16.5.88'),
 
---GenerateContentResponse.cs
+-- Incident #8 – Document 4
+('Incident #8',
+ NULL,
+ DATEADD(DAY, -1, GETDATE()),
+ DATEADD(HOUR, -20, GETDATE()),
+ 'doc-service',
+ 4,
+ 'document',
+ 'Closed',
+ 1,
+ 18,
+ 0,
+ NULL,
+ '192.168.1.99'),
 
-public class GenerateContentResponse
-{
-    public string Content { get; set; }
-    public string Header { get; set; }
-    public string FileName { get; set; }
-    public string Department { get; set; }
-}
+-- Incident #9 – Document 5
+('Incident #9',
+ NULL,
+ DATEADD(HOUR, -18, GETDATE()),
+ DATEADD(HOUR, -18, GETDATE()),
+ 'dl-tracker',
+ 5,
+ 'document',
+ 'New',
+ 2,
+ 1,
+ 1,
+ NULL,
+ '10.0.0.55'),
 
+-- Incident #10 – Document 1
+('Incident #10',
+ NULL,
+ DATEADD(HOUR, -14, GETDATE()),
+ DATEADD(HOUR, -14, GETDATE()),
+ 'security-agent',
+ 1,
+ 'document',
+ 'InProgress',
+ 3,
+ 2,
+ 1,
+ NULL,
+ '203.0.113.14'),
 
---TrackingImageResponse.cs
+-- Incident #11 – Document 2
+('Incident #11',
+ NULL,
+ DATEADD(HOUR, -12, GETDATE()),
+ DATEADD(HOUR, -12, GETDATE()),
+ 'email-gateway',
+ 2,
+ 'document',
+ 'New',
+ 4,
+ 3,
+ 1,
+ NULL,
+ '198.51.100.23'),
 
-public class TrackingImageResponse
-{
-    public string TokenId { get; set; }
-    public string FileName { get; set; }
-}
+-- Incident #12 – Document 3
+('Incident #12',
+ NULL,
+ DATEADD(HOUR, -10, GETDATE()),
+ DATEADD(HOUR, -10, GETDATE()),
+ 'dl-monitor',
+ 3,
+ 'document',
+ 'Resolved',
+ 1,
+ 4,
+ 1,
+ NULL,
+ '10.0.0.200'),
 
---PreviewPdfRequest.cs
+-- Incident #13 – Document 4
+('Incident #13',
+ NULL,
+ DATEADD(HOUR, -6, GETDATE()),
+ DATEADD(HOUR, -6, GETDATE()),
+ 'firewall',
+ 4,
+ 'document',
+ 'Closed',
+ 3,
+ 3,
+ 0,
+ NULL,
+ '203.0.113.55'),
 
-public class PreviewPdfRequest
-{
-    public string Content { get; set; }
-    public string Header { get; set; }
-    public string FileName { get; set; }
-}
-
-
---PreviewPdfResponse.cs
-
-public class PreviewPdfResponse
-{
-    public string PdfPath { get; set; }
-}
-
-
---PythonService.cs
-
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-
-public class PythonService
-{
-    private readonly HttpClient _http;
-
-    public PythonService(HttpClient http)
-    {
-        _http = http;
-        _http.BaseAddress = new Uri("http://localhost:5050/");
-    }
-
-    public async Task<GenerateContentResponse> GenerateContentAsync(GenerateContentRequest request)
-    {
-        var response = await _http.PostAsJsonAsync("generate-content", request);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<GenerateContentResponse>();
-    }
-
-    public async Task<TrackingImageResponse> CreateTrackingImageAsync()
-    {
-        var response = await _http.PostAsync("create-tracking-image", null);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<TrackingImageResponse>();
-    }
-
-    public async Task<PreviewPdfResponse> PreviewPdfAsync(PreviewPdfRequest request)
-    {
-        var response = await _http.PostAsJsonAsync("preview-pdf", request);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<PreviewPdfResponse>();
-    }
-}
-
-
-
---GenerationController.cs
-
-using Microsoft.AspNetCore.Mvc;
-
-[ApiController]
-[Route("api/[controller]")]
-public class GenerationController : ControllerBase
-{
-    private readonly PythonService _python;
-
-    public GenerationController(PythonService python)
-    {
-        _python = python;
-    }
-
-    [HttpPost("generate")]
-    public async Task<IActionResult> GenerateDocument([FromBody] GenerateContentRequest request)
-    {
-        // Step 1 — Generate content
-        var contentResult = await _python.GenerateContentAsync(request);
-
-        // Step 2 — Generate tracking image
-        var trackingResult = await _python.CreateTrackingImageAsync();
-
-        // Step 3 — Generate PDF preview
-        var pdfRequest = new PreviewPdfRequest
-        {
-            Content = contentResult.Content,
-            Header = contentResult.Header,
-            FileName = contentResult.FileName
-        };
-
-        var pdfResult = await _python.PreviewPdfAsync(pdfRequest);
-
-        // Step 4 — Return unified response
-        return Ok(new
-        {
-            content = contentResult,
-            tracking = trackingResult,
-            pdf = pdfResult
-        });
-    }
-}
-
+-- Incident #14 – Document 5
+('Incident #14',
+ NULL,
+ DATEADD(HOUR, -2, GETDATE()),
+ DATEADD(HOUR, -2, GETDATE()),
+ 'print-monitor',
+ 5,
+ 'document',
+ 'New',
+ 1,
+ 1,
+ 1,
+ NULL,
+ '192.168.1.120');
