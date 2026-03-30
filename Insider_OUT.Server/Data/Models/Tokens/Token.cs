@@ -8,7 +8,7 @@ namespace Insider_OUT.Server.Data.Models.Tokens
     {
         [Key]
         [Column("TokenId")]
-        public int TokenId { get; set; }
+        public Guid TokenId { get; set; }
 
         [Required, MaxLength(50)]
         [Column("TokenType")]
@@ -28,7 +28,7 @@ namespace Insider_OUT.Server.Data.Models.Tokens
 
         // Navigation properties for subtypes (one-to-one)
         public Document Document { get; set; }
-        public Email Email { get; set; }
+        public Incident Incident { get; set; }
     }
 }
 
