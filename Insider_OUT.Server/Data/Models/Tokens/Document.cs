@@ -22,7 +22,7 @@ namespace Insider_OUT.Server.Data.Models.Tokens
 
         [Required]
         [Column("DocumentTokenId")]
-        public int DocumentTokenId { get; set; }
+        public Guid DocumentTokenId { get; set; }
 
         [ForeignKey(nameof(DocumentTokenId))]
         public Tokens.Token Token { get; set; }
