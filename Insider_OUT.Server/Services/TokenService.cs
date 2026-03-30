@@ -1,9 +1,9 @@
-﻿using Insider_OUT.Server.Data.Models.Tokens;
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models.Dto;
+using Insider_OUT.Server.Data.Models.Tokens;
+using Insider_OUT.Server.Data;
+using Insider_OUT.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
-namespace InsiderOUT.Server.Services
+namespace Insider_OUT.Server.Services
 {
     public class TokenService : ITokenService
     {
@@ -20,7 +20,7 @@ namespace InsiderOUT.Server.Services
                 .AsNoTracking()
                 .Select(t => new TokenDto
                 {
-                    TokenId = t.TokenId,
+                    TokenId = t.TokenId,              // GUID now
                     TokenType = t.TokenType,
                     TokenSeverity = t.TokenSeverity,
                     CreatedDate = t.CreatedDate,
@@ -29,7 +29,7 @@ namespace InsiderOUT.Server.Services
                 .ToListAsync();
         }
 
-        public async Task<TokenDto?> GetByIdAsync(int id)
+        public async Task<TokenDto?> GetByIdAsync(Guid id)
         {
             var t = await _db.Tokens
                 .AsNoTracking()
@@ -53,6 +53,7 @@ namespace InsiderOUT.Server.Services
 
             var entity = new Token
             {
+                TokenId = Guid.NewGuid(),           // NEW GUID
                 TokenType = dto.TokenType,
                 TokenSeverity = dto.TokenSeverity,
                 CreatedDate = now,
@@ -72,7 +73,7 @@ namespace InsiderOUT.Server.Services
             };
         }
 
-        public async Task<TokenDto?> UpdateAsync(int id, TokenDto dto)
+        public async Task<TokenDto?> UpdateAsync(Guid id, TokenDto dto)
         {
             var entity = await _db.Tokens.FindAsync(id);
             if (entity == null) return null;
@@ -92,7 +93,7 @@ namespace InsiderOUT.Server.Services
             };
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _db.Tokens.FindAsync(id);
             if (entity == null) return false;
