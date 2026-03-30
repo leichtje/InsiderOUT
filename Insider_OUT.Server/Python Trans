@@ -1,166 +1,26 @@
-INSERT INTO dbo.Incidents
-(
-    IncidentTitle,
-    IncidentDescription,
-    IncidentCreatedDate,
-    IncidentUpdatedDate,
-    IncidentAgent,
-    IncidentTokenId,
-    IncidentTokenType,
-    IncidentStatus,
-    IncidentAssignedUserId,
-    IncidentTiedSubjectId,
-    IsActive,
-    IncidentRiskScore,
-    IncidentIP
-)
-VALUES
--- Incident #5 – Document 1 – Subject 18
-('Incident #5',
- '',
- DATEADD(DAY, -2, GETDATE()),
- DATEADD(DAY, -2, GETDATE()),
- 'system-monitor',
- 1,
- 'document',
- 'New',
- NULL,
- 18,
- 1,
- NULL,
- '192.168.1.45'),
+-- Token Alter
 
--- Incident #6 – Document 2 – Subject 17
-('Incident #6',
- '',
- DATEADD(DAY, -2, GETDATE()),
- DATEADD(HOUR, -30, GETDATE()),
- 'activity-monitor',
- 2,
- 'document',
- 'InProgress',
- NULL,
- 17,
- 1,
- NULL,
- '10.0.0.22'),
+ALTER TABLE Tokens DROP CONSTRAINT PK_Tokens;
+ALTER TABLE Tokens
+ALTER COLUMN TokenId UNIQUEIDENTIFIER NOT NULL;
+ALTER TABLE Tokens ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
 
--- Incident #7 – Document 3 – Subject 19
-('Incident #7',
- '',
- DATEADD(DAY, -1, GETDATE()),
- DATEADD(DAY, -1, GETDATE()),
- 'file-audit',
- 3,
- 'document',
- 'Resolved',
- NULL,
- 19,
- 1,
- NULL,
- '172.16.5.88'),
 
--- Incident #8 – Document 4 – Subject 20
-('Incident #8',
- '',
- DATEADD(DAY, -1, GETDATE()),
- DATEADD(HOUR, -20, GETDATE()),
- 'doc-service',
- 4,
- 'document',
- 'Closed',
- NULL,
- 20,
- 0,
- NULL,
- '192.168.1.99'),
+-- Documnent Alter
 
--- Incident #9 – Document 5 – Subject 8
-('Incident #9',
- '',
- DATEADD(HOUR, -18, GETDATE()),
- DATEADD(HOUR, -18, GETDATE()),
- 'dl-tracker',
- 5,
- 'document',
- 'New',
- NULL,
- 8,
- 1,
- NULL,
- '10.0.0.55'),
+ALTER TABLE Documents DROP CONSTRAINT FK_Documents_Tokens;
+ALTER TABLE Documents
+ALTER COLUMN DocumentTokenId UNIQUEIDENTIFIER NOT NULL;
+ALTER TABLE Documents
+ADD CONSTRAINT FK_Documents_Tokens FOREIGN KEY (DocumentTokenId)
+REFERENCES Tokens(TokenId);
 
--- Incident #10 – Document 1 – Subject 17
-('Incident #10',
- '',
- DATEADD(HOUR, -14, GETDATE()),
- DATEADD(HOUR, -14, GETDATE()),
- 'security-agent',
- 1,
- 'document',
- 'InProgress',
- NULL,
- 17,
- 1,
- NULL,
- '203.0.113.14'),
 
--- Incident #11 – Document 2 – Subject 18
-('Incident #11',
- '',
- DATEADD(HOUR, -12, GETDATE()),
- DATEADD(HOUR, -12, GETDATE()),
- 'email-gateway',
- 2,
- 'document',
- 'New',
- NULL,
- 18,
- 1,
- NULL,
- '198.51.100.23'),
+--Incidents Alter
 
--- Incident #12 – Document 3 – Subject 19
-('Incident #12',
- '',
- DATEADD(HOUR, -10, GETDATE()),
- DATEADD(HOUR, -10, GETDATE()),
- 'dl-monitor',
- 3,
- 'document',
- 'Resolved',
- NULL,
- 19,
- 1,
- NULL,
- '10.0.0.200'),
-
--- Incident #13 – Document 4 – Subject 20
-('Incident #13',
- '',
- DATEADD(HOUR, -6, GETDATE()),
- DATEADD(HOUR, -6, GETDATE()),
- 'firewall',
- 4,
- 'document',
- 'Closed',
- NULL,
- 20,
- 0,
- NULL,
- '203.0.113.55'),
-
--- Incident #14 – Document 5 – Subject 8
-('Incident #14',
- '',
- DATEADD(HOUR, -2, GETDATE()),
- DATEADD(HOUR, -2, GETDATE()),
- 'print-monitor',
- 5,
- 'document',
- 'New',
- NULL,
- 8,
- 1,
- NULL,
- '192.168.1.120');
+ALTER TABLE Incidents DROP CONSTRAINT FK_Incidents_Tokens;
+ALTER TABLE Incidents
+ALTER COLUMN IncidentTokenId UNIQUEIDENTIFIER NOT NULL;
+ALTER TABLE Incidents
+ADD CONSTRAINT FK_Incidents_Tokens FOREIGN KEY (IncidentTokenId)
+REFERENCES Tokens(TokenId);
