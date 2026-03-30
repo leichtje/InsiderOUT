@@ -8,7 +8,7 @@
         public DateTime Date { get; set; }
         public DateTime Updated { get; set; }
         public string Agent { get; set; }
-        public int TokenId { get; set; }
+        public Guid TokenId { get; set; }
         public string TokenType { get; set; }
         public string Status { get; set; }
         public int? AssignedUserId { get; set; }
