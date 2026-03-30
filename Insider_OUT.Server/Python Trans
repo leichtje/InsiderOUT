@@ -29,7 +29,6 @@ INNER JOIN sys.columns c
 WHERE fk.referenced_object_id = OBJECT_ID('dbo.Tokens')
   AND c.name = 'TokenId';
 
-PRINT 'Dropping FKs:';
 PRINT @dropFKs;
 EXEC sp_executesql @dropFKs;
 GO
@@ -37,18 +36,8 @@ GO
 /* ============================================================
    STEP 3 — Drop PRIMARY KEY on Tokens.TokenId
    ============================================================ */
-DECLARE @pkName NVARCHAR(200);
-
-SELECT @pkName = kc.name
-FROM sys.key_constraints kc
-WHERE kc.parent_object_id = OBJECT_ID('dbo.Tokens')
-  AND kc.type = 'PK';
-
-IF @pkName IS NOT NULL
-BEGIN
-    PRINT 'Dropping PK: ' + @pkName;
-    EXEC('ALTER TABLE dbo.Tokens DROP CONSTRAINT [' + @pkName + ']');
-END
+ALTER TABLE dbo.Tokens
+DROP CONSTRAINT PK_Tokens;
 GO
 
 /* ============================================================
@@ -79,7 +68,13 @@ ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
 GO
 
 /* ============================================================
-   STEP 8 — Convert DocumentTokenId and IncidentTokenId
+   STEP 8 — Drop index on Incidents.IncidentTokenId
+   ============================================================ */
+DROP INDEX IX_Incidents_TokenId ON dbo.Incidents;
+GO
+
+/* ============================================================
+   STEP 9 — Convert DocumentTokenId and IncidentTokenId to GUID
    ============================================================ */
 ALTER TABLE dbo.Documents
 ALTER COLUMN DocumentTokenId UNIQUEIDENTIFIER NOT NULL;
@@ -90,7 +85,7 @@ ALTER COLUMN IncidentTokenId UNIQUEIDENTIFIER NOT NULL;
 GO
 
 /* ============================================================
-   STEP 9 — Recreate foreign keys
+   STEP 10 — Recreate foreign keys
    ============================================================ */
 ALTER TABLE dbo.Documents
 ADD CONSTRAINT FK_Documents_Tokens_DocumentTokenId
@@ -100,6 +95,13 @@ GO
 ALTER TABLE dbo.Incidents
 ADD CONSTRAINT FK_Incidents_Tokens_IncidentTokenId
 FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);
+GO
+
+/* ============================================================
+   STEP 11 — Recreate index on Incidents.IncidentTokenId
+   ============================================================ */
+CREATE INDEX IX_Incidents_TokenId
+ON dbo.Incidents (IncidentTokenId);
 GO
 
 PRINT 'GUID migration complete.';
