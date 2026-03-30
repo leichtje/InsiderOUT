@@ -1,21 +1,20 @@
 /* ============================================================
    STEP 0 — Add a temporary GUID column to Tokens
    ============================================================ */
-
 ALTER TABLE dbo.Tokens
 ADD TokenId_Guid UNIQUEIDENTIFIER NULL;
+GO
 
 /* ============================================================
    STEP 1 — Populate the new GUID column
    ============================================================ */
-
 UPDATE dbo.Tokens
 SET TokenId_Guid = NEWID();
+GO
 
 /* ============================================================
    STEP 2 — Drop ALL foreign keys referencing Tokens.TokenId
    ============================================================ */
-
 DECLARE @dropFKs NVARCHAR(MAX) = N'';
 
 SELECT @dropFKs = @dropFKs + '
@@ -33,11 +32,11 @@ WHERE fk.referenced_object_id = OBJECT_ID('dbo.Tokens')
 PRINT 'Dropping FKs:';
 PRINT @dropFKs;
 EXEC sp_executesql @dropFKs;
+GO
 
 /* ============================================================
    STEP 3 — Drop PRIMARY KEY on Tokens.TokenId
    ============================================================ */
-
 DECLARE @pkName NVARCHAR(200);
 
 SELECT @pkName = kc.name
@@ -50,58 +49,58 @@ BEGIN
     PRINT 'Dropping PK: ' + @pkName;
     EXEC('ALTER TABLE dbo.Tokens DROP CONSTRAINT [' + @pkName + ']');
 END
+GO
 
 /* ============================================================
    STEP 4 — Drop the old identity TokenId column
    ============================================================ */
-
 ALTER TABLE dbo.Tokens
 DROP COLUMN TokenId;
+GO
 
 /* ============================================================
    STEP 5 — Rename TokenId_Guid → TokenId
    ============================================================ */
-
 EXEC sp_rename 'dbo.Tokens.TokenId_Guid', 'TokenId', 'COLUMN';
+GO
 
 /* ============================================================
    STEP 6 — Make TokenId NOT NULL
    ============================================================ */
-
 ALTER TABLE dbo.Tokens
 ALTER COLUMN TokenId UNIQUEIDENTIFIER NOT NULL;
+GO
 
 /* ============================================================
    STEP 7 — Recreate PRIMARY KEY
    ============================================================ */
-
 ALTER TABLE dbo.Tokens
 ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
+GO
 
 /* ============================================================
-   STEP 8 — Update Documents + Incidents to use GUID type
+   STEP 8 — Convert DocumentTokenId and IncidentTokenId
    ============================================================ */
-
 ALTER TABLE dbo.Documents
 ALTER COLUMN DocumentTokenId UNIQUEIDENTIFIER NOT NULL;
+GO
 
 ALTER TABLE dbo.Incidents
 ALTER COLUMN IncidentTokenId UNIQUEIDENTIFIER NOT NULL;
+GO
 
 /* ============================================================
    STEP 9 — Recreate foreign keys
    ============================================================ */
-
 ALTER TABLE dbo.Documents
 ADD CONSTRAINT FK_Documents_Tokens_DocumentTokenId
 FOREIGN KEY (DocumentTokenId) REFERENCES dbo.Tokens(TokenId);
+GO
 
 ALTER TABLE dbo.Incidents
 ADD CONSTRAINT FK_Incidents_Tokens_IncidentTokenId
 FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);
-
-/* ============================================================
-   DONE
-   ============================================================ */
+GO
 
 PRINT 'GUID migration complete.';
+GO
