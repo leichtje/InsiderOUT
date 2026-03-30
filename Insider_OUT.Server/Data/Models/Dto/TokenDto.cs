@@ -2,7 +2,7 @@
 {
     public class TokenDto
     {
-        public int TokenId { get; set; }
+        public Guid TokenId { get; set; }
         public string TokenType { get; set; }
         public string TokenSeverity { get; set; }
         public DateTime CreatedDate { get; set; }
