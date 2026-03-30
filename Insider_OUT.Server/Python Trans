@@ -22,7 +22,25 @@ EXEC sp_executesql @dropFKs;
 
 
 /* ============================================================
-   STEP 2 — Convert Tokens.TokenId to UNIQUEIDENTIFIER
+   STEP 2 — Drop PRIMARY KEY on Tokens.TokenId
+   ============================================================ */
+
+DECLARE @pkName NVARCHAR(200);
+
+SELECT @pkName = kc.name
+FROM sys.key_constraints kc
+WHERE kc.parent_object_id = OBJECT_ID('dbo.Tokens')
+  AND kc.type = 'PK';
+
+IF @pkName IS NOT NULL
+BEGIN
+    PRINT 'Dropping PK: ' + @pkName;
+    EXEC('ALTER TABLE dbo.Tokens DROP CONSTRAINT [' + @pkName + ']');
+END
+
+
+/* ============================================================
+   STEP 3 — Convert TokenId to UNIQUEIDENTIFIER
    ============================================================ */
 
 ALTER TABLE dbo.Tokens
@@ -30,23 +48,26 @@ ALTER COLUMN TokenId UNIQUEIDENTIFIER NOT NULL;
 
 
 /* ============================================================
-   STEP 3 — Convert Documents.DocumentTokenId
+   STEP 4 — Convert DocumentTokenId and IncidentTokenId
    ============================================================ */
 
 ALTER TABLE dbo.Documents
 ALTER COLUMN DocumentTokenId UNIQUEIDENTIFIER NOT NULL;
-
-
-/* ============================================================
-   STEP 4 — Convert Incidents.IncidentTokenId
-   ============================================================ */
 
 ALTER TABLE dbo.Incidents
 ALTER COLUMN IncidentTokenId UNIQUEIDENTIFIER NOT NULL;
 
 
 /* ============================================================
-   STEP 5 — Recreate foreign keys cleanly
+   STEP 5 — Recreate PRIMARY KEY on Tokens.TokenId
+   ============================================================ */
+
+ALTER TABLE dbo.Tokens
+ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
+
+
+/* ============================================================
+   STEP 6 — Recreate foreign keys
    ============================================================ */
 
 ALTER TABLE dbo.Documents
@@ -59,7 +80,7 @@ FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);
 
 
 /* ============================================================
-   DONE — Token system now fully GUID‑based
+   DONE
    ============================================================ */
 
 PRINT 'GUID migration complete.';
