@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using InsiderOUT.Server.Services;
 using InsiderOUT.Server.Models.Dto;
 
@@ -19,8 +19,9 @@ namespace InsiderOUT.Server.Controllers
         public async Task<IActionResult> GetAll()
             => Ok(await _service.GetAllAsync());
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        // Guid route parameter (no :int constraint)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             var token = await _service.GetByIdAsync(id);
             return token == null ? NotFound() : Ok(token);
@@ -32,13 +33,15 @@ namespace InsiderOUT.Server.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var created = await _service.CreateAsync(dto);
+
             return CreatedAtAction(nameof(GetById),
-                new { id = created.TokenId },
+                new { id = created.TokenId },   // GUID returned
                 created);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] TokenDto dto)
+        // Guid route parameter
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] TokenDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -46,8 +49,9 @@ namespace InsiderOUT.Server.Controllers
             return updated == null ? NotFound() : Ok(updated);
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        // Guid route parameter
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             var ok = await _service.DeleteAsync(id);
             return ok ? NoContent() : NotFound();
