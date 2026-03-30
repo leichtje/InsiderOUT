@@ -1,6 +1,7 @@
-﻿using Insider_OUT.Server.Data.Models.Incidents;
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models.Dto;
+using Insider_OUT.Server.Data.Models.Incidents;
+using Insider_OUT.Server.Data;
+using Insider_OUT.Server.Models.Dto;
+using Insider_OUT.Server.Data.Models.Tokens;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsiderOUT.Server.Services
@@ -26,13 +27,15 @@ namespace InsiderOUT.Server.Services
                     Date = i.IncidentCreatedDate,
                     Updated = i.IncidentUpdatedDate,
                     Agent = i.IncidentAgent,
-                    TokenId = i.IncidentTokenId,
+
+                    TokenId = i.IncidentTokenId,          // GUID now
                     TokenType = i.IncidentTokenType,
                     Status = i.IncidentStatus,
+
                     AssignedUserId = i.IncidentAssignedUserId,
                     TiedSubjectId = i.IncidentTiedSubjectId,
                     IsActive = i.IsActive,
-                    
+
                     IncidentRiskScore = i.IncidentRiskScore,
                     IncidentIP = i.IncidentIP
                 })
@@ -55,9 +58,11 @@ namespace InsiderOUT.Server.Services
                 Date = i.IncidentCreatedDate,
                 Updated = i.IncidentUpdatedDate,
                 Agent = i.IncidentAgent,
-                TokenId = i.IncidentTokenId,
+
+                TokenId = i.IncidentTokenId,          // GUID now
                 TokenType = i.IncidentTokenType,
                 Status = i.IncidentStatus,
+
                 AssignedUserId = i.IncidentAssignedUserId,
                 TiedSubjectId = i.IncidentTiedSubjectId,
                 IsActive = i.IsActive,
@@ -97,9 +102,11 @@ namespace InsiderOUT.Server.Services
                 Date = incident.IncidentCreatedDate,
                 Updated = incident.IncidentUpdatedDate,
                 Agent = incident.IncidentAgent,
+
                 TokenId = incident.IncidentTokenId,
                 TokenType = incident.IncidentTokenType,
                 Status = incident.IncidentStatus,
+
                 AssignedUserId = incident.IncidentAssignedUserId,
                 TiedSubjectId = incident.IncidentTiedSubjectId,
                 IsActive = incident.IsActive,
@@ -144,6 +151,19 @@ namespace InsiderOUT.Server.Services
 
         public async Task<IncidentDto> CreateAsync(IncidentDto dto)
         {
+            // Create Token with GUID
+            var token = new Token
+            {
+                TokenId = Guid.NewGuid(),               // NEW GUID
+                TokenType = dto.TokenType,
+                TokenSeverity = "Medium",
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+
+            _db.Tokens.Add(token);
+            await _db.SaveChangesAsync();
+
             var entity = new Incident
             {
                 IncidentTitle = dto.Title,
@@ -151,21 +171,27 @@ namespace InsiderOUT.Server.Services
                 IncidentCreatedDate = dto.Date,
                 IncidentUpdatedDate = dto.Updated,
                 IncidentAgent = dto.Agent,
-                IncidentTokenId = dto.TokenId,
+
+                IncidentTokenId = token.TokenId,        // GUID FK
                 IncidentTokenType = dto.TokenType,
                 IncidentStatus = dto.Status,
+
                 IncidentAssignedUserId = dto.AssignedUserId,
                 IncidentTiedSubjectId = dto.TiedSubjectId,
                 IsActive = dto.IsActive,
 
                 IncidentRiskScore = dto.IncidentRiskScore,
-                IncidentIP = dto.IncidentIP
+                IncidentIP = dto.IncidentIP,
+
+                Token = token
             };
 
             _db.Incidents.Add(entity);
             await _db.SaveChangesAsync();
 
             dto.IncidentId = entity.IncidentId;
+            dto.TokenId = token.TokenId;               // Return GUID to client
+
             return dto;
         }
 
@@ -179,9 +205,11 @@ namespace InsiderOUT.Server.Services
             entity.IncidentCreatedDate = dto.Date;
             entity.IncidentUpdatedDate = dto.Updated;
             entity.IncidentAgent = dto.Agent;
-            entity.IncidentTokenId = dto.TokenId;
+
+            entity.IncidentTokenId = dto.TokenId;      // GUID
             entity.IncidentTokenType = dto.TokenType;
             entity.IncidentStatus = dto.Status;
+
             entity.IncidentAssignedUserId = dto.AssignedUserId;
             entity.IncidentTiedSubjectId = dto.TiedSubjectId;
             entity.IsActive = dto.IsActive;
