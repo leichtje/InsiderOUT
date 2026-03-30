@@ -1,26 +1,105 @@
--- Token Alter
+------------------------------------------------------------
+-- 1. Drop any foreign keys that reference dbo.Tokens
+------------------------------------------------------------
+DECLARE @sql NVARCHAR(MAX) = N'';
 
-ALTER TABLE Tokens DROP CONSTRAINT PK_Tokens;
-ALTER TABLE Tokens
+;WITH FK_Refs AS (
+    SELECT 
+        fk.name AS FKName,
+        OBJECT_SCHEMA_NAME(fk.parent_object_id) AS SchemaName,
+        OBJECT_NAME(fk.parent_object_id) AS TableName
+    FROM sys.foreign_keys fk
+    INNER JOIN sys.foreign_key_columns fkc 
+        ON fk.object_id = fkc.constraint_object_id
+    INNER JOIN sys.columns c 
+        ON c.object_id = fkc.parent_object_id 
+       AND c.column_id = fkc.parent_column_id
+    WHERE fk.referenced_object_id = OBJECT_ID('dbo.Tokens')
+)
+SELECT @sql = @sql + '
+ALTER TABLE [' + SchemaName + '].[' + TableName + '] DROP CONSTRAINT [' + FKName + '];'
+FROM FK_Refs;
+
+PRINT @sql;
+EXEC sp_executesql @sql;
+
+------------------------------------------------------------
+-- 2. Alter TokenId to UNIQUEIDENTIFIER in dbo.Tokens
+------------------------------------------------------------
+ALTER TABLE dbo.Tokens
 ALTER COLUMN TokenId UNIQUEIDENTIFIER NOT NULL;
-ALTER TABLE Tokens ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
 
-
--- Documnent Alter
-
-ALTER TABLE Documents DROP CONSTRAINT FK_Documents_Tokens;
-ALTER TABLE Documents
+------------------------------------------------------------
+-- 3. Alter DocumentTokenId in dbo.Documents
+------------------------------------------------------------
+ALTER TABLE dbo.Documents
 ALTER COLUMN DocumentTokenId UNIQUEIDENTIFIER NOT NULL;
-ALTER TABLE Documents
-ADD CONSTRAINT FK_Documents_Tokens FOREIGN KEY (DocumentTokenId)
-REFERENCES Tokens(TokenId);
 
-
---Incidents Alter
-
-ALTER TABLE Incidents DROP CONSTRAINT FK_Incidents_Tokens;
-ALTER TABLE Incidents
+------------------------------------------------------------
+-- 4. Alter IncidentTokenId in dbo.Incidents
+------------------------------------------------------------
+ALTER TABLE dbo.Incidents
 ALTER COLUMN IncidentTokenId UNIQUEIDENTIFIER NOT NULL;
-ALTER TABLE Incidents
-ADD CONSTRAINT FK_Incidents_Tokens FOREIGN KEY (IncidentTokenId)
-REFERENCES Tokens(TokenId);
+
+------------------------------------------------------------
+-- 5. Recreate foreign keys from Documents and Incidents to Tokens
+------------------------------------------------------------
+ALTER TABLE dbo.Documents
+ADD CONSTRAINT FK_Documents_Tokens_DocumentTokenId
+FOREIGN KEY (DocumentTokenId) REFERENCES dbo.Tokens(TokenId);
+
+ALTER TABLE dbo.Incidents
+ADD CONSTRAINT FK_Incidents_Tokens_IncidentTokenId
+FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);------------------------------------------------------------
+-- 1. Drop any foreign keys that reference dbo.Tokens
+------------------------------------------------------------
+DECLARE @sql NVARCHAR(MAX) = N'';
+
+;WITH FK_Refs AS (
+    SELECT 
+        fk.name AS FKName,
+        OBJECT_SCHEMA_NAME(fk.parent_object_id) AS SchemaName,
+        OBJECT_NAME(fk.parent_object_id) AS TableName
+    FROM sys.foreign_keys fk
+    INNER JOIN sys.foreign_key_columns fkc 
+        ON fk.object_id = fkc.constraint_object_id
+    INNER JOIN sys.columns c 
+        ON c.object_id = fkc.parent_object_id 
+       AND c.column_id = fkc.parent_column_id
+    WHERE fk.referenced_object_id = OBJECT_ID('dbo.Tokens')
+)
+SELECT @sql = @sql + '
+ALTER TABLE [' + SchemaName + '].[' + TableName + '] DROP CONSTRAINT [' + FKName + '];'
+FROM FK_Refs;
+
+PRINT @sql;
+EXEC sp_executesql @sql;
+
+------------------------------------------------------------
+-- 2. Alter TokenId to UNIQUEIDENTIFIER in dbo.Tokens
+------------------------------------------------------------
+ALTER TABLE dbo.Tokens
+ALTER COLUMN TokenId UNIQUEIDENTIFIER NOT NULL;
+
+------------------------------------------------------------
+-- 3. Alter DocumentTokenId in dbo.Documents
+------------------------------------------------------------
+ALTER TABLE dbo.Documents
+ALTER COLUMN DocumentTokenId UNIQUEIDENTIFIER NOT NULL;
+
+------------------------------------------------------------
+-- 4. Alter IncidentTokenId in dbo.Incidents
+------------------------------------------------------------
+ALTER TABLE dbo.Incidents
+ALTER COLUMN IncidentTokenId UNIQUEIDENTIFIER NOT NULL;
+
+------------------------------------------------------------
+-- 5. Recreate foreign keys from Documents and Incidents to Tokens
+------------------------------------------------------------
+ALTER TABLE dbo.Documents
+ADD CONSTRAINT FK_Documents_Tokens_DocumentTokenId
+FOREIGN KEY (DocumentTokenId) REFERENCES dbo.Tokens(TokenId);
+
+ALTER TABLE dbo.Incidents
+ADD CONSTRAINT FK_Incidents_Tokens_IncidentTokenId
+FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);
