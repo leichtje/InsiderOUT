@@ -1,60 +1,117 @@
 /* ============================================================
-   STEP 1 — Drop foreign keys referencing Tokens
+   RESET TOKEN SYSTEM TO GUID-BASED DESIGN (CLEAN SLATE)
    ============================================================ */
-ALTER TABLE dbo.Documents DROP CONSTRAINT FK_Documents_Tokens_DocumentTokenId;
-ALTER TABLE dbo.Incidents DROP CONSTRAINT FK_Incidents_Tokens_IncidentTokenId;
+
+/* ------------------------------------------------------------
+   STEP 1 — Drop foreign keys if they exist
+   ------------------------------------------------------------ */
+IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Documents_Tokens_DocumentTokenId')
+    ALTER TABLE dbo.Documents DROP CONSTRAINT FK_Documents_Tokens_DocumentTokenId;
+IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Incidents_Tokens_IncidentTokenId')
+    ALTER TABLE dbo.Incidents DROP CONSTRAINT FK_Incidents_Tokens_IncidentTokenId;
 GO
 
-/* ============================================================
-   STEP 2 — Drop index on Incidents.IncidentTokenId
-   ============================================================ */
-DROP INDEX IX_Incidents_TokenId ON dbo.Incidents;
+/* ------------------------------------------------------------
+   STEP 2 — Drop index on Incidents if it exists
+   ------------------------------------------------------------ */
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Incidents_TokenId')
+    DROP INDEX IX_Incidents_TokenId ON dbo.Incidents;
 GO
 
-/* ============================================================
+/* ------------------------------------------------------------
    STEP 3 — Drop old int token columns
-   ============================================================ */
-ALTER TABLE dbo.Documents DROP COLUMN DocumentTokenId;
-ALTER TABLE dbo.Incidents DROP COLUMN IncidentTokenId;
+   ------------------------------------------------------------ */
+IF EXISTS (SELECT 1 FROM sys.columns WHERE Name = 'DocumentTokenId' AND Object_ID = OBJECT_ID('dbo.Documents'))
+    ALTER TABLE dbo.Documents DROP COLUMN DocumentTokenId;
+
+IF EXISTS (SELECT 1 FROM sys.columns WHERE Name = 'IncidentTokenId' AND Object_ID = OBJECT_ID('dbo.Incidents'))
+    ALTER TABLE dbo.Incidents DROP COLUMN IncidentTokenId;
 GO
 
-/* ============================================================
-   STEP 4 — Add new GUID token columns
-   ============================================================ */
+/* ------------------------------------------------------------
+   STEP 4 — Reset Tokens table completely
+   ------------------------------------------------------------ */
+DELETE FROM dbo.Tokens;
+GO
+
+/* ------------------------------------------------------------
+   STEP 5 — Drop old TokenId PK + column
+   ------------------------------------------------------------ */
+ALTER TABLE dbo.Tokens DROP CONSTRAINT PK_Tokens;
+ALTER TABLE dbo.Tokens DROP COLUMN TokenId;
+GO
+
+/* ------------------------------------------------------------
+   STEP 6 — Add new GUID TokenId column
+   ------------------------------------------------------------ */
+ALTER TABLE dbo.Tokens
+ADD TokenId UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
+GO
+
+/* ------------------------------------------------------------
+   STEP 7 — Recreate PK
+   ------------------------------------------------------------ */
+ALTER TABLE dbo.Tokens
+ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
+GO
+
+/* ------------------------------------------------------------
+   STEP 8 — Add new GUID token columns to Documents + Incidents
+   ------------------------------------------------------------ */
 ALTER TABLE dbo.Documents
 ADD DocumentTokenId UNIQUEIDENTIFIER NULL;
-GO
 
 ALTER TABLE dbo.Incidents
 ADD IncidentTokenId UNIQUEIDENTIFIER NULL;
 GO
 
-/* ============================================================
-   STEP 5 — (Optional) Initialize new GUIDs for existing rows
-   ============================================================ */
+/* ------------------------------------------------------------
+   STEP 9 — Populate new token columns with fresh GUIDs
+   ------------------------------------------------------------ */
 UPDATE dbo.Documents SET DocumentTokenId = NEWID();
 UPDATE dbo.Incidents SET IncidentTokenId = NEWID();
 GO
 
-/* ============================================================
-   STEP 6 — Recreate foreign keys
-   ============================================================ */
+/* ------------------------------------------------------------
+   STEP 10 — Insert matching rows into Tokens
+   ------------------------------------------------------------ */
+INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
+SELECT DISTINCT 
+    DocumentTokenId,
+    'document',
+    'medium',
+    SYSUTCDATETIME(),
+    SYSUTCDATETIME()
+FROM dbo.Documents;
+
+INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
+SELECT DISTINCT 
+    IncidentTokenId,
+    'incident',
+    'medium',
+    SYSUTCDATETIME(),
+    SYSUTCDATETIME()
+FROM dbo.Incidents;
+GO
+
+/* ------------------------------------------------------------
+   STEP 11 — Recreate foreign keys
+   ------------------------------------------------------------ */
 ALTER TABLE dbo.Documents
 ADD CONSTRAINT FK_Documents_Tokens_DocumentTokenId
 FOREIGN KEY (DocumentTokenId) REFERENCES dbo.Tokens(TokenId);
-GO
 
 ALTER TABLE dbo.Incidents
 ADD CONSTRAINT FK_Incidents_Tokens_IncidentTokenId
 FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);
 GO
 
-/* ============================================================
-   STEP 7 — Recreate index on Incidents.IncidentTokenId
-   ============================================================ */
+/* ------------------------------------------------------------
+   STEP 12 — Recreate index on Incidents
+   ------------------------------------------------------------ */
 CREATE INDEX IX_Incidents_TokenId
 ON dbo.Incidents (IncidentTokenId);
 GO
 
-PRINT 'Document + Incident token columns reset to GUID successfully.';
+PRINT 'FULL GUID TOKEN RESET COMPLETE — DATABASE IS NOW CLEAN AND CONSISTENT.';
 GO
