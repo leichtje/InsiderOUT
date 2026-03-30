@@ -1,9 +1,9 @@
 using Insider_OUT.Server.Data.Models.Tokens;
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models.Dto;
+using Insider_OUT.Server.Data;
+using Insider_OUT.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
-namespace InsiderOUT.Server.Services
+namespace Insider_OUT.Server.Services
 {
     public class DocumentService : IDocumentService
     {
@@ -25,7 +25,7 @@ namespace InsiderOUT.Server.Services
                     DocumentName = d.DocumentName,
                     DocumentLocation = d.DocumentLocation,
 
-                    TokenId = d.Token.TokenId,
+                    TokenId = d.Token.TokenId,          // GUID now
                     TokenType = d.Token.TokenType,
                     TokenSeverity = d.Token.TokenSeverity,
 
@@ -55,7 +55,7 @@ namespace InsiderOUT.Server.Services
                 DocumentName = d.DocumentName,
                 DocumentLocation = d.DocumentLocation,
 
-                TokenId = d.Token.TokenId,
+                TokenId = d.Token.TokenId,          // GUID now
                 TokenType = d.Token.TokenType,
                 TokenSeverity = d.Token.TokenSeverity,
 
@@ -71,8 +71,10 @@ namespace InsiderOUT.Server.Services
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
+            // Create Token with GUID
             var token = new Token
             {
+                TokenId = Guid.NewGuid(),           // NEW GUID
                 TokenType = "document",
                 TokenSeverity = dto.TokenSeverity ?? "Low",
                 CreatedDate = DateTime.UtcNow,
@@ -82,11 +84,12 @@ namespace InsiderOUT.Server.Services
             _db.Tokens.Add(token);
             await _db.SaveChangesAsync();
 
+            // Create Document linked to Token
             var entity = new Document
             {
                 DocumentName = dto.DocumentName,
                 DocumentLocation = dto.DocumentLocation,
-                DocumentTokenId = token.TokenId,
+                DocumentTokenId = token.TokenId,    // GUID FK
 
                 DocumentDepartment = dto.DocumentDepartment,
                 DocumentContent = dto.DocumentContent,
@@ -97,6 +100,7 @@ namespace InsiderOUT.Server.Services
             _db.Documents.Add(entity);
             await _db.SaveChangesAsync();
 
+            // Reload with Token included
             var created = await _db.Documents
                 .AsNoTracking()
                 .Include(d => d.Token)
