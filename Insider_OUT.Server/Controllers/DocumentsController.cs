@@ -17,13 +17,13 @@ namespace InsiderOUT.Server.Controllers
             _service = service;
         }
 
-        
         [HttpGet]
         public async Task<IActionResult> GetAll()
-            => Ok(await _service.GetAllAsync());
+        {
+            var docs = await _service.GetAllAsync();
+            return Ok(docs);
+        }
 
-        //CHANGED: id:int → id:guid
-        //CHANGED: parameter type int → Guid
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -32,11 +32,10 @@ namespace InsiderOUT.Server.Controllers
             if (doc == null)
                 return NotFound();
 
-            //CHANGED: return TokenId (Guid) from your DTO
             return Ok(new
             {
                 documentId = doc.DocumentId,
-                tokenId = doc.TokenId.ToString(),   //CHANGED
+                tokenId = doc.TokenId.ToString(),
                 name = doc.DocumentName,
                 location = doc.DocumentLocation,
                 created = doc.CreatedDate,
@@ -48,7 +47,6 @@ namespace InsiderOUT.Server.Controllers
             });
         }
 
-        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DocumentDto dto)
         {
@@ -57,27 +55,28 @@ namespace InsiderOUT.Server.Controllers
 
             var created = await _service.CreateAsync(dto);
 
-            //CHANGED: CreatedAtAction now uses GUID TokenId
             return CreatedAtAction(nameof(GetById),
-                new { id = created.TokenId }, 
+                new { id = created.TokenId },
                 new
                 {
                     documentId = created.DocumentId,
-                    tokenId = created.TokenId.ToString(),   //CHANGED
+                    tokenId = created.TokenId.ToString(),
                     name = created.DocumentName
                 });
         }
 
-        // CHANGED: id:int → id:guid
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] DocumentDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var updated = await _service.UpdateAsync(id, dto);  
+            var updated = await _service.UpdateAsync(id, dto);
 
-            return updated == null ? NotFound() : Ok(new
+            if (updated == null)
+                return NotFound();
+
+            return Ok(new
             {
                 documentId = updated.DocumentId,
                 tokenId = updated.TokenId.ToString(),
@@ -85,13 +84,15 @@ namespace InsiderOUT.Server.Controllers
             });
         }
 
-        // CHANGED: id:int → id:guid
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var ok = await _service.DeleteAsync(id);   
+            var ok = await _service.DeleteAsync(id);
 
-            return ok ? NoContent() : NotFound();
+            if (!ok)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }
