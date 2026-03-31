@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { TokensDocumentsViewComponent } from "./tokens-documents-view/tokens-documents-view.component";
-import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentModel } from '../../../models/token.model';
 import { DocumentStore } from '../../../stores/documents.store';
@@ -14,7 +13,6 @@ import { DocumentStore } from '../../../stores/documents.store';
 export class TokensDocumentsComponent {
 
     protected documentStore = inject(DocumentStore);
-    protected userService = inject(UserService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 

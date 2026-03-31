@@ -75,26 +75,25 @@
                 @if (!isPhone() || activeTab() === 'right') {
                     <div class="body__right">
                         <div class="header">
-                            @if (document.location) {
-                                <div>
-                                    <span class="label">Location</span>
-                                    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="location-input">
-                                        <textarea matInput
-                                            formControlName="location"
-                                            cdkTextareaAutosize
-                                            cdkAutosizeMinRows="1"
-                                            placeholder="Enter Location"
-                                            (keydown.enter)="$event.preventDefault()">
-                                        </textarea>
-                                        @if (form.get('location')?.hasError('required')) {
-                                            <mat-error>Location is required</mat-error>
-                                        }
-                                        @if (form.get('location')?.hasError('maxlength')) {
-                                            <mat-error>Location cannot exceed 100 characters</mat-error>
-                                        }
-                                    </mat-form-field>
-                                </div>
-                            }
+                            <div>
+                                <span class="label">Location</span>
+                                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="location-input">
+                                    <textarea matInput
+                                        formControlName="location"
+                                        cdkTextareaAutosize
+                                        cdkAutosizeMinRows="1"
+                                        placeholder="Enter Location"
+                                        (keydown.enter)="$event.preventDefault()">
+                                    </textarea>
+                                    @if (form.get('location')?.hasError('required')) {
+                                        <mat-error>Location is required</mat-error>
+                                    }
+                                    @if (form.get('location')?.hasError('maxlength')) {
+                                        <mat-error>Location cannot exceed 100 characters</mat-error>
+                                    }
+                                </mat-form-field>
+                            </div>
+                    
                             @if (document.updated) {
                                 <div class="updated">
                                     <span class="label">Last Updated</span>

@@ -19,8 +19,8 @@ namespace InsiderOUT.Server.Controllers
         public async Task<IActionResult> GetAll()
             => Ok(await _service.GetAllAsync());
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             var doc = await _service.GetByIdAsync(id);
             return doc == null ? NotFound() : Ok(doc);

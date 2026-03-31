@@ -1,3 +1,4 @@
+using Insider_OUT.Server.Data.Models.Incidents;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

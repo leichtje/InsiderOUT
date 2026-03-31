@@ -21,7 +21,7 @@ export const DocumentDetailStore = signalStore(
         const document = computed(() => documentStore.selectedDocument());
 
         const relatedIncidents = computed(() => {
-            const docId = state.documentId();
+            const docId = document()?.tokenId;
             if (!docId) return [];
 
             return incidentStore.incidents().filter(inc => 

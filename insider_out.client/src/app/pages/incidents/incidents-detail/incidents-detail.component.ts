@@ -81,7 +81,7 @@ export class IncidentsDetailComponent implements OnInit {
         status: [null as IncidentStatus | null, Validators.required],
         assignedUserId: [null as number | null],
         tiedSubjectId: [null as number | null],
-        tokenId: [null as number | null]
+        tokenId: [null as string | null]
     });
 
     constructor() {

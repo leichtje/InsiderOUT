@@ -44,7 +44,7 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
 export function toDocumentDto(model: Partial<DocumentModel>): DocumentDto {
     return {
         documentId: model.documentId ?? 0,
-        tokenId: model.tokenId ?? 0,
+        tokenId: model.tokenId || '',
         documentName: model.name || '',
         documentLocation: model.location || '',
         tokenType: 'Document', 
@@ -66,7 +66,7 @@ export const DocumentStore = signalStore(
         documentCount: computed(() => store.documents().length),
         hasSelectedDocument: computed(() => !!store.selectedDocument()),
         entityMap: computed(() => {
-            const map: Record<number, DocumentModel> = {};
+            const map: Record<string, DocumentModel> = {};
             for (const document of store.documents()) {
                 map[document.documentId] = document;
             }
@@ -198,12 +198,12 @@ export const DocumentStore = signalStore(
                     })
                 )
             ),
-            loadDocument: rxMethod<number>(
+            loadDocument: rxMethod<string>(
                 pipe(
                     switchMap((id) => {
-                        if (store.entityMap()[id]) {
-                            return []; 
-                        }
+                        // if (store.entityMap()[id]) {
+                        //     return []; 
+                        // }
 
                         return http.get<DocumentDto>(`${apiUrl}/${id}`).pipe(
                             map(toDocumentModel),

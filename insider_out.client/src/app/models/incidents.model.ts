@@ -9,7 +9,7 @@ export interface IncidentModel {
     date: Date;
     updated: Date;
     agent: string;
-    tokenId: number;
+    tokenId: string;
     tokenType: TokenType;
     status: IncidentStatus;
     assignedUserId: UserModel["userId"] | null;
@@ -39,7 +39,7 @@ export interface IncidentDto {
     date: string;
     updated: string; 
     agent: string;
-    tokenId: number;
+    tokenId: string;
     tokenType: string; 
     status: string; 
     assignedUserId: number | null;
