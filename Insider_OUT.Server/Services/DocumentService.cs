@@ -1,68 +1,67 @@
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models;
-using InsiderOUT.Server.Models.Dto;
+using Insider_OUT.Server.Data.Models.Tokens;
+using Insider_OUT.Server.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using InsiderOUT.Server.Models.Dto;
 
 namespace InsiderOUT.Server.Services
 {
     public class DocumentService : IDocumentService
     {
-        private readonly AppDbContext _context;
+        private readonly DBContext _db;
 
-        public DocumentService(AppDbContext context)
+        public DocumentService(DBContext db)
         {
-            _context = context;
+            _db = db;
         }
 
         public async Task<IEnumerable<DocumentDto>> GetAllAsync()
         {
-            var docs = await _context.Documents.ToListAsync();
-
-            var list = new List<DocumentDto>();
-
-            foreach (var d in docs)
-            {
-                list.Add(new DocumentDto
+            return await _db.Documents
+                .AsNoTracking()
+                .Include(d => d.Token)
+                .Select(d => new DocumentDto
                 {
                     DocumentId = d.DocumentId,
-                    TokenId = d.DocumentTokenId,
                     DocumentName = d.DocumentName,
                     DocumentLocation = d.DocumentLocation,
-                    TokenType = d.TokenType,
-                    TokenSeverity = d.TokenSeverity,
-                    CreatedDate = d.CreatedDate,
-                    UpdatedDate = d.UpdatedDate,
+
+                    TokenId = d.Token.TokenId,
+                    TokenType = d.Token.TokenType,
+                    TokenSeverity = d.Token.TokenSeverity,
+
+                    CreatedDate = d.Token.CreatedDate,
+                    UpdatedDate = d.Token.UpdatedDate,
+
                     DocumentDepartment = d.DocumentDepartment,
                     DocumentContent = d.DocumentContent,
                     DocumentHeader = d.DocumentHeader,
                     DocumentFilepath = d.DocumentFilepath
-                });
-            }
-
-            return list;
+                })
+                .ToListAsync();
         }
 
         public async Task<DocumentDto?> GetByIdAsync(Guid id)
         {
-            var d = await _context.Documents
+            var d = await _db.Documents
+                .AsNoTracking()
+                .Include(x => x.Token)
                 .FirstOrDefaultAsync(x => x.DocumentTokenId == id);
 
-            if (d == null)
-                return null;
+            if (d == null) return null;
 
             return new DocumentDto
             {
                 DocumentId = d.DocumentId,
-                TokenId = d.DocumentTokenId,
                 DocumentName = d.DocumentName,
                 DocumentLocation = d.DocumentLocation,
-                TokenType = d.TokenType,
-                TokenSeverity = d.TokenSeverity,
-                CreatedDate = d.CreatedDate,
-                UpdatedDate = d.UpdatedDate,
+
+                TokenId = d.Token.TokenId,
+                TokenType = d.Token.TokenType,
+                TokenSeverity = d.Token.TokenSeverity,
+
+                CreatedDate = d.Token.CreatedDate,
+                UpdatedDate = d.Token.UpdatedDate,
+
                 DocumentDepartment = d.DocumentDepartment,
                 DocumentContent = d.DocumentContent,
                 DocumentHeader = d.DocumentHeader,
@@ -72,44 +71,62 @@ namespace InsiderOUT.Server.Services
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
+            var token = new Token
+            {
+                TokenId = Guid.NewGuid(),
+                TokenType = "document",
+                TokenSeverity = dto.TokenSeverity ?? "Low",
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+
+            _db.Tokens.Add(token);
+            await _db.SaveChangesAsync();
+
             var entity = new Document
             {
                 DocumentName = dto.DocumentName,
                 DocumentLocation = dto.DocumentLocation,
-                DocumentTokenId = dto.TokenId,
-                TokenType = dto.TokenType,
-                TokenSeverity = dto.TokenSeverity,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
+                DocumentTokenId = token.TokenId,
+
                 DocumentDepartment = dto.DocumentDepartment,
                 DocumentContent = dto.DocumentContent,
                 DocumentHeader = dto.DocumentHeader,
                 DocumentFilepath = dto.DocumentFilepath
             };
 
-            _context.Documents.Add(entity);
-            await _context.SaveChangesAsync();
+            _db.Documents.Add(entity);
+            await _db.SaveChangesAsync();
+
+            var created = await _db.Documents
+                .AsNoTracking()
+                .Include(d => d.Token)
+                .FirstAsync(d => d.DocumentId == entity.DocumentId);
 
             return new DocumentDto
             {
-                DocumentId = entity.DocumentId,
-                TokenId = entity.DocumentTokenId,
-                DocumentName = entity.DocumentName,
-                DocumentLocation = entity.DocumentLocation,
-                TokenType = entity.TokenType,
-                TokenSeverity = entity.TokenSeverity,
-                CreatedDate = entity.CreatedDate,
-                UpdatedDate = entity.UpdatedDate,
-                DocumentDepartment = entity.DocumentDepartment,
-                DocumentContent = entity.DocumentContent,
-                DocumentHeader = entity.DocumentHeader,
-                DocumentFilepath = entity.DocumentFilepath
+                DocumentId = created.DocumentId,
+                DocumentName = created.DocumentName,
+                DocumentLocation = created.DocumentLocation,
+
+                TokenId = created.Token.TokenId,
+                TokenType = created.Token.TokenType,
+                TokenSeverity = created.Token.TokenSeverity,
+
+                CreatedDate = created.Token.CreatedDate,
+                UpdatedDate = created.Token.UpdatedDate,
+
+                DocumentDepartment = created.DocumentDepartment,
+                DocumentContent = created.DocumentContent,
+                DocumentHeader = created.DocumentHeader,
+                DocumentFilepath = created.DocumentFilepath
             };
         }
 
         public async Task<DocumentDto?> UpdateAsync(Guid id, DocumentDto dto)
         {
-            var entity = await _context.Documents
+            var entity = await _db.Documents
+                .Include(x => x.Token)
                 .FirstOrDefaultAsync(x => x.DocumentTokenId == id);
 
             if (entity == null)
@@ -117,26 +134,30 @@ namespace InsiderOUT.Server.Services
 
             entity.DocumentName = dto.DocumentName;
             entity.DocumentLocation = dto.DocumentLocation;
-            entity.TokenType = dto.TokenType;
-            entity.TokenSeverity = dto.TokenSeverity;
-            entity.UpdatedDate = DateTime.UtcNow;
+
             entity.DocumentDepartment = dto.DocumentDepartment;
             entity.DocumentContent = dto.DocumentContent;
             entity.DocumentHeader = dto.DocumentHeader;
             entity.DocumentFilepath = dto.DocumentFilepath;
 
-            await _context.SaveChangesAsync();
+            entity.Token.TokenSeverity = dto.TokenSeverity ?? entity.Token.TokenSeverity;
+            entity.Token.UpdatedDate = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
 
             return new DocumentDto
             {
                 DocumentId = entity.DocumentId,
-                TokenId = entity.DocumentTokenId,
                 DocumentName = entity.DocumentName,
                 DocumentLocation = entity.DocumentLocation,
-                TokenType = entity.TokenType,
-                TokenSeverity = entity.TokenSeverity,
-                CreatedDate = entity.CreatedDate,
-                UpdatedDate = entity.UpdatedDate,
+
+                TokenId = entity.Token.TokenId,
+                TokenType = entity.Token.TokenType,
+                TokenSeverity = entity.Token.TokenSeverity,
+
+                CreatedDate = entity.Token.CreatedDate,
+                UpdatedDate = entity.Token.UpdatedDate,
+
                 DocumentDepartment = entity.DocumentDepartment,
                 DocumentContent = entity.DocumentContent,
                 DocumentHeader = entity.DocumentHeader,
@@ -146,14 +167,14 @@ namespace InsiderOUT.Server.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var entity = await _context.Documents
+            var entity = await _db.Documents
                 .FirstOrDefaultAsync(x => x.DocumentTokenId == id);
 
             if (entity == null)
                 return false;
 
-            _context.Documents.Remove(entity);
-            await _context.SaveChangesAsync();
+            _db.Documents.Remove(entity);
+            await _db.SaveChangesAsync();
 
             return true;
         }
