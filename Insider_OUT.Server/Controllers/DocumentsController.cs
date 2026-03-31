@@ -17,33 +17,38 @@ namespace InsiderOUT.Server.Controllers
             _service = service;
         }
 
-    
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
             => Ok(await _service.GetAllAsync());
 
-        // CHANGED: id:int → id:guid
-        // CHANGED: parameter type int → Guid
+        //CHANGED: id:int → id:guid
+        //CHANGED: parameter type int → Guid
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var doc = await _service.GetByIdAsync(id); 
+            var doc = await _service.GetByIdAsync(id);
 
             if (doc == null)
                 return NotFound();
 
-            //CHANGED: return both DocumentId and TokenId as strings for frontend compatibility
+            //CHANGED: return TokenId (Guid) from your DTO
             return Ok(new
             {
                 documentId = doc.DocumentId,
-                tokenId = doc.DocumentTokenId.ToString(),
+                tokenId = doc.TokenId.ToString(),   //CHANGED
                 name = doc.DocumentName,
+                location = doc.DocumentLocation,
                 created = doc.CreatedDate,
-                updated = doc.UpdatedDate
+                updated = doc.UpdatedDate,
+                department = doc.DocumentDepartment,
+                content = doc.DocumentContent,
+                header = doc.DocumentHeader,
+                filepath = doc.DocumentFilepath
             });
         }
 
-    
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DocumentDto dto)
         {
@@ -52,13 +57,14 @@ namespace InsiderOUT.Server.Controllers
 
             var created = await _service.CreateAsync(dto);
 
-            //CHANGED: CreatedAtAction now uses Guid route
+            //CHANGED: CreatedAtAction now uses GUID TokenId
             return CreatedAtAction(nameof(GetById),
-                new { id = created.DocumentTokenId },   // CHANGED: use GUID TokenId for route
+                new { id = created.TokenId }, 
                 new
                 {
                     documentId = created.DocumentId,
-                    tokenId = created.DocumentTokenId.ToString()   //CHANGED: return GUID as string
+                    tokenId = created.TokenId.ToString(),   //CHANGED
+                    name = created.DocumentName
                 });
         }
 
@@ -69,12 +75,13 @@ namespace InsiderOUT.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var updated = await _service.UpdateAsync(id, dto);
+            var updated = await _service.UpdateAsync(id, dto);  
 
             return updated == null ? NotFound() : Ok(new
             {
                 documentId = updated.DocumentId,
-                tokenId = updated.DocumentTokenId.ToString()
+                tokenId = updated.TokenId.ToString(),
+                name = updated.DocumentName
             });
         }
 
@@ -82,7 +89,7 @@ namespace InsiderOUT.Server.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var ok = await _service.DeleteAsync(id); 
+            var ok = await _service.DeleteAsync(id);   
 
             return ok ? NoContent() : NotFound();
         }
