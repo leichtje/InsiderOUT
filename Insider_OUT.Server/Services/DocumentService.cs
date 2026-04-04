@@ -1,7 +1,7 @@
-using Insider_OUT.Server.Data;
 using Insider_OUT.Server.Data.Models.Tokens;
-using InsiderOUT.Server.Models.Dto;
+using Insider_OUT.Server.Data;
 using Microsoft.EntityFrameworkCore;
+using InsiderOUT.Server.Models.Dto;
 
 namespace InsiderOUT.Server.Services
 {
