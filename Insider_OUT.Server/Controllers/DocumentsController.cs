@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using InsiderOUT.Server.Services;
 using InsiderOUT.Server.Models.Dto;
-using System;
-using System.Threading.Tasks;
 
 namespace InsiderOUT.Server.Controllers
 {
@@ -19,32 +17,14 @@ namespace InsiderOUT.Server.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
-        {
-            var docs = await _service.GetAllAsync();
-            return Ok(docs);
-        }
+            => Ok(await _service.GetAllAsync());
 
+        // GUID version of original GetById
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var doc = await _service.GetByIdAsync(id);
-
-            if (doc == null)
-                return NotFound();
-
-            return Ok(new
-            {
-                documentId = doc.DocumentId,
-                tokenId = doc.TokenId.ToString(),
-                name = doc.DocumentName,
-                location = doc.DocumentLocation,
-                created = doc.CreatedDate,
-                updated = doc.UpdatedDate,
-                department = doc.DocumentDepartment,
-                content = doc.DocumentContent,
-                header = doc.DocumentHeader,
-                filepath = doc.DocumentFilepath
-            });
+            return doc == null ? NotFound() : Ok(doc);
         }
 
         [HttpPost]
@@ -55,16 +35,13 @@ namespace InsiderOUT.Server.Controllers
 
             var created = await _service.CreateAsync(dto);
 
+            // Original behavior: return full DTO and use DocumentId in route
             return CreatedAtAction(nameof(GetById),
-                new { id = created.TokenId },
-                new
-                {
-                    documentId = created.DocumentId,
-                    tokenId = created.TokenId.ToString(),
-                    name = created.DocumentName
-                });
+                new { id = created.TokenId },   // GUID now
+                created);
         }
 
+        // GUID version of original Update
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] DocumentDto dto)
         {
@@ -73,26 +50,16 @@ namespace InsiderOUT.Server.Controllers
 
             var updated = await _service.UpdateAsync(id, dto);
 
-            if (updated == null)
-                return NotFound();
-
-            return Ok(new
-            {
-                documentId = updated.DocumentId,
-                tokenId = updated.TokenId.ToString(),
-                name = updated.DocumentName
-            });
+            // Original behavior: NoContent on success, NotFound otherwise
+            return updated == null ? NotFound() : NoContent();
         }
 
+        // GUID version of original Delete
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var ok = await _service.DeleteAsync(id);
-
-            if (!ok)
-                return NotFound();
-
-            return NoContent();
+            return ok ? NoContent() : NotFound();
         }
     }
 }
