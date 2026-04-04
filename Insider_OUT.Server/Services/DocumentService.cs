@@ -1,7 +1,7 @@
-using Insider_OUT.Server.Data.Models.Tokens;
 using Insider_OUT.Server.Data;
-using Microsoft.EntityFrameworkCore;
+using Insider_OUT.Server.Data.Models.Tokens;
 using InsiderOUT.Server.Models.Dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace InsiderOUT.Server.Services
 {
@@ -40,14 +40,15 @@ namespace InsiderOUT.Server.Services
                 .ToListAsync();
         }
 
-        public async Task<DocumentDto?> GetByIdAsync(Guid id)
+        public async Task<DocumentDto?> GetByIdAsync(Guid tokenId)
         {
             var d = await _db.Documents
                 .AsNoTracking()
                 .Include(x => x.Token)
-                .FirstOrDefaultAsync(x => x.DocumentTokenId == id);
+                .FirstOrDefaultAsync(x => x.DocumentTokenId == tokenId);
 
-            if (d == null) return null;
+            if (d == null)
+                return null;
 
             return new DocumentDto
             {
@@ -71,6 +72,7 @@ namespace InsiderOUT.Server.Services
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
+            // Create Token (GUID)
             var token = new Token
             {
                 TokenId = Guid.NewGuid(),
@@ -83,6 +85,7 @@ namespace InsiderOUT.Server.Services
             _db.Tokens.Add(token);
             await _db.SaveChangesAsync();
 
+            // Create Document
             var entity = new Document
             {
                 DocumentName = dto.DocumentName,
@@ -98,6 +101,7 @@ namespace InsiderOUT.Server.Services
             _db.Documents.Add(entity);
             await _db.SaveChangesAsync();
 
+            // Reload with Token
             var created = await _db.Documents
                 .AsNoTracking()
                 .Include(d => d.Token)
@@ -123,15 +127,16 @@ namespace InsiderOUT.Server.Services
             };
         }
 
-        public async Task<DocumentDto?> UpdateAsync(Guid id, DocumentDto dto)
+        public async Task<DocumentDto?> UpdateAsync(Guid tokenId, DocumentDto dto)
         {
             var entity = await _db.Documents
                 .Include(x => x.Token)
-                .FirstOrDefaultAsync(x => x.DocumentTokenId == id);
+                .FirstOrDefaultAsync(x => x.DocumentTokenId == tokenId);
 
             if (entity == null)
                 return null;
 
+            // Restore original behavior: update ONLY document fields
             entity.DocumentName = dto.DocumentName;
             entity.DocumentLocation = dto.DocumentLocation;
 
@@ -140,9 +145,7 @@ namespace InsiderOUT.Server.Services
             entity.DocumentHeader = dto.DocumentHeader;
             entity.DocumentFilepath = dto.DocumentFilepath;
 
-            entity.Token.TokenSeverity = dto.TokenSeverity ?? entity.Token.TokenSeverity;
-            entity.Token.UpdatedDate = DateTime.UtcNow;
-
+            // DO NOT update token fields
             await _db.SaveChangesAsync();
 
             return new DocumentDto
@@ -165,10 +168,10 @@ namespace InsiderOUT.Server.Services
             };
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid tokenId)
         {
             var entity = await _db.Documents
-                .FirstOrDefaultAsync(x => x.DocumentTokenId == id);
+                .FirstOrDefaultAsync(x => x.DocumentTokenId == tokenId);
 
             if (entity == null)
                 return false;
