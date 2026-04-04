@@ -37,9 +37,10 @@ export const IncidentDetailStore = signalStore(
         });
 
         const document = computed(() => {
-            const tokenId = incident()?.tokenId ?? 0;
-            console.log(documentStore.entityMap()[tokenId])
-            return tokenId ? documentStore.entityMap()[tokenId] : null;
+            const tokenId = incident()?.tokenId; 
+            if (!tokenId) return null;
+            
+            return documentStore.tokenMap()[tokenId] || null;
         });
 
         const isLoading = computed(() => 

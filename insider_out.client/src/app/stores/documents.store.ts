@@ -65,13 +65,22 @@ export const DocumentStore = signalStore(
     withComputed((store) => ({
         documentCount: computed(() => store.documents().length),
         hasSelectedDocument: computed(() => !!store.selectedDocument()),
+
         entityMap: computed(() => {
             const map: Record<string, DocumentModel> = {};
             for (const document of store.documents()) {
                 map[document.documentId] = document;
             }
             return map;
-        })
+        }),
+
+        tokenMap: computed(() => {
+            const map: Record<string, DocumentModel> = {};
+            for (const document of store.documents()) {
+                map[document.tokenId] = document; 
+            }
+        return map;
+    })
     })),
 
     withMethods((store, http = inject(HttpClient), snackBar = inject(MatSnackBar)) => {
@@ -200,12 +209,12 @@ export const DocumentStore = signalStore(
             ),
             loadDocument: rxMethod<string>(
                 pipe(
-                    switchMap((id) => {
-                        // if (store.entityMap()[id]) {
-                        //     return []; 
-                        // }
+                    switchMap((tokenId) => {
+                        if (store.tokenMap && store.tokenMap()[tokenId]) {
+                            return []; 
+                        }
 
-                        return http.get<DocumentDto>(`${apiUrl}/${id}`).pipe(
+                        return http.get<DocumentDto>(`${apiUrl}/${tokenId}`).pipe(
                             map(toDocumentModel),
                             tap((document) => {
                                 patchState(store, (state) => ({
@@ -213,7 +222,7 @@ export const DocumentStore = signalStore(
                                 }));
                             }),
                             catchError((err) => {
-                                console.error(`Failed to load missing document ${id}:`, err);
+                                console.error(`Failed to load missing document by token ${tokenId}:`, err);
                                 return [];
                             })
                         );
