@@ -29,7 +29,8 @@ namespace Insider_OUT.Server.Data.Models.Tokens
 
         // Navigation properties for subtypes (one-to-one)
         public Document Document { get; set; }
-        public Incident Incident { get; set; }
+        //[ForeignKey(nameof(Incident.IncidentTokenId))]
+        //public Incident Incident { get; set; }
     }
 }
 

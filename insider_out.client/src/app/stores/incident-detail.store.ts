@@ -37,7 +37,8 @@ export const IncidentDetailStore = signalStore(
         });
 
         const document = computed(() => {
-            const tokenId = incident()?.tokenId;
+            const tokenId = incident()?.tokenId ?? 0;
+            console.log(documentStore.entityMap()[tokenId])
             return tokenId ? documentStore.entityMap()[tokenId] : null;
         });
 

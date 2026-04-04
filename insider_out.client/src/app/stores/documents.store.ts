@@ -25,6 +25,7 @@ const initialState: DocumentState = {
 };
 
 export function toDocumentModel(dto: DocumentDto): DocumentModel {
+    debugger;
     return {
         tokenId: dto.tokenId,
         documentId: dto.documentId,
