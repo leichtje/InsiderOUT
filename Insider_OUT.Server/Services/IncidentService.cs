@@ -4,6 +4,7 @@ using Insider_OUT.Server.Data.Models.Tokens;
 using Microsoft.EntityFrameworkCore;
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
+using Insider_OUT.Server.Data.Models.Dto;
 
 namespace InsiderOUT.Server.Services
 {
@@ -242,9 +243,12 @@ namespace InsiderOUT.Server.Services
             if (token == null)
                 return null; // Token not found → cannot create incident
 
+            var nextNumber = await _db.Incidents.MaxAsync(i => (int?)i.IncidentId) ?? 0;
+            var title = $"Incident #{nextNumber + 1}";
+
             var entity = new Incident
             {
-                IncidentTitle = "NXLog Event",
+                IncidentTitle = title,
                 IncidentDescription = "",
                 IncidentCreatedDate = evt.EventTime,
                 IncidentUpdatedDate = evt.EventTime,

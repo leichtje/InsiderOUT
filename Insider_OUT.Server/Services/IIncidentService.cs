@@ -1,4 +1,5 @@
-﻿using InsiderOUT.Server.Models.Dto;
+﻿using Insider_OUT.Server.Data.Models.Dto;
+using InsiderOUT.Server.Models.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
