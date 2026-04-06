@@ -185,11 +185,12 @@ export const DocumentStore = signalStore(
                 )
             ),
 
-            selectDocument: rxMethod<number>(
+            selectDocument: rxMethod<string>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                     switchMap((id) => {
-                        const existing = store.documents().find(d => d.documentId === id);
+                        // Search by tokenId instead of documentId!
+                        const existing = store.documents().find(d => d.tokenId === id); 
                         if (existing) {
                             patchState(store, { selectedDocument: existing, isLoading: false });
                             return [];
@@ -207,6 +208,7 @@ export const DocumentStore = signalStore(
                     })
                 )
             ),
+
             loadDocument: rxMethod<string>(
                 pipe(
                     switchMap((tokenId) => {
