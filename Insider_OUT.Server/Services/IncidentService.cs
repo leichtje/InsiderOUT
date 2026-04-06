@@ -231,5 +231,62 @@ namespace InsiderOUT.Server.Services
             await _db.SaveChangesAsync();
             return true;
         }
+
+                // NEW METHOD — Create Incident from NXLog Event
+        public async Task<IncidentDto?> CreateFromNxLogAsync(NxLogEvent evt)
+        {
+            // Validate token exists
+            var token = await _db.Tokens
+                .FirstOrDefaultAsync(t => t.TokenId == evt.TokenId);
+
+            if (token == null)
+                return null; // Token not found → cannot create incident
+
+            var entity = new Incident
+            {
+                IncidentTitle = "NXLog Event",
+                IncidentDescription = "",
+                IncidentCreatedDate = evt.EventTime,
+                IncidentUpdatedDate = evt.EventTime,
+                IncidentAgent = evt.UserAgent,
+
+                IncidentTokenId = evt.TokenId,
+                IncidentTokenType = "document",
+                IncidentStatus = "New",
+
+                IncidentAssignedUserId = null,
+                IncidentTiedSubjectId = null,
+                IsActive = true,
+
+                IncidentRiskScore = null,
+                IncidentIP = evt.ClientIP,
+
+                Token = token
+            };
+
+            _db.Incidents.Add(entity);
+            await _db.SaveChangesAsync();
+
+            return new IncidentDto
+            {
+                IncidentId = entity.IncidentId,
+                Title = entity.IncidentTitle,
+                Desc = entity.IncidentDescription,
+                Date = entity.IncidentCreatedDate,
+                Updated = entity.IncidentUpdatedDate,
+                Agent = entity.IncidentAgent,
+
+                TokenId = entity.IncidentTokenId,
+                TokenType = entity.IncidentTokenType,
+                Status = entity.IncidentStatus,
+
+                AssignedUserId = entity.IncidentAssignedUserId,
+                TiedSubjectId = entity.IncidentTiedSubjectId,
+                IsActive = entity.IsActive,
+
+                IncidentRiskScore = entity.IncidentRiskScore,
+                IncidentIP = entity.IncidentIP
+            };
+        }
     }
 }
