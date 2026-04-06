@@ -6,7 +6,7 @@
         public string DocumentName { get; set; }
         public string DocumentLocation { get; set; }
 
-        public int TokenId { get; set; }
+        public Guid TokenId { get; set; }
         public string TokenType { get; set; }
         public string TokenSeverity { get; set; }
 

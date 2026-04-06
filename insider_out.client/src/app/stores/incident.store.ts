@@ -47,7 +47,7 @@ export function toIncidentDto(model: Partial<IncidentModel>): IncidentDto {
         date: model.date ? model.date.toISOString() : new Date().toISOString(),
         updated: model.updated ? model.updated.toISOString() : new Date().toISOString(),
         agent: model.agent || '',
-        tokenId: model.tokenId ?? 0,
+        tokenId: model.tokenId || '',
         tokenType: model.tokenType === TokenType.email ? 'email' : 'document',
         status: model.status?.toString() || IncidentStatus.New.toString(),
         assignedUserId: model.assignedUserId ?? null,

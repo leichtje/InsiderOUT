@@ -88,10 +88,9 @@ export class TokensDocumentsDetailComponent {
     ngOnInit() {
         this.route.paramMap.pipe(
             map(params => params.get('id')),
-            filter((id): id is string => id !== null),
-            map(id => +id)
+            filter((id): id is string => id !== null)
         ).subscribe(id => {
-            this.store.loadDocumentDetails(id);
+            this.store.loadDocumentDetails(id); 
         });
     }
 

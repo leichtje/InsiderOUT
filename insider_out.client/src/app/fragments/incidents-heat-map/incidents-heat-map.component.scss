@@ -36,7 +36,7 @@
         background-color: transparent;
         border: none;
         mat-icon {
-            color: var(--color-primary-5) !important;
+            color: var(--color-primary-2) !important;
             width: 20px;
             height: 20px;
             font-size: 20px;
@@ -52,7 +52,7 @@
     transition: background 0.2s;
 
     mat-icon {
-        color: var(--color-primary-5) !important;
+        color: var(--color-primary-2) !important;
     }
 }
 
@@ -187,7 +187,7 @@
 .month-year-picker {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .month-selector {
@@ -197,7 +197,7 @@
 .month-selector ::ng-deep .mat-mdc-select-value {
     font-size: 1.17em; 
     font-weight: bold;
-    color: #333;
+    color: var(--color-text);
 }
 
 .month-selector ::ng-deep .mdc-notched-outline__leading,
@@ -209,6 +209,6 @@
 .year-label {
     font-size: 1.17em;
     font-weight: bold;
-    color: #333;
+    color: var(--color-text);
     padding-bottom: 2px;
 }

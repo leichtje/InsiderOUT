@@ -1,11 +1,9 @@
 
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IncidentsOpenViewComponent } from "./incidents-open-view/incidents-open-view.component";
-import { IncidentService } from '../../../services/incident.service';
 import { IncidentModel } from '../../../models/incidents.model';
 import { FilterValue } from '../../../models/filter.model';
-import { UserService } from '../../../services/user.service';
 import { TokenType } from '../../../models/token.model';
 import { IncidentStore } from '../../../stores/incident.store';
 import { UserStore } from '../../../stores/user.store';

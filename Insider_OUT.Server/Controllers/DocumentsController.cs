@@ -19,8 +19,9 @@ namespace InsiderOUT.Server.Controllers
         public async Task<IActionResult> GetAll()
             => Ok(await _service.GetAllAsync());
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        // GUID version of original GetById
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             var doc = await _service.GetByIdAsync(id);
             return doc == null ? NotFound() : Ok(doc);
@@ -29,25 +30,33 @@ namespace InsiderOUT.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DocumentDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var created = await _service.CreateAsync(dto);
+
+            // Original behavior: return full DTO and use DocumentId in route
             return CreatedAtAction(nameof(GetById),
-                new { id = created.DocumentId },
+                new { id = created.TokenId },   // GUID now
                 created);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] DocumentDto dto)
+        // GUID version of original Update
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] DocumentDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var ok = await _service.UpdateAsync(id, dto);
-            return ok ? NoContent() : NotFound();
+            var updated = await _service.UpdateAsync(id, dto);
+
+            // Original behavior: NoContent on success, NotFound otherwise
+            return updated == null ? NotFound() : NoContent();
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        // GUID version of original Delete
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             var ok = await _service.DeleteAsync(id);
             return ok ? NoContent() : NotFound();

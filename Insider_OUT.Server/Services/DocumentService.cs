@@ -1,7 +1,7 @@
 using Insider_OUT.Server.Data.Models.Tokens;
-using InsiderOUT.Server.Data;
-using InsiderOUT.Server.Models.Dto;
 using Microsoft.EntityFrameworkCore;
+using InsiderOUT.Server.Models.Dto;
+using InsiderOUT.Server.Data;
 
 namespace InsiderOUT.Server.Services
 {
@@ -40,14 +40,15 @@ namespace InsiderOUT.Server.Services
                 .ToListAsync();
         }
 
-        public async Task<DocumentDto?> GetByIdAsync(int id)
+        public async Task<DocumentDto?> GetByIdAsync(Guid tokenId)
         {
             var d = await _db.Documents
                 .AsNoTracking()
                 .Include(x => x.Token)
-                .FirstOrDefaultAsync(x => x.DocumentId == id);
+                .FirstOrDefaultAsync(x => x.DocumentTokenId == tokenId);
 
-            if (d == null) return null;
+            if (d == null)
+                return null;
 
             return new DocumentDto
             {
@@ -71,8 +72,10 @@ namespace InsiderOUT.Server.Services
 
         public async Task<DocumentDto> CreateAsync(DocumentDto dto)
         {
+            // Create Token (GUID)
             var token = new Token
             {
+                TokenId = Guid.NewGuid(),
                 TokenType = "document",
                 TokenSeverity = dto.TokenSeverity ?? "Low",
                 CreatedDate = DateTime.UtcNow,
@@ -82,6 +85,7 @@ namespace InsiderOUT.Server.Services
             _db.Tokens.Add(token);
             await _db.SaveChangesAsync();
 
+            // Create Document
             var entity = new Document
             {
                 DocumentName = dto.DocumentName,
@@ -97,6 +101,7 @@ namespace InsiderOUT.Server.Services
             _db.Documents.Add(entity);
             await _db.SaveChangesAsync();
 
+            // Reload with Token
             var created = await _db.Documents
                 .AsNoTracking()
                 .Include(d => d.Token)
@@ -122,11 +127,16 @@ namespace InsiderOUT.Server.Services
             };
         }
 
-        public async Task<bool> UpdateAsync(int id, DocumentDto dto)
+        public async Task<DocumentDto?> UpdateAsync(Guid tokenId, DocumentDto dto)
         {
-            var entity = await _db.Documents.FindAsync(id);
-            if (entity == null) return false;
+            var entity = await _db.Documents
+                .Include(x => x.Token)
+                .FirstOrDefaultAsync(x => x.DocumentTokenId == tokenId);
 
+            if (entity == null)
+                return null;
+
+            // Restore original behavior: update ONLY document fields
             entity.DocumentName = dto.DocumentName;
             entity.DocumentLocation = dto.DocumentLocation;
 
@@ -135,17 +145,40 @@ namespace InsiderOUT.Server.Services
             entity.DocumentHeader = dto.DocumentHeader;
             entity.DocumentFilepath = dto.DocumentFilepath;
 
+            // DO NOT update token fields
             await _db.SaveChangesAsync();
-            return true;
+
+            return new DocumentDto
+            {
+                DocumentId = entity.DocumentId,
+                DocumentName = entity.DocumentName,
+                DocumentLocation = entity.DocumentLocation,
+
+                TokenId = entity.Token.TokenId,
+                TokenType = entity.Token.TokenType,
+                TokenSeverity = entity.Token.TokenSeverity,
+
+                CreatedDate = entity.Token.CreatedDate,
+                UpdatedDate = entity.Token.UpdatedDate,
+
+                DocumentDepartment = entity.DocumentDepartment,
+                DocumentContent = entity.DocumentContent,
+                DocumentHeader = entity.DocumentHeader,
+                DocumentFilepath = entity.DocumentFilepath
+            };
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid tokenId)
         {
-            var entity = await _db.Documents.FindAsync(id);
-            if (entity == null) return false;
+            var entity = await _db.Documents
+                .FirstOrDefaultAsync(x => x.DocumentTokenId == tokenId);
+
+            if (entity == null)
+                return false;
 
             _db.Documents.Remove(entity);
             await _db.SaveChangesAsync();
+
             return true;
         }
     }

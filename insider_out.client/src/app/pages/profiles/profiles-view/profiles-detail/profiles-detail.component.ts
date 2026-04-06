@@ -1,7 +1,5 @@
-import { Component, computed, effect, inject, signal } from "@angular/core";
-import { SubjectService } from "../../../../services/subject.service";
+import { Component, computed, effect, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AsyncPipe } from "@angular/common";
 import { ProfileCardComponent } from "../../../../fragments/profile-card/profile-card.component";
 import { SubjectModel, UserModel } from "../../../../models/profile.model";
 import { toSignal } from "@angular/core/rxjs-interop";

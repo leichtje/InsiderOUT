@@ -1,7 +1,10 @@
-﻿using Insider_OUT.Server.Data.Models.Incidents;
+using Insider_OUT.Server.Data.Models.Incidents;
+using Insider_OUT.Server.Data;
+using Insider_OUT.Server.Data.Models.Tokens;
+using Microsoft.EntityFrameworkCore;
 using InsiderOUT.Server.Data;
 using InsiderOUT.Server.Models.Dto;
-using Microsoft.EntityFrameworkCore;
+using Insider_OUT.Server.Data.Models.Dto;
 
 namespace InsiderOUT.Server.Services
 {
@@ -26,13 +29,15 @@ namespace InsiderOUT.Server.Services
                     Date = i.IncidentCreatedDate,
                     Updated = i.IncidentUpdatedDate,
                     Agent = i.IncidentAgent,
-                    TokenId = i.IncidentTokenId,
+
+                    TokenId = i.IncidentTokenId,          // GUID now
                     TokenType = i.IncidentTokenType,
                     Status = i.IncidentStatus,
+
                     AssignedUserId = i.IncidentAssignedUserId,
                     TiedSubjectId = i.IncidentTiedSubjectId,
                     IsActive = i.IsActive,
-                    
+
                     IncidentRiskScore = i.IncidentRiskScore,
                     IncidentIP = i.IncidentIP
                 })
@@ -55,9 +60,11 @@ namespace InsiderOUT.Server.Services
                 Date = i.IncidentCreatedDate,
                 Updated = i.IncidentUpdatedDate,
                 Agent = i.IncidentAgent,
-                TokenId = i.IncidentTokenId,
+
+                TokenId = i.IncidentTokenId,          // GUID now
                 TokenType = i.IncidentTokenType,
                 Status = i.IncidentStatus,
+
                 AssignedUserId = i.IncidentAssignedUserId,
                 TiedSubjectId = i.IncidentTiedSubjectId,
                 IsActive = i.IsActive,
@@ -97,9 +104,11 @@ namespace InsiderOUT.Server.Services
                 Date = incident.IncidentCreatedDate,
                 Updated = incident.IncidentUpdatedDate,
                 Agent = incident.IncidentAgent,
+
                 TokenId = incident.IncidentTokenId,
                 TokenType = incident.IncidentTokenType,
                 Status = incident.IncidentStatus,
+
                 AssignedUserId = incident.IncidentAssignedUserId,
                 TiedSubjectId = incident.IncidentTiedSubjectId,
                 IsActive = incident.IsActive,
@@ -144,6 +153,19 @@ namespace InsiderOUT.Server.Services
 
         public async Task<IncidentDto> CreateAsync(IncidentDto dto)
         {
+            // Create Token with GUID
+            var token = new Token
+            {
+                TokenId = Guid.NewGuid(),               // NEW GUID
+                TokenType = dto.TokenType,
+                TokenSeverity = "Medium",
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+
+            _db.Tokens.Add(token);
+            await _db.SaveChangesAsync();
+
             var entity = new Incident
             {
                 IncidentTitle = dto.Title,
@@ -151,21 +173,27 @@ namespace InsiderOUT.Server.Services
                 IncidentCreatedDate = dto.Date,
                 IncidentUpdatedDate = dto.Updated,
                 IncidentAgent = dto.Agent,
-                IncidentTokenId = dto.TokenId,
+
+                IncidentTokenId = token.TokenId,        // GUID FK
                 IncidentTokenType = dto.TokenType,
                 IncidentStatus = dto.Status,
+
                 IncidentAssignedUserId = dto.AssignedUserId,
                 IncidentTiedSubjectId = dto.TiedSubjectId,
                 IsActive = dto.IsActive,
 
                 IncidentRiskScore = dto.IncidentRiskScore,
-                IncidentIP = dto.IncidentIP
+                IncidentIP = dto.IncidentIP,
+
+                Token = token
             };
 
             _db.Incidents.Add(entity);
             await _db.SaveChangesAsync();
 
             dto.IncidentId = entity.IncidentId;
+            dto.TokenId = token.TokenId;               // Return GUID to client
+
             return dto;
         }
 
@@ -179,9 +207,11 @@ namespace InsiderOUT.Server.Services
             entity.IncidentCreatedDate = dto.Date;
             entity.IncidentUpdatedDate = dto.Updated;
             entity.IncidentAgent = dto.Agent;
-            entity.IncidentTokenId = dto.TokenId;
+
+            entity.IncidentTokenId = dto.TokenId;      // GUID
             entity.IncidentTokenType = dto.TokenType;
             entity.IncidentStatus = dto.Status;
+
             entity.IncidentAssignedUserId = dto.AssignedUserId;
             entity.IncidentTiedSubjectId = dto.TiedSubjectId;
             entity.IsActive = dto.IsActive;
@@ -201,6 +231,66 @@ namespace InsiderOUT.Server.Services
             _db.Incidents.Remove(entity);
             await _db.SaveChangesAsync();
             return true;
+        }
+
+                // NEW METHOD — Create Incident from NXLog Event
+        public async Task<IncidentDto?> CreateFromNxLogAsync(NxLogEvent evt)
+        {
+            // Validate token exists
+            var token = await _db.Tokens
+                .FirstOrDefaultAsync(t => t.TokenId == evt.TokenId);
+
+            if (token == null)
+                return null; // Token not found → cannot create incident
+
+            var nextNumber = await _db.Incidents.MaxAsync(i => (int?)i.IncidentId) ?? 0;
+            var title = $"Incident #{nextNumber + 1}";
+
+            var entity = new Incident
+            {
+                IncidentTitle = title,
+                IncidentDescription = "",
+                IncidentCreatedDate = evt.EventTime,
+                IncidentUpdatedDate = evt.EventTime,
+                IncidentAgent = evt.UserAgent,
+
+                IncidentTokenId = evt.TokenId,
+                IncidentTokenType = "document",
+                IncidentStatus = "New",
+
+                IncidentAssignedUserId = null,
+                IncidentTiedSubjectId = null,
+                IsActive = true,
+
+                IncidentRiskScore = null,
+                IncidentIP = evt.ClientIP,
+
+                Token = token
+            };
+
+            _db.Incidents.Add(entity);
+            await _db.SaveChangesAsync();
+
+            return new IncidentDto
+            {
+                IncidentId = entity.IncidentId,
+                Title = entity.IncidentTitle,
+                Desc = entity.IncidentDescription,
+                Date = entity.IncidentCreatedDate,
+                Updated = entity.IncidentUpdatedDate,
+                Agent = entity.IncidentAgent,
+
+                TokenId = entity.IncidentTokenId,
+                TokenType = entity.IncidentTokenType,
+                Status = entity.IncidentStatus,
+
+                AssignedUserId = entity.IncidentAssignedUserId,
+                TiedSubjectId = entity.IncidentTiedSubjectId,
+                IsActive = entity.IsActive,
+
+                IncidentRiskScore = entity.IncidentRiskScore,
+                IncidentIP = entity.IncidentIP
+            };
         }
     }
 }

@@ -1,16 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, EventEmitter, inject, input, output, Output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { ProfileAvatarComponent } from '../../../fragments/profile-avatar/profile-avatar.component';
-import { UserService } from '../../../services/user.service';
 import { IncidentModel, IncidentViewModel } from '../../../models/incidents.model';
 import { TokenType } from '../../../models/token.model';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
-import { SubjectService } from '../../../services/subject.service';
 import { MatIcon } from "@angular/material/icon";
 import { status_colors, status_text } from "../../../fragments/pill/incident-status-constants";
 import { BreakpointService } from '../../../services/breakpoint.service';
-import { TokenService } from '../../../services/token.service';
 import { PillComponent } from '../../../fragments/pill/pill.component';
 import { UserStore } from '../../../stores/user.store';
 import { SubjectStore } from '../../../stores/subject.store';

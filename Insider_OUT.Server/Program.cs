@@ -24,6 +24,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddHttpClient<PythonService>();
+builder.Services.AddHostedService<NxLogWatcherService>();
 
 builder.Services.AddCors(options =>
 {

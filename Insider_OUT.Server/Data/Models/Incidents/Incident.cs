@@ -35,7 +35,7 @@ namespace Insider_OUT.Server.Data.Models.Incidents
 
         [Required]
         [Column("IncidentTokenId")]
-        public int IncidentTokenId { get; set; }
+        public Guid IncidentTokenId { get; set; }
 
         [Required, MaxLength(50)]
         [Column("IncidentTokenType")]

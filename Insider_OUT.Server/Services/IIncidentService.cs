@@ -1,4 +1,5 @@
-﻿using InsiderOUT.Server.Models.Dto;
+﻿using Insider_OUT.Server.Data.Models.Dto;
+using InsiderOUT.Server.Models.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,5 +13,8 @@ namespace InsiderOUT.Server.Services
         Task<IncidentDto> CreateAsync(IncidentDto dto);
         Task<bool> UpdateAsync(int id, IncidentDto dto);
         Task<bool> DeleteAsync(int id);
+
+        //New
+        Task<IncidentDto?> CreateFromNxLogAsync(NxLogEvent evt);
     }
 }

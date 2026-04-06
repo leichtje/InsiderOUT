@@ -5,9 +5,9 @@ namespace InsiderOUT.Server.Services
     public interface IDocumentService
     {
         Task<IEnumerable<DocumentDto>> GetAllAsync();
-        Task<DocumentDto?> GetByIdAsync(int id);
+        Task<DocumentDto?> GetByIdAsync(Guid id);
         Task<DocumentDto> CreateAsync(DocumentDto dto);
-        Task<bool> UpdateAsync(int id, DocumentDto dto);
-        Task<bool> DeleteAsync(int id);
+        Task<DocumentDto?> UpdateAsync(Guid id, DocumentDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

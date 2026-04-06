@@ -14,7 +14,6 @@ namespace InsiderOUT.Server.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<Document> Documents { get; set; }
-        public DbSet<Email> Emails { get; set; }
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Department> Departments { get; set; }
@@ -26,13 +25,6 @@ namespace InsiderOUT.Server.Data
                 .HasOne(t => t.Document)
                 .WithOne(d => d.Token)
                 .HasForeignKey<Document>(d => d.DocumentTokenId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Token -> Email (one-to-one)
-            modelBuilder.Entity<Token>()
-                .HasOne(t => t.Email)
-                .WithOne(e => e.Token)
-                .HasForeignKey<Email>(e => e.EmailTokenId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Incident relationships

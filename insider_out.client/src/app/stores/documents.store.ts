@@ -44,7 +44,7 @@ export function toDocumentModel(dto: DocumentDto): DocumentModel {
 export function toDocumentDto(model: Partial<DocumentModel>): DocumentDto {
     return {
         documentId: model.documentId ?? 0,
-        tokenId: model.tokenId ?? 0,
+        tokenId: model.tokenId || '',
         documentName: model.name || '',
         documentLocation: model.location || '',
         tokenType: 'Document', 
@@ -65,13 +65,22 @@ export const DocumentStore = signalStore(
     withComputed((store) => ({
         documentCount: computed(() => store.documents().length),
         hasSelectedDocument: computed(() => !!store.selectedDocument()),
+
         entityMap: computed(() => {
-            const map: Record<number, DocumentModel> = {};
+            const map: Record<string, DocumentModel> = {};
             for (const document of store.documents()) {
                 map[document.documentId] = document;
             }
             return map;
-        })
+        }),
+
+        tokenMap: computed(() => {
+            const map: Record<string, DocumentModel> = {};
+            for (const document of store.documents()) {
+                map[document.tokenId] = document; 
+            }
+        return map;
+    })
     })),
 
     withMethods((store, http = inject(HttpClient), snackBar = inject(MatSnackBar)) => {
@@ -176,11 +185,11 @@ export const DocumentStore = signalStore(
                 )
             ),
 
-            selectDocument: rxMethod<number>(
+            selectDocument: rxMethod<string>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                     switchMap((id) => {
-                        const existing = store.documents().find(d => d.documentId === id);
+                        const existing = store.documents().find(d => d.tokenId === id); 
                         if (existing) {
                             patchState(store, { selectedDocument: existing, isLoading: false });
                             return [];
@@ -198,14 +207,15 @@ export const DocumentStore = signalStore(
                     })
                 )
             ),
-            loadDocument: rxMethod<number>(
+
+            loadDocument: rxMethod<string>(
                 pipe(
-                    switchMap((id) => {
-                        if (store.entityMap()[id]) {
+                    switchMap((tokenId) => {
+                        if (store.tokenMap && store.tokenMap()[tokenId]) {
                             return []; 
                         }
 
-                        return http.get<DocumentDto>(`${apiUrl}/${id}`).pipe(
+                        return http.get<DocumentDto>(`${apiUrl}/${tokenId}`).pipe(
                             map(toDocumentModel),
                             tap((document) => {
                                 patchState(store, (state) => ({
@@ -213,7 +223,7 @@ export const DocumentStore = signalStore(
                                 }));
                             }),
                             catchError((err) => {
-                                console.error(`Failed to load missing document ${id}:`, err);
+                                console.error(`Failed to load missing document by token ${tokenId}:`, err);
                                 return [];
                             })
                         );
