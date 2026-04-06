@@ -12,5 +12,8 @@ namespace InsiderOUT.Server.Services
         Task<IncidentDto> CreateAsync(IncidentDto dto);
         Task<bool> UpdateAsync(int id, IncidentDto dto);
         Task<bool> DeleteAsync(int id);
+
+        //New
+        Task<IncidentDto?> CreateFromNxLogAsync(NxLogEvent evt);
     }
 }
