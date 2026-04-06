@@ -26,6 +26,9 @@ import { SubjectStore } from '../../../stores/subject.store';
 import { IncidentStore } from '../../../stores/incident.store';
 import { SkeletonLoaderComponent } from "../../../fragments/skeleton-loader/skeleton-loader.component";
 import { Title } from '@angular/platform-browser';
+import { ResponsiveDialogService } from '../../../services/responsive-dialog.service';
+import { ActivityAddDialogComponent } from '../../../fragments/activity-add-dialog/activity-add-dialog.component';
+import { ActivityStore } from '../../../stores/activity.store';
 
 @Component({
     selector: 'io-incidents-detail',
@@ -56,11 +59,13 @@ export class IncidentsDetailComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
     protected breakpointService = inject(BreakpointService);
+    private dialog = inject(ResponsiveDialogService);  
 
     public store = inject(IncidentDetailStore);
     protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
     protected incidentStore = inject(IncidentStore); 
+    private activityStore = inject(ActivityStore);
     private titleService = inject(Title);
 
     protected readonly activityScope = ActivityScope;
@@ -140,6 +145,30 @@ export class IncidentsDetailComponent implements OnInit {
         const id = this.selectedSubjectId();
         return this.subjects().find(s => s.subjectId === id) || null;
     });
+
+    openAddActivityDialog() {
+        const incident = this.store.incident();
+        if (!incident) return;
+
+        const dialogRef = this.dialog.open(ActivityAddDialogComponent, {
+            width: '500px',
+            data: {
+                entityId: incident.incidentId,
+                entityType: ActivityScope.Incident
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.activityStore.create({
+                    content: result.content,
+                    entityId: result.entityId,
+                    entityType: result.entityType,
+                    userId: this.userStore.currentUser()?.userId ?? null, 
+                });
+            }
+        });
+    }
 
     canDeactivate(): boolean {
         if (this.form.dirty) {

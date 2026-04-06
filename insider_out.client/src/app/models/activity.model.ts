@@ -1,5 +1,9 @@
 import { UserModel } from "./profile.model";
 
+export enum ActivityScope {
+    Incident = 'INCIDENT',
+}
+
 export interface ActivityModel {
     activityId: number;
     content: string;
@@ -9,6 +13,11 @@ export interface ActivityModel {
     userId: UserModel["userId"] | null;
 }
 
-export enum ActivityScope {
-    Incident = 'INCIDENT',
+export interface ActivityDto {
+    activityId: number;
+    content: string;
+    date: string;
+    entityId: number;
+    entityType: string;
+    userId: number | null;
 }

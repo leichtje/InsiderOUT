@@ -1,10 +1,10 @@
 import { Component, inject, input, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ActivityService } from '../../services/activity.service';
 import { ActivityScope } from '../../models/activity.model';
 import { UserModel } from '../../models/profile.model';
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { UserStore } from '../../stores/user.store';
+import { ActivityStore } from '../../stores/activity.store';
 
 @Component({
     selector: 'io-activity-list',
@@ -14,15 +14,14 @@ import { UserStore } from '../../stores/user.store';
     styleUrl: './activity-list.component.scss'
 })
 export class ActivityListComponent {
-    private activityService = inject(ActivityService);
-    
+    private activityStore = inject(ActivityStore);
     protected userStore = inject(UserStore); 
 
     readonly entityId$ = input.required<number>({alias: 'entityId'}); 
     readonly entityType$ = input.required<ActivityScope>({alias: 'entityType'});
 
     currentActivities = computed(() => {
-        const all = this.activityService.activities();
+        const all = this.activityStore.activities();
         const id = this.entityId$();
         const type = this.entityType$();
 
