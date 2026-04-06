@@ -1,117 +1,109 @@
-/* ============================================================
-   RESET TOKEN SYSTEM TO GUID-BASED DESIGN (CLEAN SLATE)
-   ============================================================ */
+--NXLog DTO
 
-/* ------------------------------------------------------------
-   STEP 1 — Drop foreign keys if they exist
-   ------------------------------------------------------------ */
-IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Documents_Tokens_DocumentTokenId')
-    ALTER TABLE dbo.Documents DROP CONSTRAINT FK_Documents_Tokens_DocumentTokenId;
-IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Incidents_Tokens_IncidentTokenId')
-    ALTER TABLE dbo.Incidents DROP CONSTRAINT FK_Incidents_Tokens_IncidentTokenId;
-GO
 
-/* ------------------------------------------------------------
-   STEP 2 — Drop index on Incidents if it exists
-   ------------------------------------------------------------ */
-IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Incidents_TokenId')
-    DROP INDEX IX_Incidents_TokenId ON dbo.Incidents;
-GO
+using System;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
-/* ------------------------------------------------------------
-   STEP 3 — Drop old int token columns
-   ------------------------------------------------------------ */
-IF EXISTS (SELECT 1 FROM sys.columns WHERE Name = 'DocumentTokenId' AND Object_ID = OBJECT_ID('dbo.Documents'))
-    ALTER TABLE dbo.Documents DROP COLUMN DocumentTokenId;
+namespace Insider_OUT.Server.Data.Models.Dto
+{
+    /// <summary>
+    /// Normalized NXLog event after parsing and GUID extraction.
+    /// This is the DTO used by the rest of the pipeline.
+    /// </summary>
+    public class NxLogEvent
+    {
+        public DateTime EventTime { get; set; }
+        public string ClientIP { get; set; }
+        public string Request { get; set; }
+        public string UserAgent { get; set; }
+        public Guid TokenId { get; set; }
+    }
 
-IF EXISTS (SELECT 1 FROM sys.columns WHERE Name = 'IncidentTokenId' AND Object_ID = OBJECT_ID('dbo.Incidents'))
-    ALTER TABLE dbo.Incidents DROP COLUMN IncidentTokenId;
-GO
+    /// <summary>
+    /// Static parser for NXLog JSON lines.
+    /// Converts raw JSON into NxLogEvent and extracts the Token GUID.
+    /// </summary>
+    public static class NxLogParser
+    {
+        // Regex to extract GUID from the Request field
+        private static readonly Regex GuidRegex =
+            new Regex(@"([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+                      RegexOptions.Compiled);
 
-/* ------------------------------------------------------------
-   STEP 4 — Reset Tokens table completely
-   ------------------------------------------------------------ */
-DELETE FROM dbo.Tokens;
-GO
+        /// <summary>
+        /// Parses a single NXLog JSON line.
+        /// Returns null if the line is invalid, not a GET request, or contains no GUID.
+        /// </summary>
+        public static NxLogEvent? ParseLine(string jsonLine)
+        {
+            if (string.IsNullOrWhiteSpace(jsonLine))
+                return null;
 
-/* ------------------------------------------------------------
-   STEP 5 — Drop old TokenId PK + column
-   ------------------------------------------------------------ */
-ALTER TABLE dbo.Tokens DROP CONSTRAINT PK_Tokens;
-ALTER TABLE dbo.Tokens DROP COLUMN TokenId;
-GO
+            NxLogRaw? raw;
+            try
+            {
+                raw = JsonSerializer.Deserialize<NxLogRaw>(jsonLine);
+            }
+            catch
+            {
+                return null; // invalid JSON
+            }
 
-/* ------------------------------------------------------------
-   STEP 6 — Add new GUID TokenId column
-   ------------------------------------------------------------ */
-ALTER TABLE dbo.Tokens
-ADD TokenId UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
-GO
+            if (raw == null)
+                return null;
 
-/* ------------------------------------------------------------
-   STEP 7 — Recreate PK
-   ------------------------------------------------------------ */
-ALTER TABLE dbo.Tokens
-ADD CONSTRAINT PK_Tokens PRIMARY KEY (TokenId);
-GO
+            // Only process GET requests
+            if (raw.Request == null || !raw.Request.StartsWith("GET", StringComparison.OrdinalIgnoreCase))
+                return null;
 
-/* ------------------------------------------------------------
-   STEP 8 — Add new GUID token columns to Documents + Incidents
-   ------------------------------------------------------------ */
-ALTER TABLE dbo.Documents
-ADD DocumentTokenId UNIQUEIDENTIFIER NULL;
+            // Extract GUID from the Request path
+            var match = GuidRegex.Match(raw.Request);
+            if (!match.Success)
+                return null;
 
-ALTER TABLE dbo.Incidents
-ADD IncidentTokenId UNIQUEIDENTIFIER NULL;
-GO
+            if (!Guid.TryParse(match.Value, out Guid tokenId))
+                return null;
 
-/* ------------------------------------------------------------
-   STEP 9 — Populate new token columns with fresh GUIDs
-   ------------------------------------------------------------ */
-UPDATE dbo.Documents SET DocumentTokenId = NEWID();
-UPDATE dbo.Incidents SET IncidentTokenId = NEWID();
-GO
+            // Parse timestamp: "30/Mar/2026:13:16:34 -0400"
+            if (!DateTime.TryParseExact(
+                    raw.EventTime,
+                    "dd/MMM/yyyy:HH:mm:ss zzz",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime parsedTime))
+            {
+                return null;
+            }
 
-/* ------------------------------------------------------------
-   STEP 10 — Insert matching rows into Tokens
-   ------------------------------------------------------------ */
-INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
-SELECT DISTINCT 
-    DocumentTokenId,
-    'document',
-    'medium',
-    SYSUTCDATETIME(),
-    SYSUTCDATETIME()
-FROM dbo.Documents;
+            return new NxLogEvent
+            {
+                EventTime = parsedTime,
+                ClientIP = raw.ClientIP ?? "",
+                Request = raw.Request ?? "",
+                UserAgent = raw.UserAgent ?? "",
+                TokenId = tokenId
+            };
+        }
 
-INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
-SELECT DISTINCT 
-    IncidentTokenId,
-    'incident',
-    'medium',
-    SYSUTCDATETIME(),
-    SYSUTCDATETIME()
-FROM dbo.Incidents;
-GO
+        /// <summary>
+        /// Internal raw model matching NXLog JSON exactly.
+        /// </summary>
+        private class NxLogRaw
+        {
+            [JsonPropertyName("EventTime")]
+            public string EventTime { get; set; }
 
-/* ------------------------------------------------------------
-   STEP 11 — Recreate foreign keys
-   ------------------------------------------------------------ */
-ALTER TABLE dbo.Documents
-ADD CONSTRAINT FK_Documents_Tokens_DocumentTokenId
-FOREIGN KEY (DocumentTokenId) REFERENCES dbo.Tokens(TokenId);
+            [JsonPropertyName("ClientIP")]
+            public string ClientIP { get; set; }
 
-ALTER TABLE dbo.Incidents
-ADD CONSTRAINT FK_Incidents_Tokens_IncidentTokenId
-FOREIGN KEY (IncidentTokenId) REFERENCES dbo.Tokens(TokenId);
-GO
+            [JsonPropertyName("Request")]
+            public string Request { get; set; }
 
-/* ------------------------------------------------------------
-   STEP 12 — Recreate index on Incidents
-   ------------------------------------------------------------ */
-CREATE INDEX IX_Incidents_TokenId
-ON dbo.Incidents (IncidentTokenId);
-GO
-
-PRINT 'FULL GUID TOKEN RESET COMPLETE — DATABASE IS NOW CLEAN AND CONSISTENT.';
-GO
+            [JsonPropertyName("UserAgent")]
+            public string UserAgent { get; set; }
+        }
+    }
+}
