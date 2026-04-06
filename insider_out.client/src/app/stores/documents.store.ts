@@ -189,7 +189,6 @@ export const DocumentStore = signalStore(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                     switchMap((id) => {
-                        // Search by tokenId instead of documentId!
                         const existing = store.documents().find(d => d.tokenId === id); 
                         if (existing) {
                             patchState(store, { selectedDocument: existing, isLoading: false });
