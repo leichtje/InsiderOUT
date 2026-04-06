@@ -1,0 +1,93 @@
+﻿using Insider_OUT.Server.Data.Models.Dto;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace InsiderOUT.Server.Services
+{
+    public class NxLogWatcherService : BackgroundService
+    {
+        private readonly ILogger<NxLogWatcherService> _logger;
+        private readonly IIncidentService _incidentService;
+
+        private readonly string _watchFolder;
+
+        public NxLogWatcherService(
+            ILogger<NxLogWatcherService> logger,
+            IIncidentService incidentService,
+            IConfiguration config)
+        {
+            _logger = logger;
+            _incidentService = incidentService;
+
+            _watchFolder = config["NxLog:WatchFolder"]
+                ?? throw new Exception("NxLog:WatchFolder not configured.");
+
+            Directory.CreateDirectory(_watchFolder);
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("NXLogWatcherService started.");
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    ProcessNewFiles();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing NXLog files.");
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            }
+
+            _logger.LogInformation("NXLogWatcherService stopped.");
+        }
+
+        private void ProcessNewFiles()
+        {
+            var files = Directory.GetFiles(_watchFolder, "*.log");
+
+            foreach (var file in files)
+            {
+                _logger.LogInformation($"Processing NXLog file: {file}");
+
+                bool success = true;
+
+                var lines = File.ReadAllLines(file);
+
+                foreach (var line in lines)
+                {
+                    try
+                    {
+                        var evt = NxLogParser.ParseLine(line);
+                        if (evt == null)
+                            continue;
+
+                        _incidentService.CreateFromNxLogAsync(evt)
+                            .GetAwaiter()
+                            .GetResult();
+                    }
+                    catch (Exception ex)
+                    {
+                        success = false;
+                        _logger.LogError(ex, $"Error processing line in file {file}");
+                    }
+                }
+
+                if (success)
+                {
+                    File.Delete(file);
+                    _logger.LogInformation($"Successfully processed and deleted NXLog file: {file}");
+                }
+                else
+                {
+                    _logger.LogWarning($"NXLog file NOT deleted due to errors: {file}");
+                }
+            }
+        }
+    }
+}
+
