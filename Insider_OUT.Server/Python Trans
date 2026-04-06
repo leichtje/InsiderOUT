@@ -1,109 +1,92 @@
---NXLog DTO
+using InsiderOUT.Server.Data.Models.Dto;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-
-using System;
-using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-
-namespace Insider_OUT.Server.Data.Models.Dto
+namespace InsiderOUT.Server.Services
 {
-    /// <summary>
-    /// Normalized NXLog event after parsing and GUID extraction.
-    /// This is the DTO used by the rest of the pipeline.
-    /// </summary>
-    public class NxLogEvent
+    public class NxLogWatcherService : BackgroundService
     {
-        public DateTime EventTime { get; set; }
-        public string ClientIP { get; set; }
-        public string Request { get; set; }
-        public string UserAgent { get; set; }
-        public Guid TokenId { get; set; }
-    }
+        private readonly ILogger<NxLogWatcherService> _logger;
+        private readonly IIncidentService _incidentService;
 
-    /// <summary>
-    /// Static parser for NXLog JSON lines.
-    /// Converts raw JSON into NxLogEvent and extracts the Token GUID.
-    /// </summary>
-    public static class NxLogParser
-    {
-        // Regex to extract GUID from the Request field
-        private static readonly Regex GuidRegex =
-            new Regex(@"([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
-                      RegexOptions.Compiled);
+        private readonly string _watchFolder;
 
-        /// <summary>
-        /// Parses a single NXLog JSON line.
-        /// Returns null if the line is invalid, not a GET request, or contains no GUID.
-        /// </summary>
-        public static NxLogEvent? ParseLine(string jsonLine)
+        public NxLogWatcherService(
+            ILogger<NxLogWatcherService> logger,
+            IIncidentService incidentService,
+            IConfiguration config)
         {
-            if (string.IsNullOrWhiteSpace(jsonLine))
-                return null;
+            _logger = logger;
+            _incidentService = incidentService;
 
-            NxLogRaw? raw;
-            try
-            {
-                raw = JsonSerializer.Deserialize<NxLogRaw>(jsonLine);
-            }
-            catch
-            {
-                return null; // invalid JSON
-            }
+            _watchFolder = config["NxLog:WatchFolder"]
+                ?? throw new Exception("NxLog:WatchFolder not configured.");
 
-            if (raw == null)
-                return null;
-
-            // Only process GET requests
-            if (raw.Request == null || !raw.Request.StartsWith("GET", StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            // Extract GUID from the Request path
-            var match = GuidRegex.Match(raw.Request);
-            if (!match.Success)
-                return null;
-
-            if (!Guid.TryParse(match.Value, out Guid tokenId))
-                return null;
-
-            // Parse timestamp: "30/Mar/2026:13:16:34 -0400"
-            if (!DateTime.TryParseExact(
-                    raw.EventTime,
-                    "dd/MMM/yyyy:HH:mm:ss zzz",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None,
-                    out DateTime parsedTime))
-            {
-                return null;
-            }
-
-            return new NxLogEvent
-            {
-                EventTime = parsedTime,
-                ClientIP = raw.ClientIP ?? "",
-                Request = raw.Request ?? "",
-                UserAgent = raw.UserAgent ?? "",
-                TokenId = tokenId
-            };
+            Directory.CreateDirectory(_watchFolder);
         }
 
-        /// <summary>
-        /// Internal raw model matching NXLog JSON exactly.
-        /// </summary>
-        private class NxLogRaw
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            [JsonPropertyName("EventTime")]
-            public string EventTime { get; set; }
+            _logger.LogInformation("NXLogWatcherService started.");
 
-            [JsonPropertyName("ClientIP")]
-            public string ClientIP { get; set; }
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    ProcessNewFiles();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing NXLog files.");
+                }
 
-            [JsonPropertyName("Request")]
-            public string Request { get; set; }
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            }
 
-            [JsonPropertyName("UserAgent")]
-            public string UserAgent { get; set; }
+            _logger.LogInformation("NXLogWatcherService stopped.");
+        }
+
+        private void ProcessNewFiles()
+        {
+            var files = Directory.GetFiles(_watchFolder, "*.log");
+
+            foreach (var file in files)
+            {
+                _logger.LogInformation($"Processing NXLog file: {file}");
+
+                bool success = true;
+
+                var lines = File.ReadAllLines(file);
+
+                foreach (var line in lines)
+                {
+                    try
+                    {
+                        var evt = NxLogParser.ParseLine(line);
+                        if (evt == null)
+                            continue;
+
+                        _incidentService.CreateFromNxLogAsync(evt)
+                            .GetAwaiter()
+                            .GetResult();
+                    }
+                    catch (Exception ex)
+                    {
+                        success = false;
+                        _logger.LogError(ex, $"Error processing line in file {file}");
+                    }
+                }
+
+                if (success)
+                {
+                    File.Delete(file);
+                    _logger.LogInformation($"Successfully processed and deleted NXLog file: {file}");
+                }
+                else
+                {
+                    _logger.LogWarning($"NXLog file NOT deleted due to errors: {file}");
+                }
+            }
         }
     }
 }
