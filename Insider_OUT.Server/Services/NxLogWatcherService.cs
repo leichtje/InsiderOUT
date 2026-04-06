@@ -1,4 +1,4 @@
-﻿using Insider_OUT.Server.Data.Models.Dto;
+using InsiderOUT.Server.Data.Models.Dto;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -7,17 +7,16 @@ namespace InsiderOUT.Server.Services
     public class NxLogWatcherService : BackgroundService
     {
         private readonly ILogger<NxLogWatcherService> _logger;
-        private readonly IIncidentService _incidentService;
-
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly string _watchFolder;
 
         public NxLogWatcherService(
             ILogger<NxLogWatcherService> logger,
-            IIncidentService incidentService,
+            IServiceScopeFactory scopeFactory,
             IConfiguration config)
         {
             _logger = logger;
-            _incidentService = incidentService;
+            _scopeFactory = scopeFactory;
 
             _watchFolder = config["NxLog:WatchFolder"]
                 ?? throw new Exception("NxLog:WatchFolder not configured.");
@@ -33,7 +32,7 @@ namespace InsiderOUT.Server.Services
             {
                 try
                 {
-                    ProcessNewFiles();
+                    await ProcessNewFilesAsync();
                 }
                 catch (Exception ex)
                 {
@@ -46,7 +45,7 @@ namespace InsiderOUT.Server.Services
             _logger.LogInformation("NXLogWatcherService stopped.");
         }
 
-        private void ProcessNewFiles()
+        private async Task ProcessNewFilesAsync()
         {
             var files = Directory.GetFiles(_watchFolder, "*.log");
 
@@ -55,8 +54,11 @@ namespace InsiderOUT.Server.Services
                 _logger.LogInformation($"Processing NXLog file: {file}");
 
                 bool success = true;
-
                 var lines = File.ReadAllLines(file);
+
+                // Create a DI scope for this file
+                using var scope = _scopeFactory.CreateScope();
+                var incidentService = scope.ServiceProvider.GetRequiredService<IIncidentService>();
 
                 foreach (var line in lines)
                 {
@@ -66,9 +68,7 @@ namespace InsiderOUT.Server.Services
                         if (evt == null)
                             continue;
 
-                        _incidentService.CreateFromNxLogAsync(evt)
-                            .GetAwaiter()
-                            .GetResult();
+                        await incidentService.CreateFromNxLogAsync(evt);
                     }
                     catch (Exception ex)
                     {
@@ -90,4 +90,3 @@ namespace InsiderOUT.Server.Services
         }
     }
 }
-
