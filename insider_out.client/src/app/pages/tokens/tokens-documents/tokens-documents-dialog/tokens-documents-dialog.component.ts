@@ -8,7 +8,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
 import { sensitivity_colors, sensitivity_text } from "../../../../fragments/pill/token-sensitivity-constants";
-import { TokenSensitivity } from "../../../../models/token.model";
+import { DocumentModel, TokenSensitivity } from "../../../../models/token.model";
 import { PillSelectComponent } from "../../../../fragments/pill-select/pill-select.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { StepDefinition, StepProgressComponent } from "../../../../fragments/step-progress/step-progress.component";
@@ -163,10 +163,11 @@ export class TokensDocumentsDialogComponent {
                 name: formValues.description ?? '',
                 department: formValues.department ?? '',
                 location: locationValue ?? '',
-                sensitivity: (formValues.sensitivity ?? TokenSensitivity.Low) as TokenSensitivity,
+                sensitivity: (formValues.sensitivity?.toLowerCase() ?? TokenSensitivity.Low) as TokenSensitivity,
                 content: previewData?.content ?? '',
                 header: previewData?.header ?? '',
                 fileName: previewData?.fileName ?? '',
+                tokenId: previewData?.tokenId ?? ''
             };
 
             this.documentStore.create(finalDocumentToSave);

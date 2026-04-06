@@ -14,6 +14,7 @@ export interface TokenModel {
 export interface DocumentModel extends TokenModel {
     type: TokenType.document;
     documentId: number;
+    tokenId: string;
     name: string;
     location: string;
     department: string;

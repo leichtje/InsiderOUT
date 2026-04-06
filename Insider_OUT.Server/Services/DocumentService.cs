@@ -75,7 +75,7 @@ namespace InsiderOUT.Server.Services
             // Create Token (GUID)
             var token = new Token
             {
-                TokenId = Guid.NewGuid(),
+                TokenId = dto.TokenId,
                 TokenType = "document",
                 TokenSeverity = dto.TokenSeverity ?? "Low",
                 CreatedDate = DateTime.UtcNow,
