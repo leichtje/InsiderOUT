@@ -1,4 +1,6 @@
-using Insider_OUT.Server.Data.Models.Dto;
+using InsiderOUT.Server.Data.Models.Dto;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace InsiderOUT.Server.Services
 {
@@ -43,46 +45,94 @@ namespace InsiderOUT.Server.Services
             _logger.LogInformation("NXLogWatcherService stopped.");
         }
 
+        private bool IsFileLocked(string file)
+        {
+            try
+            {
+                using var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None);
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
         private async Task ProcessNewFilesAsync()
         {
-            var files = Directory.GetFiles(_watchFolder, "*.log");
+            var allFiles = Directory.GetFiles(_watchFolder);
 
-            foreach (var file in files)
+
+            foreach (var tmp in allFiles.Where(f => f.EndsWith(".log.tmp")))
             {
-                _logger.LogInformation($"Processing NXLog file: {file}");
-
-                bool success = true;
-                var lines = File.ReadAllLines(file);
-
-                // Create a DI scope for this file
-                using var scope = _scopeFactory.CreateScope();
-                var incidentService = scope.ServiceProvider.GetRequiredService<IIncidentService>();
-
-                foreach (var line in lines)
+                if (!IsFileLocked(tmp))
                 {
-                    try
-                    {
-                        var evt = NxLogParser.ParseLine(line);
-                        if (evt == null)
-                            continue;
-
-                        await incidentService.CreateFromNxLogAsync(evt);
-                    }
-                    catch (Exception ex)
-                    {
-                        success = false;
-                        _logger.LogError(ex, $"Error processing line in file {file}");
-                    }
-                }
-
-                if (success)
-                {
-                    File.Delete(file);
-                    _logger.LogInformation($"Successfully processed and deleted NXLog file: {file}");
+                    File.Delete(tmp);
+                    _logger.LogInformation($"Deleted unlocked .log.tmp file: {tmp}");
                 }
                 else
                 {
-                    _logger.LogWarning($"NXLog file NOT deleted due to errors: {file}");
+                    _logger.LogDebug($"Skipping locked .log.tmp file: {tmp}");
+                }
+            }
+
+
+            var logFiles = allFiles
+                .Where(f => f.EndsWith(".log"))
+                .OrderBy(f => File.GetCreationTime(f))
+                .ToList();
+
+            if (logFiles.Count == 0)
+                return;
+
+            // If only one .log file exists, it's almost always the active NXLog file → skip
+            if (logFiles.Count == 1)
+                return;
+
+            // Process all except the newest .log file
+            var filesToProcess = logFiles.Take(logFiles.Count - 1);
+
+            foreach (var file in filesToProcess)
+            {
+                if (IsFileLocked(file))
+                {
+                    _logger.LogWarning($"Skipping locked .log file: {file}");
+                    continue;
+                }
+
+                try
+                {
+                    var lines = File.ReadAllLines(file);
+
+                    using var scope = _scopeFactory.CreateScope();
+                    var incidentService = scope.ServiceProvider.GetRequiredService<IIncidentService>();
+
+                    bool success = true;
+
+                    foreach (var line in lines)
+                    {
+                        try
+                        {
+                            var evt = NxLogParser.ParseLine(line);
+                            if (evt != null)
+                                await incidentService.CreateFromNxLogAsync(evt);
+                        }
+                        catch (Exception ex)
+                        {
+                            success = false;
+                            _logger.LogError(ex, $"Error processing line in {file}");
+                        }
+                    }
+
+                    if (success)
+                    {
+                        File.Delete(file);
+                        _logger.LogInformation($"Deleted processed .log file: {file}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Unexpected error processing file: {file}");
                 }
             }
         }
