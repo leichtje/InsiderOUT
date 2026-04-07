@@ -2,11 +2,12 @@
     title="Add Activity"
     (close)="closeDialog()"
     >
+</io-dialog-header>
 
-</io-dialog-header><mat-dialog-content>
+<mat-dialog-content>
     <form [formGroup]="form">
-        <mat-form-field appearance="outline">
-            <mat-label>What happened?</mat-label>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
             <textarea matInput 
                     formControlName="content" 
                     cdkTextareaAutosize 
@@ -19,7 +20,8 @@
         </mat-form-field>
     </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">Save Activity</button>
+
+<mat-dialog-actions>
+    <button class="flat" (click)="closeDialog()">Cancel</button>
+    <button (click)="save()" [disabled]="form.invalid">Save Activity</button>
 </mat-dialog-actions>
