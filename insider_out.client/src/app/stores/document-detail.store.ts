@@ -7,11 +7,11 @@ import { pipe, tap } from "rxjs";
 import { TokenType } from "../models/token.model";
 
 type LocalDetailState = {
-    tokenId: string | null;
+    documentId: number | null;
 };
 
 export const DocumentDetailStore = signalStore(
-    withState<LocalDetailState>({ tokenId: null }),
+    withState<LocalDetailState>({ documentId: null }),
 
     withComputed((
         state,
@@ -46,10 +46,10 @@ export const DocumentDetailStore = signalStore(
         incidentStore = inject(IncidentStore),
         documentStore = inject(DocumentStore)
     ) => ({
-        loadDocumentDetails: rxMethod<string>(
+        loadDocumentDetails: rxMethod<number>(
             pipe(
                 tap((id) => {
-                    patchState(state, { tokenId: id });
+                    patchState(state, { documentId: id });
                     
                     documentStore.selectDocument(id);
                 })

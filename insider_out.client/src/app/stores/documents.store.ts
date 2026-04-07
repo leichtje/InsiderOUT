@@ -185,11 +185,11 @@ export const DocumentStore = signalStore(
                 )
             ),
 
-            selectDocument: rxMethod<string>(
+            selectDocument: rxMethod<number>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
                     switchMap((id) => {
-                        const existing = store.documents().find(d => d.tokenId === id); 
+                        const existing = store.documents().find(d => d.documentId === id);
                         if (existing) {
                             patchState(store, { selectedDocument: existing, isLoading: false });
                             return [];
@@ -199,7 +199,6 @@ export const DocumentStore = signalStore(
                             map(toDocumentModel),
                             tap(document => patchState(store, { selectedDocument: document, isLoading: false })),
                             catchError((err) => {
-                                console.error('Failed to load document details:', err);
                                 patchState(store, { isLoading: false, error: err.message });
                                 return [];
                             })
@@ -211,7 +210,8 @@ export const DocumentStore = signalStore(
             loadDocument: rxMethod<string>(
                 pipe(
                     switchMap((tokenId) => {
-                        if (store.tokenMap && store.tokenMap()[tokenId]) {
+                        const existing = store.documents().find(d => d.tokenId === tokenId);
+                        if (existing) {
                             return []; 
                         }
 
@@ -223,13 +223,14 @@ export const DocumentStore = signalStore(
                                 }));
                             }),
                             catchError((err) => {
-                                console.error(`Failed to load missing document by token ${tokenId}:`, err);
+                                console.error(`Failed to load missing document by token:`, err);
                                 return [];
                             })
                         );
                     })
                 )
             ),
+
             documentPreview: rxMethod<{shortDescription: string | null, targetAudience: string | null, severityLevel: string | null, departments: string[] | null}>(
                 pipe(
                     tap(() => patchState(store, { isGenerationLoading: true, error: null })),
