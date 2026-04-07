@@ -50,7 +50,7 @@ export class TokensDocumentsComponent {
     }
 
     onDocumentSelected(document: DocumentModel) {
-        const id = document.documentId;
+        const id = document.tokenId;
 
         this.router.navigate([id], { relativeTo: this.route });
     }
