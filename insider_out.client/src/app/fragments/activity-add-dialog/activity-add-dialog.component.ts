@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { DialogHeader } from '../dialog/dialog-header/dialog-header.component';
 
 export interface ActivityAddDialogData {
     entityId: number;
@@ -22,10 +23,11 @@ export interface ActivityAddDialogData {
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        TextFieldModule
+        TextFieldModule,
+        DialogHeader
     ],
-    templateUrl: 'activity-add-dialog.component.ts',
-    styleUrl: 'activity-add-dialog.component.scss'
+    templateUrl: './activity-add-dialog.component.html',
+    styleUrl: './activity-add-dialog.component.scss',
 })
 export class ActivityAddDialogComponent {
     private dialogRef = inject(MatDialogRef<ActivityAddDialogComponent>);
@@ -36,7 +38,7 @@ export class ActivityAddDialogComponent {
         content: ['', [Validators.required, Validators.maxLength(500)]]
     });
 
-    onSubmit() {
+    save() {
         if (this.form.valid) {
             this.dialogRef.close({
                 content: this.form.value.content,
@@ -44,5 +46,9 @@ export class ActivityAddDialogComponent {
                 entityType: this.data.entityType
             });
         }
+    }
+
+    closeDialog() {
+        this.dialogRef.close()
     }
 }
