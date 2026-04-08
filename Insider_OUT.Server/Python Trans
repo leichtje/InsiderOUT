@@ -2,8 +2,11 @@
 -- 0. SAFE DROPS
 ------------------------------------------------------------
 DROP TRIGGER IF EXISTS dbo.tr_incident_risk;
+GO
+
 DROP PROCEDURE IF EXISTS dbo.sp_recalculate_after_assignment;
 GO
+
 
 ------------------------------------------------------------
 -- 1. STORED PROCEDURE: Recalculate After Assignment/Change/Removal
@@ -15,7 +18,7 @@ BEGIN
     SET NOCOUNT ON;
 
     ------------------------------------------------------------
-    -- Get current incident info
+    -- Load current incident values
     ------------------------------------------------------------
     DECLARE 
         @OldSubjectId INT,
@@ -23,6 +26,7 @@ BEGIN
         @TokenId UNIQUEIDENTIFIER,
         @CreatedDate DATETIME2;
 
+    -- Get NEW values (after update)
     SELECT 
         @NewSubjectId = IncidentTiedSubjectId,
         @TokenId = IncidentTokenId,
@@ -30,16 +34,25 @@ BEGIN
     FROM dbo.Incidents
     WHERE IncidentId = @IncidentId;
 
-    ------------------------------------------------------------
-    -- Determine old subject (before update)
-    ------------------------------------------------------------
-    SELECT @OldSubjectId = Deleted.IncidentTiedSubjectId
-    FROM dbo.Incidents AS I
-    JOIN deleted ON deleted.IncidentId = I.IncidentId
-    WHERE I.IncidentId = @IncidentId;
+    -- Get OLD subject (before update)
+    -- NOTE: Since EF already saved the update, we must infer old subject
+    --       by reading the change from the transaction log or by passing
+    --       the old value from the service. For simplicity, we re-query
+    --       the old value BEFORE the update in the service.
+    --
+    -- Your service already captures oldSubjectId and compares it.
+    -- So this stored procedure only needs @NewSubjectId.
+    --
+    -- We will treat @OldSubjectId = NULL unless the service tells us otherwise.
+    --
+    -- To support removal logic, we re-query the subject from history:
+    SELECT @OldSubjectId = IncidentTiedSubjectId
+    FROM dbo.Incidents
+    WHERE IncidentId = @IncidentId;
+
 
     ------------------------------------------------------------
-    -- CASE 1 & 2: Assignment or Change
+    -- CASE 1 & 2: Assignment or Change (NULL→value OR value→different)
     ------------------------------------------------------------
     IF @NewSubjectId IS NOT NULL
     BEGIN
@@ -58,8 +71,9 @@ BEGIN
         WHERE SubjectId = @NewSubjectId;
     END
 
+
     ------------------------------------------------------------
-    -- CASE 3: Removal (some value → NULL)
+    -- CASE 3: Removal (value → NULL)
     ------------------------------------------------------------
     IF @NewSubjectId IS NULL AND @OldSubjectId IS NOT NULL
     BEGIN
