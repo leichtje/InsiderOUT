@@ -202,6 +202,9 @@ namespace InsiderOUT.Server.Services
             var entity = await _db.Incidents.FindAsync(id);
             if (entity == null) return false;
 
+            //New Test  --Revert if Broken
+            var oldSubjectID = entity.IncidentTiedSubjectId;
+
             entity.IncidentTitle = dto.Title;
             entity.IncidentDescription = dto.Desc;
             entity.IncidentCreatedDate = dto.Date;
@@ -220,6 +223,16 @@ namespace InsiderOUT.Server.Services
             entity.IncidentIP = dto.IncidentIP;
 
             await _db.SaveChangesAsync();
+
+            //New Test  --Revert if Broken
+            if (oldSubjectId != dto.TiedSubjectId)
+            {
+                await _db.Database.ExecuteSqlRawAsync(
+                    "EXEC dbo.sp_recalculate_after_assignment @p0",
+                    entity.IncidentId
+                );
+            }
+            
             return true;
         }
 
