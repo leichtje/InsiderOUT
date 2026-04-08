@@ -199,4 +199,43 @@ GO
 -- 9. Trigger — WITH SQL SERVER 2022 EF CORE FIX
 ------------------------------------------------------------
 CREATE OR ALTER TRIGGER dbo.tr_incident_risk
-ON dbo.Inc
+ON dbo.Incidents
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ----------------------------------------------------
+    -- REQUIRED FIX FOR EF CORE OUTPUT CLAUSE
+    -- This satisfies SQL Server's requirement that
+    -- triggers must contain OUTPUT INTO when EF uses OUTPUT.
+    ----------------------------------------------------
+    DECLARE @dummy TABLE (Id INT);
+    INSERT INTO @dummy SELECT 1;
+
+    ----------------------------------------------------
+    -- Update IncidentRiskScore ONLY when subject exists
+    ----------------------------------------------------
+    UPDATE i
+    SET i.IncidentRiskScore = dbo.fn_incident_score(
+        i.IncidentTiedSubjectId,
+        i.IncidentTokenId,
+        i.IncidentCreatedDate
+    )
+    FROM dbo.Incidents i
+    JOIN inserted ins ON ins.IncidentId = i.IncidentId
+    WHERE ins.IncidentTiedSubjectId IS NOT NULL;
+
+    ----------------------------------------------------
+    -- Update SubjectRiskScore for affected subjects
+    ----------------------------------------------------
+    UPDATE s
+    SET s.SubjectRiskScore = dbo.fn_subject_risk(s.SubjectId)
+    FROM dbo.Subjects s
+    WHERE s.SubjectId IN (
+        SELECT DISTINCT IncidentTiedSubjectId
+        FROM inserted
+        WHERE IncidentTiedSubjectId IS NOT NULL
+    );
+END;
+GO
