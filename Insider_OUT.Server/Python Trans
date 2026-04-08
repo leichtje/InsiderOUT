@@ -196,38 +196,7 @@ GO
 
 
 ------------------------------------------------------------
--- 9. Trigger — Calculate Incident Risk ONLY When Subject Is Assigned
+-- 9. Trigger — WITH SQL SERVER 2022 EF CORE FIX
 ------------------------------------------------------------
 CREATE OR ALTER TRIGGER dbo.tr_incident_risk
-ON dbo.Incidents
-AFTER INSERT, UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    ----------------------------------------------------
-    -- Update IncidentRiskScore ONLY when subject exists
-    ----------------------------------------------------
-    UPDATE i
-    SET i.IncidentRiskScore = dbo.fn_incident_score(
-        i.IncidentTiedSubjectId,
-        i.IncidentTokenId,
-        i.IncidentCreatedDate
-    )
-    FROM dbo.Incidents i
-    JOIN inserted ins ON ins.IncidentId = i.IncidentId
-    WHERE ins.IncidentTiedSubjectId IS NOT NULL;
-
-    ----------------------------------------------------
-    -- Update SubjectRiskScore for affected subjects
-    ----------------------------------------------------
-    UPDATE s
-    SET s.SubjectRiskScore = dbo.fn_subject_risk(s.SubjectId)
-    FROM dbo.Subjects s
-    WHERE s.SubjectId IN (
-        SELECT DISTINCT IncidentTiedSubjectId
-        FROM inserted
-        WHERE IncidentTiedSubjectId IS NOT NULL
-    );
-END;
-GO
+ON dbo.Inc
