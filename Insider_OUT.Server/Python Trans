@@ -1,241 +1,77 @@
 ------------------------------------------------------------
--- CLEANUP (SAFE DROPS)
+-- 0. SAFE DROPS
 ------------------------------------------------------------
 DROP TRIGGER IF EXISTS dbo.tr_incident_risk;
-DROP PROCEDURE IF EXISTS dbo.sp_recalculate_subject_risk;
-
-DROP FUNCTION IF EXISTS dbo.fn_get_sensitivity_value;
-DROP FUNCTION IF EXISTS dbo.fn_get_time_multiplier;
-DROP FUNCTION IF EXISTS dbo.fn_context_multiplier;
-DROP FUNCTION IF EXISTS dbo.fn_time_decay;
-DROP FUNCTION IF EXISTS dbo.fn_normalize;
-DROP FUNCTION IF EXISTS dbo.fn_incident_score;
-DROP FUNCTION IF EXISTS dbo.fn_subject_risk;
+DROP PROCEDURE IF EXISTS dbo.sp_recalculate_after_assignment;
 GO
 
-
 ------------------------------------------------------------
--- 1. Sensitivity Value (Token Severity → Numeric Weight)
+-- 1. STORED PROCEDURE: Recalculate After Assignment/Change/Removal
 ------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_get_sensitivity_value(@token_severity NVARCHAR(50))
-RETURNS INT
-AS
-BEGIN
-    RETURN CASE @token_severity
-        WHEN 'Low' THEN 15
-        WHEN 'Medium' THEN 35
-        WHEN 'High' THEN 75
-        ELSE 0
-    END;
-END;
-GO
-
-
-------------------------------------------------------------
--- 2. Time Multiplier (Weekend / Off‑Hours)
-------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_get_time_multiplier(@timestamp DATETIME2)
-RETURNS FLOAT
-AS
-BEGIN
-    DECLARE @hour INT = DATEPART(HOUR, @timestamp);
-    DECLARE @dow INT = DATEPART(WEEKDAY, @timestamp);
-
-    IF @dow IN (1,7) RETURN 1.3;      -- Weekend
-    IF @hour < 9 OR @hour >= 18 RETURN 1.2;  -- Off-hours
-
-    RETURN 1.0;
-END;
-GO
-
-
-------------------------------------------------------------
--- 3. Context Multiplier (STRING MATCH: SubjectDept vs DocumentDept)
-------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_context_multiplier(
-    @subject_dept NVARCHAR(100),
-    @document_dept NVARCHAR(200)
-)
-RETURNS FLOAT
-AS
-BEGIN
-    IF @subject_dept IS NULL OR @document_dept IS NULL
-        RETURN 1.0;
-
-    IF @subject_dept = @document_dept
-        RETURN 0.75;
-
-    RETURN 2.0;
-END;
-GO
-
-
-------------------------------------------------------------
--- 4. Time Decay (Older Incidents Matter Less)
-------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_time_decay(@incident_time DATETIME2)
-RETURNS FLOAT
-AS
-BEGIN
-    DECLARE @days INT = DATEDIFF(DAY, @incident_time, GETDATE());
-
-    IF @days < 7 RETURN 1.0;
-    IF @days > 30 RETURN 0.05;
-
-    RETURN 1.0 - ((@days - 7) / 23.0) * 0.95;
-END;
-GO
-
-
-------------------------------------------------------------
--- 5. Normalize Score to 0–100 (Sigmoid)
-------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_normalize(@raw FLOAT)
-RETURNS INT
-AS
-BEGIN
-    DECLARE @n FLOAT = 100.0 / (1.0 + EXP(-0.1 * (@raw - 50)));
-
-    RETURN CAST(ROUND(
-        CASE WHEN @n > 100 THEN 100
-             WHEN @n < 0 THEN 0
-             ELSE @n END
-    ,0) AS INT);
-END;
-GO
-
-
-------------------------------------------------------------
--- 6. Incident Risk Score (Token + Document + Time + Context)
-------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_incident_score(
-    @subject_id INT,
-    @token_id UNIQUEIDENTIFIER,
-    @timestamp DATETIME2
-)
-RETURNS FLOAT
-AS
-BEGIN
-    DECLARE @severity NVARCHAR(50);
-    DECLARE @sensitivity INT;
-    DECLARE @subject_dept NVARCHAR(100);
-    DECLARE @document_dept NVARCHAR(200);
-    DECLARE @context FLOAT;
-    DECLARE @time_mult FLOAT;
-
-    -- Token severity
-    SELECT @severity = TokenSeverity
-    FROM dbo.Tokens
-    WHERE TokenId = @token_id;
-
-    SET @sensitivity = dbo.fn_get_sensitivity_value(@severity);
-
-    -- Subject dept
-    SELECT @subject_dept = SubjectDepartment
-    FROM dbo.Subjects
-    WHERE SubjectId = @subject_id;
-
-    -- Document dept (via DocumentTokenId)
-    SELECT @document_dept = DocumentDepartment
-    FROM dbo.Documents
-    WHERE DocumentTokenId = @token_id;
-
-    SET @context = dbo.fn_context_multiplier(@subject_dept, @document_dept);
-    SET @time_mult = dbo.fn_get_time_multiplier(@timestamp);
-
-    RETURN @sensitivity * @context * @time_mult;
-END;
-GO
-
-
-------------------------------------------------------------
--- 7. Subject Aggregate Risk Score (Uses STORED IncidentRiskScore)
-------------------------------------------------------------
-CREATE OR ALTER FUNCTION dbo.fn_subject_risk(@subject_id INT)
-RETURNS INT
-AS
-BEGIN
-    DECLARE @total FLOAT = 0.0;
-    DECLARE @recent INT = 0;
-
-    -- Sum incident risk * decay
-    SELECT @total = SUM(ISNULL(IncidentRiskScore,0) * dbo.fn_time_decay(IncidentCreatedDate))
-    FROM dbo.Incidents
-    WHERE IncidentTiedSubjectId = @subject_id;
-
-    -- Velocity multiplier (3+ incidents in last hour)
-    SELECT @recent = COUNT(*)
-    FROM dbo.Incidents
-    WHERE IncidentTiedSubjectId = @subject_id
-      AND IncidentCreatedDate >= DATEADD(HOUR, -1, GETDATE());
-
-    IF @recent >= 3
-        SET @total = @total * 1.5;
-
-    RETURN dbo.fn_normalize(@total);
-END;
-GO
-
-
-------------------------------------------------------------
--- 8. Manual Recalculation Procedure
-------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_recalculate_subject_risk
-AS
-BEGIN
-    UPDATE s
-    SET SubjectRiskScore = dbo.fn_subject_risk(s.SubjectId)
-    FROM dbo.Subjects s
-    WHERE s.SubjectId IN (
-        SELECT DISTINCT IncidentTiedSubjectId
-        FROM dbo.Incidents
-        WHERE IncidentTiedSubjectId IS NOT NULL
-    );
-END;
-GO
-
-
-------------------------------------------------------------
--- 9. Trigger — WITH SQL SERVER 2022 EF CORE FIX
-------------------------------------------------------------
-CREATE OR ALTER TRIGGER dbo.tr_incident_risk
-ON dbo.Incidents
-AFTER INSERT, UPDATE
+CREATE OR ALTER PROCEDURE dbo.sp_recalculate_after_assignment
+    @IncidentId INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    ----------------------------------------------------
-    -- REQUIRED FIX FOR EF CORE OUTPUT CLAUSE
-    -- This satisfies SQL Server's requirement that
-    -- triggers must contain OUTPUT INTO when EF uses OUTPUT.
-    ----------------------------------------------------
-    DECLARE @dummy TABLE (Id INT);
-    INSERT INTO @dummy SELECT 1;
+    ------------------------------------------------------------
+    -- Get current incident info
+    ------------------------------------------------------------
+    DECLARE 
+        @OldSubjectId INT,
+        @NewSubjectId INT,
+        @TokenId UNIQUEIDENTIFIER,
+        @CreatedDate DATETIME2;
 
-    ----------------------------------------------------
-    -- Update IncidentRiskScore ONLY when subject exists
-    ----------------------------------------------------
-    UPDATE i
-    SET i.IncidentRiskScore = dbo.fn_incident_score(
-        i.IncidentTiedSubjectId,
-        i.IncidentTokenId,
-        i.IncidentCreatedDate
-    )
-    FROM dbo.Incidents i
-    JOIN inserted ins ON ins.IncidentId = i.IncidentId
-    WHERE ins.IncidentTiedSubjectId IS NOT NULL;
+    SELECT 
+        @NewSubjectId = IncidentTiedSubjectId,
+        @TokenId = IncidentTokenId,
+        @CreatedDate = IncidentCreatedDate
+    FROM dbo.Incidents
+    WHERE IncidentId = @IncidentId;
 
-    ----------------------------------------------------
-    -- Update SubjectRiskScore for affected subjects
-    ----------------------------------------------------
-    UPDATE s
-    SET s.SubjectRiskScore = dbo.fn_subject_risk(s.SubjectId)
-    FROM dbo.Subjects s
-    WHERE s.SubjectId IN (
-        SELECT DISTINCT IncidentTiedSubjectId
-        FROM inserted
-        WHERE IncidentTiedSubjectId IS NOT NULL
-    );
+    ------------------------------------------------------------
+    -- Determine old subject (before update)
+    ------------------------------------------------------------
+    SELECT @OldSubjectId = Deleted.IncidentTiedSubjectId
+    FROM dbo.Incidents AS I
+    JOIN deleted ON deleted.IncidentId = I.IncidentId
+    WHERE I.IncidentId = @IncidentId;
+
+    ------------------------------------------------------------
+    -- CASE 1 & 2: Assignment or Change
+    ------------------------------------------------------------
+    IF @NewSubjectId IS NOT NULL
+    BEGIN
+        -- Recalculate IncidentRiskScore
+        UPDATE dbo.Incidents
+        SET IncidentRiskScore = dbo.fn_incident_score(
+            @NewSubjectId,
+            @TokenId,
+            @CreatedDate
+        )
+        WHERE IncidentId = @IncidentId;
+
+        -- Recalculate SubjectRiskScore for NEW subject
+        UPDATE dbo.Subjects
+        SET SubjectRiskScore = dbo.fn_subject_risk(@NewSubjectId)
+        WHERE SubjectId = @NewSubjectId;
+    END
+
+    ------------------------------------------------------------
+    -- CASE 3: Removal (some value → NULL)
+    ------------------------------------------------------------
+    IF @NewSubjectId IS NULL AND @OldSubjectId IS NOT NULL
+    BEGIN
+        -- Remove IncidentRiskScore
+        UPDATE dbo.Incidents
+        SET IncidentRiskScore = NULL
+        WHERE IncidentId = @IncidentId;
+
+        -- Recalculate SubjectRiskScore for OLD subject
+        UPDATE dbo.Subjects
+        SET SubjectRiskScore = dbo.fn_subject_risk(@OldSubjectId)
+        WHERE SubjectId = @OldSubjectId;
+    END
 END;
 GO
