@@ -83,13 +83,13 @@ WHERE I.IncidentCreatedDate = @Now
   AND I.IncidentTiedSubjectId = @SubjectId;
 
 ------------------------------------------------------------
--- 4. RUN INCIDENT RISK SCORE FUNCTION
+-- 4. RUN INCIDENT RISK SCORE FUNCTION (CORRECT SIGNATURE)
 ------------------------------------------------------------
 PRINT '=== INCIDENT RISK SCORES BY SEVERITY ===';
 SELECT 
     I.IncidentId,
     T.TokenSeverity,
-    dbo.fn_incident_score(I.IncidentId) AS IncidentRiskScore
+    dbo.fn_incident_score(@SubjectId, I.IncidentTokenId, I.IncidentCreatedDate) AS IncidentRiskScore
 FROM dbo.Incidents I
 JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
 WHERE I.IncidentCreatedDate = @Now
