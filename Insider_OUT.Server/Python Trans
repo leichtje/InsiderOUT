@@ -1,38 +1,53 @@
 BEGIN TRANSACTION;
 
-PRINT '=== SEVERITY TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+PRINT '=== CONTEXT MULTIPLIER TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 
 ------------------------------------------------------------
 -- 0. VARIABLES
 ------------------------------------------------------------
 DECLARE @SubjectId INT = 8;
+DECLARE @SubjectDept NVARCHAR(100) = 'Technology';  -- From your Subjects table
 DECLARE @Now DATETIME2 = SYSDATETIME();
 
--- Required NOT NULL fields for Incidents
-DECLARE @Title NVARCHAR(255) = 'Severity Test';
-DECLARE @Desc NVARCHAR(MAX) = 'Testing severity scoring logic';
+DECLARE @Title NVARCHAR(255) = 'Context Test';
+DECLARE @Desc NVARCHAR(MAX) = 'Testing context multiplier logic';
 DECLARE @Agent NVARCHAR(255) = 'TestAgent';
 DECLARE @TokenType NVARCHAR(50) = 'document';
 DECLARE @Status NVARCHAR(50) = 'new';
 DECLARE @IsActive BIT = 1;
 
 ------------------------------------------------------------
--- 1. CREATE TOKENS FOR LOW, MEDIUM, HIGH SEVERITY
+-- 1. CREATE TOKENS (ALL SAME SEVERITY TO ISOLATE CONTEXT EFFECT)
 ------------------------------------------------------------
-DECLARE @LowToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @MedToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @HighToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @NullDeptToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @SameDeptToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @DiffDeptToken UNIQUEIDENTIFIER = NEWID();
 
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
 VALUES
-(@LowToken,  @TokenType, 'Low',    @Now, @Now),
-(@MedToken,  @TokenType, 'Medium', @Now, @Now),
-(@HighToken, @TokenType, 'High',   @Now, @Now);
+(@NullDeptToken, @TokenType, 'Medium', @Now, @Now),
+(@SameDeptToken, @TokenType, 'Medium', @Now, @Now),
+(@DiffDeptToken, @TokenType, 'Medium', @Now, @Now);
 
 ------------------------------------------------------------
--- 2. CREATE INCIDENTS LINKED TO THOSE TOKENS
+-- 2. CREATE DOCUMENTS WITH DIFFERENT DEPARTMENT STATES
 ------------------------------------------------------------
-DECLARE @LowIncident INT, @MedIncident INT, @HighIncident INT;
+-- NULL department → context = 1.0
+INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
+VALUES ('DocNull', 'loc', NULL, NULL, NULL, NULL, @NullDeptToken);
+
+-- Same department → context = 0.75
+INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
+VALUES ('DocSame', 'loc', @SubjectDept, NULL, NULL, NULL, @SameDeptToken);
+
+-- Different department → context = 2.0
+INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
+VALUES ('DocDiff', 'loc', 'Cybersecurity', NULL, NULL, NULL, @DiffDeptToken);
+
+------------------------------------------------------------
+-- 3. CREATE INCIDENTS LINKED TO THOSE TOKENS
+------------------------------------------------------------
+DECLARE @NullIncident INT, @SameIncident INT, @DiffIncident INT;
 
 INSERT INTO dbo.Incidents
 (
@@ -51,59 +66,60 @@ INSERT INTO dbo.Incidents
     IncidentTokenId
 )
 VALUES
-(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @LowToken),
-(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @MedToken),
-(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @HighToken);
+(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @NullDeptToken),
+(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @SameDeptToken),
+(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @DiffDeptToken);
 
--- Capture the inserted IncidentIds
+-- Capture IDs
 SELECT TOP 3 IncidentId, ROW_NUMBER() OVER (ORDER BY IncidentId) AS rn
 INTO #TempInc
 FROM dbo.Incidents
 WHERE IncidentCreatedDate = @Now
   AND IncidentTiedSubjectId = @SubjectId;
 
-SELECT @LowIncident  = IncidentId FROM #TempInc WHERE rn = 1;
-SELECT @MedIncident  = IncidentId FROM #TempInc WHERE rn = 2;
-SELECT @HighIncident = IncidentId FROM #TempInc WHERE rn = 3;
+SELECT @NullIncident = IncidentId FROM #TempInc WHERE rn = 1;
+SELECT @SameIncident = IncidentId FROM #TempInc WHERE rn = 2;
+SELECT @DiffIncident = IncidentId FROM #TempInc WHERE rn = 3;
 
 DROP TABLE #TempInc;
 
 ------------------------------------------------------------
--- 3. SHOW RAW INCIDENTS + TOKEN SEVERITY
+-- 4. SHOW RAW INCIDENTS + DOCUMENT DEPARTMENTS
 ------------------------------------------------------------
-PRINT '=== INSERTED TEST INCIDENTS ===';
+PRINT '=== INCIDENTS + DOCUMENT DEPARTMENTS ===';
 SELECT 
     I.IncidentId,
-    I.IncidentTiedSubjectId,
     T.TokenSeverity,
+    D.DocumentDepartment,
     I.IncidentCreatedDate
 FROM dbo.Incidents I
 JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
+JOIN dbo.Documents D ON D.DocumentTokenId = T.TokenId
 WHERE I.IncidentCreatedDate = @Now
   AND I.IncidentTiedSubjectId = @SubjectId;
 
 ------------------------------------------------------------
--- 4. RUN INCIDENT RISK SCORE FUNCTION (CORRECT SIGNATURE)
+-- 5. RUN INCIDENT RISK SCORE FUNCTION
 ------------------------------------------------------------
-PRINT '=== INCIDENT RISK SCORES BY SEVERITY ===';
+PRINT '=== INCIDENT RISK SCORES (CONTEXT MULTIPLIER TEST) ===';
 SELECT 
     I.IncidentId,
-    T.TokenSeverity,
+    D.DocumentDepartment,
     dbo.fn_incident_score(@SubjectId, I.IncidentTokenId, I.IncidentCreatedDate) AS IncidentRiskScore
 FROM dbo.Incidents I
-JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
+JOIN dbo.Documents D ON D.DocumentTokenId = I.IncidentTokenId
 WHERE I.IncidentCreatedDate = @Now
   AND I.IncidentTiedSubjectId = @SubjectId
 ORDER BY I.IncidentId;
 
 ------------------------------------------------------------
--- 5. RUN SUBJECT RISK SCORE FUNCTION
+-- 6. SUBJECT RISK SCORE
 ------------------------------------------------------------
-PRINT '=== SUBJECT RISK SCORE (AGGREGATED) ===';
+PRINT '=== SUBJECT RISK SCORE ===';
 SELECT dbo.fn_subject_risk(@SubjectId) AS SubjectRiskScore;
 
 ------------------------------------------------------------
--- 6. CLEANUP (ROLLBACK)
+-- 7. CLEANUP
 ------------------------------------------------------------
 PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
