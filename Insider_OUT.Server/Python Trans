@@ -1,5 +1,5 @@
 ------------------------------------------------------------
--- 0. SAFE DROPS
+-- DROP OLD OBJECTS
 ------------------------------------------------------------
 DROP TRIGGER IF EXISTS dbo.tr_incident_risk;
 GO
@@ -9,7 +9,7 @@ GO
 
 
 ------------------------------------------------------------
--- 1. STORED PROCEDURE: Recalculate After Assignment/Change/Removal
+-- STORED PROCEDURE
 ------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_recalculate_after_assignment
     @IncidentId INT
@@ -18,45 +18,26 @@ BEGIN
     SET NOCOUNT ON;
 
     ------------------------------------------------------------
-    -- Load current incident values
+    -- LOAD CURRENT INCIDENT VALUES
     ------------------------------------------------------------
     DECLARE 
-        @OldSubjectId INT,
         @NewSubjectId INT,
         @TokenId UNIQUEIDENTIFIER,
         @CreatedDate DATETIME2;
 
-    -- Get NEW values (after update)
     SELECT 
         @NewSubjectId = IncidentTiedSubjectId,
-        @TokenId = IncidentTokenId,
-        @CreatedDate = IncidentCreatedDate
-    FROM dbo.Incidents
-    WHERE IncidentId = @IncidentId;
-
-    -- Get OLD subject (before update)
-    -- NOTE: Since EF already saved the update, we must infer old subject
-    --       by reading the change from the transaction log or by passing
-    --       the old value from the service. For simplicity, we re-query
-    --       the old value BEFORE the update in the service.
-    --
-    -- Your service already captures oldSubjectId and compares it.
-    -- So this stored procedure only needs @NewSubjectId.
-    --
-    -- We will treat @OldSubjectId = NULL unless the service tells us otherwise.
-    --
-    -- To support removal logic, we re-query the subject from history:
-    SELECT @OldSubjectId = IncidentTiedSubjectId
+        @TokenId      = IncidentTokenId,
+        @CreatedDate  = IncidentCreatedDate   -- risk uses CreatedDate
     FROM dbo.Incidents
     WHERE IncidentId = @IncidentId;
 
 
     ------------------------------------------------------------
-    -- CASE 1 & 2: Assignment or Change (NULL→value OR value→different)
+    -- CASE 1 & 2: ASSIGNMENT OR CHANGE
     ------------------------------------------------------------
     IF @NewSubjectId IS NOT NULL
     BEGIN
-        -- Recalculate IncidentRiskScore
         UPDATE dbo.Incidents
         SET IncidentRiskScore = dbo.fn_incident_score(
             @NewSubjectId,
@@ -65,7 +46,6 @@ BEGIN
         )
         WHERE IncidentId = @IncidentId;
 
-        -- Recalculate SubjectRiskScore for NEW subject
         UPDATE dbo.Subjects
         SET SubjectRiskScore = dbo.fn_subject_risk(@NewSubjectId)
         WHERE SubjectId = @NewSubjectId;
@@ -73,19 +53,15 @@ BEGIN
 
 
     ------------------------------------------------------------
-    -- CASE 3: Removal (value → NULL)
+    -- CASE 3: REMOVAL
     ------------------------------------------------------------
-    IF @NewSubjectId IS NULL AND @OldSubjectId IS NOT NULL
+    IF @NewSubjectId IS NULL
     BEGIN
-        -- Remove IncidentRiskScore
         UPDATE dbo.Incidents
         SET IncidentRiskScore = NULL
         WHERE IncidentId = @IncidentId;
 
-        -- Recalculate SubjectRiskScore for OLD subject
-        UPDATE dbo.Subjects
-        SET SubjectRiskScore = dbo.fn_subject_risk(@OldSubjectId)
-        WHERE SubjectId = @OldSubjectId;
+        -- (Old subject recalculation handled by service if needed)
     END
 END;
 GO
