@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
-PRINT '=== SENSITIVITY MAPPING TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+PRINT '=== SUBJECT AGGREGATION TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 
 ------------------------------------------------------------
 -- 0. VARIABLES
@@ -8,110 +8,119 @@ PRINT '=== SENSITIVITY MAPPING TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 DECLARE @SubjectId INT = 8;
 DECLARE @Now DATETIME2 = SYSDATETIME();
 
-DECLARE @Title NVARCHAR(255) = 'Sensitivity Test';
-DECLARE @Desc NVARCHAR(MAX) = 'Testing sensitivity mapping logic';
+DECLARE @Title NVARCHAR(255) = 'Aggregation Test';
+DECLARE @Desc NVARCHAR(MAX) = 'Testing full subject aggregation logic';
 DECLARE @Agent NVARCHAR(255) = 'TestAgent';
 DECLARE @TokenType NVARCHAR(50) = 'document';
 DECLARE @Status NVARCHAR(50) = 'new';
 DECLARE @IsActive BIT = 1;
 
--- Use a business-hours timestamp to force time multiplier = 1.0
-DECLARE @TestTime DATETIME2 = DATETIMEFROMPARTS(2026, 4, 13, 10, 0, 0, 0);
-
 ------------------------------------------------------------
--- 1. CREATE TOKENS (LOW, MEDIUM, HIGH)
+-- 1. CREATE TOKENS FOR 5 INCIDENTS
 ------------------------------------------------------------
-DECLARE @LowToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @MedToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @HighToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @Tok1 UNIQUEIDENTIFIER = NEWID();  -- High severity, different dept, weekend
+DECLARE @Tok2 UNIQUEIDENTIFIER = NEWID();  -- Medium severity, same dept, off-hours
+DECLARE @Tok3 UNIQUEIDENTIFIER = NEWID();  -- Low severity, same dept, business hours
+DECLARE @Tok4 UNIQUEIDENTIFIER = NEWID();  -- High severity, same dept, 10 days old
+DECLARE @Tok5 UNIQUEIDENTIFIER = NEWID();  -- Medium severity, diff dept, 40 days old
 
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
 VALUES
-(@LowToken,  @TokenType, 'Low',    @Now, @Now),
-(@MedToken,  @TokenType, 'Medium', @Now, @Now),
-(@HighToken, @TokenType, 'High',   @Now, @Now);
+(@Tok1, @TokenType, 'High',   @Now, @Now),
+(@Tok2, @TokenType, 'Medium', @Now, @Now),
+(@Tok3, @TokenType, 'Low',    @Now, @Now),
+(@Tok4, @TokenType, 'High',   @Now, @Now),
+(@Tok5, @TokenType, 'Medium', @Now, @Now);
 
 ------------------------------------------------------------
--- 2. CREATE DOCUMENTS (ALL SAME DEPARTMENT TO ISOLATE CONTEXT)
+-- 2. CREATE DOCUMENTS WITH DEPARTMENTS FOR CONTEXT MULTIPLIER
 ------------------------------------------------------------
 INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
 VALUES
-('DocLow',  'loc', 'Technology', NULL, NULL, NULL, @LowToken),
-('DocMed',  'loc', 'Technology', NULL, NULL, NULL, @MedToken),
-('DocHigh', 'loc', 'Technology', NULL, NULL, NULL, @HighToken);
+('Doc1', 'loc', 'Cybersecurity', NULL, NULL, NULL, @Tok1),  -- Different dept
+('Doc2', 'loc', 'Technology',    NULL, NULL, NULL, @Tok2),  -- Same dept
+('Doc3', 'loc', 'Technology',    NULL, NULL, NULL, @Tok3),  -- Same dept
+('Doc4', 'loc', 'Technology',    NULL, NULL, NULL, @Tok4),  -- Same dept
+('Doc5', 'loc', 'Cybersecurity', NULL, NULL, NULL, @Tok5);  -- Different dept
 
 ------------------------------------------------------------
--- 3. CREATE INCIDENTS (ALL SAME TIMESTAMP)
+-- 3. CREATE TIMESTAMPS FOR EACH INCIDENT
 ------------------------------------------------------------
-DECLARE @LowIncident INT, @MedIncident INT, @HighIncident INT;
+DECLARE @T1 DATETIME2 = DATETIMEFROMPARTS(2026, 4, 12, 12, 0, 0, 0); -- Weekend
+DECLARE @T2 DATETIME2 = DATEADD(MINUTE, -20, SYSDATETIME());        -- Off-hours recent
+DECLARE @T3 DATETIME2 = DATEADD(MINUTE, -10, SYSDATETIME());        -- Business hours recent
+DECLARE @T4 DATETIME2 = DATEADD(DAY, -10, SYSDATETIME());           -- 10 days old
+DECLARE @T5 DATETIME2 = DATEADD(DAY, -40, SYSDATETIME());           -- 40 days old
+
+------------------------------------------------------------
+-- 4. CREATE INCIDENTS
+------------------------------------------------------------
+DECLARE @Inc1 INT, @Inc2 INT, @Inc3 INT, @Inc4 INT, @Inc5 INT;
 
 INSERT INTO dbo.Incidents
 (
-    IncidentTitle,
-    IncidentDescription,
-    IncidentCreatedDate,
-    IncidentUpdatedDate,
-    IncidentAgent,
-    IncidentTokenType,
-    IncidentStatus,
-    IncidentAssignedUserId,
-    IncidentTiedSubjectId,
-    IsActive,
-    IncidentRiskScore,
-    IncidentIP,
-    IncidentTokenId
+    IncidentTitle, IncidentDescription, IncidentCreatedDate, IncidentUpdatedDate,
+    IncidentAgent, IncidentTokenType, IncidentStatus, IncidentAssignedUserId,
+    IncidentTiedSubjectId, IsActive, IncidentRiskScore, IncidentIP, IncidentTokenId
 )
 VALUES
-(@Title, @Desc, @TestTime, @TestTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @LowToken),
-(@Title, @Desc, @TestTime, @TestTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @MedToken),
-(@Title, @Desc, @TestTime, @TestTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @HighToken);
+(@Title, @Desc, @T1, @T1, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok1),
+(@Title, @Desc, @T2, @T2, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok2),
+(@Title, @Desc, @T3, @T3, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok3),
+(@Title, @Desc, @T4, @T4, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok4),
+(@Title, @Desc, @T5, @T5, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok5);
 
 -- Capture IDs
-SELECT TOP 3 IncidentId, ROW_NUMBER() OVER (ORDER BY IncidentId) AS rn
+SELECT IncidentId, ROW_NUMBER() OVER (ORDER BY IncidentId) AS rn
 INTO #TempInc
 FROM dbo.Incidents
-WHERE IncidentCreatedDate = @TestTime
-  AND IncidentTiedSubjectId = @SubjectId;
+WHERE IncidentTiedSubjectId = @SubjectId
+  AND IncidentCreatedDate IN (@T1, @T2, @T3, @T4, @T5);
 
-SELECT @LowIncident  = IncidentId FROM #TempInc WHERE rn = 1;
-SELECT @MedIncident  = IncidentId FROM #TempInc WHERE rn = 2;
-SELECT @HighIncident = IncidentId FROM #TempInc WHERE rn = 3;
+SELECT @Inc1 = IncidentId FROM #TempInc WHERE rn = 1;
+SELECT @Inc2 = IncidentId FROM #TempInc WHERE rn = 2;
+SELECT @Inc3 = IncidentId FROM #TempInc WHERE rn = 3;
+SELECT @Inc4 = IncidentId FROM #TempInc WHERE rn = 4;
+SELECT @Inc5 = IncidentId FROM #TempInc WHERE rn = 5;
 
 DROP TABLE #TempInc;
 
 ------------------------------------------------------------
--- 4. SHOW INCIDENTS + EXPECTED SENSITIVITY VALUES
+-- 5. SHOW INCIDENT RISK SCORES
 ------------------------------------------------------------
-PRINT '=== INCIDENTS WITH SENSITIVITY VALUES ===';
+PRINT '=== INCIDENT RISK SCORES ===';
 SELECT 
     I.IncidentId,
     T.TokenSeverity,
-    dbo.fn_get_sensitivity_value(T.TokenSeverity) AS SensitivityValue
-FROM dbo.Incidents I
-JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
-WHERE I.IncidentId IN (@LowIncident, @MedIncident, @HighIncident);
-
-------------------------------------------------------------
--- 5. RUN INCIDENT RISK SCORE FUNCTION
-------------------------------------------------------------
-PRINT '=== INCIDENT RISK SCORES (SENSITIVITY TEST) ===';
-SELECT 
-    I.IncidentId,
-    T.TokenSeverity,
+    D.DocumentDepartment,
+    I.IncidentCreatedDate,
     dbo.fn_incident_score(@SubjectId, I.IncidentTokenId, I.IncidentCreatedDate) AS IncidentRiskScore
 FROM dbo.Incidents I
 JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
-WHERE I.IncidentId IN (@LowIncident, @MedIncident, @HighIncident)
+JOIN dbo.Documents D ON D.DocumentTokenId = T.TokenId
+WHERE I.IncidentId IN (@Inc1, @Inc2, @Inc3, @Inc4, @Inc5)
 ORDER BY I.IncidentId;
 
 ------------------------------------------------------------
--- 6. SUBJECT RISK SCORE
+-- 6. SHOW TIME DECAY VALUES
 ------------------------------------------------------------
-PRINT '=== SUBJECT RISK SCORE ===';
+PRINT '=== TIME DECAY VALUES ===';
+SELECT 
+    IncidentId,
+    IncidentCreatedDate,
+    dbo.fn_time_decay(IncidentCreatedDate) AS TimeDecay
+FROM dbo.Incidents
+WHERE IncidentId IN (@Inc1, @Inc2, @Inc3, @Inc4, @Inc5)
+ORDER BY IncidentId;
+
+------------------------------------------------------------
+-- 7. SHOW FINAL SUBJECT RISK SCORE
+------------------------------------------------------------
+PRINT '=== FINAL SUBJECT RISK SCORE ===';
 SELECT dbo.fn_subject_risk(@SubjectId) AS SubjectRiskScore;
 
 ------------------------------------------------------------
--- 7. CLEANUP
+-- 8. CLEANUP
 ------------------------------------------------------------
 PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
