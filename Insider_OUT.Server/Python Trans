@@ -26,41 +26,50 @@ BEGIN
     SELECT 
         @NewSubjectId = IncidentTiedSubjectId,
         @TokenId      = IncidentTokenId,
-        @CreatedDate  = IncidentCreatedDate   -- risk uses CreatedDate
+        @CreatedDate  = IncidentCreatedDate
     FROM dbo.Incidents
     WHERE IncidentId = @IncidentId;
 
 
     ------------------------------------------------------------
-    -- CASE 1 & 2: ASSIGNMENT OR CHANGE (NULL→value OR value→different)
+    -- CASE 1 & 2: ASSIGNMENT OR CHANGE
     ------------------------------------------------------------
     IF @NewSubjectId IS NOT NULL
     BEGIN
         UPDATE dbo.Incidents
-        SET IncidentRiskScore = dbo.fn_incident_score(
-            @NewSubjectId,
-            @TokenId,
-            @CreatedDate
+        SET IncidentRiskScore = ISNULL(
+            dbo.fn_incident_score(
+                @NewSubjectId,
+                @TokenId,
+                @CreatedDate
+            ), 
+            0
         )
         WHERE IncidentId = @IncidentId;
 
         UPDATE dbo.Subjects
-        SET SubjectRiskScore = dbo.fn_subject_risk(@NewSubjectId)
+        SET SubjectRiskScore = ISNULL(
+            dbo.fn_subject_risk(@NewSubjectId),
+            0
+        )
         WHERE SubjectId = @NewSubjectId;
     END
 
 
     ------------------------------------------------------------
-    -- CASE 3: REMOVAL (value→NULL)
+    -- CASE 3: REMOVAL
     ------------------------------------------------------------
     IF @NewSubjectId IS NULL AND @OldSubjectId IS NOT NULL
     BEGIN
         UPDATE dbo.Incidents
-        SET IncidentRiskScore = NULL
+        SET IncidentRiskScore = 0
         WHERE IncidentId = @IncidentId;
 
         UPDATE dbo.Subjects
-        SET SubjectRiskScore = dbo.fn_subject_risk(@OldSubjectId)
+        SET SubjectRiskScore = ISNULL(
+            dbo.fn_subject_risk(@OldSubjectId),
+            0
+        )
         WHERE SubjectId = @OldSubjectId;
     END
 END;
