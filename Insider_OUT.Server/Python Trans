@@ -1,9 +1,6 @@
 ------------------------------------------------------------
 -- DROP OLD OBJECTS
 ------------------------------------------------------------
-DROP TRIGGER IF EXISTS dbo.tr_incident_risk;
-GO
-
 DROP PROCEDURE IF EXISTS dbo.sp_recalculate_after_assignment;
 GO
 
@@ -12,7 +9,8 @@ GO
 -- STORED PROCEDURE
 ------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_recalculate_after_assignment
-    @IncidentId INT
+    @IncidentId   INT,
+    @OldSubjectId INT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -22,8 +20,8 @@ BEGIN
     ------------------------------------------------------------
     DECLARE 
         @NewSubjectId INT,
-        @TokenId UNIQUEIDENTIFIER,
-        @CreatedDate DATETIME2;
+        @TokenId      UNIQUEIDENTIFIER,
+        @CreatedDate  DATETIME2;
 
     SELECT 
         @NewSubjectId = IncidentTiedSubjectId,
@@ -34,7 +32,7 @@ BEGIN
 
 
     ------------------------------------------------------------
-    -- CASE 1 & 2: ASSIGNMENT OR CHANGE
+    -- CASE 1 & 2: ASSIGNMENT OR CHANGE (NULL→value OR value→different)
     ------------------------------------------------------------
     IF @NewSubjectId IS NOT NULL
     BEGIN
@@ -53,15 +51,17 @@ BEGIN
 
 
     ------------------------------------------------------------
-    -- CASE 3: REMOVAL
+    -- CASE 3: REMOVAL (value→NULL)
     ------------------------------------------------------------
-    IF @NewSubjectId IS NULL
+    IF @NewSubjectId IS NULL AND @OldSubjectId IS NOT NULL
     BEGIN
         UPDATE dbo.Incidents
         SET IncidentRiskScore = NULL
         WHERE IncidentId = @IncidentId;
 
-        -- (Old subject recalculation handled by service if needed)
+        UPDATE dbo.Subjects
+        SET SubjectRiskScore = dbo.fn_subject_risk(@OldSubjectId)
+        WHERE SubjectId = @OldSubjectId;
     END
 END;
 GO
