@@ -1,53 +1,61 @@
 BEGIN TRANSACTION;
 
-PRINT '=== CONTEXT MULTIPLIER TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+PRINT '=== TIME MULTIPLIER TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 
 ------------------------------------------------------------
 -- 0. VARIABLES
 ------------------------------------------------------------
 DECLARE @SubjectId INT = 8;
-DECLARE @SubjectDept NVARCHAR(100) = 'Technology';  -- From your Subjects table
 DECLARE @Now DATETIME2 = SYSDATETIME();
 
-DECLARE @Title NVARCHAR(255) = 'Context Test';
-DECLARE @Desc NVARCHAR(MAX) = 'Testing context multiplier logic';
+DECLARE @Title NVARCHAR(255) = 'Time Test';
+DECLARE @Desc NVARCHAR(MAX) = 'Testing time multiplier logic';
 DECLARE @Agent NVARCHAR(255) = 'TestAgent';
 DECLARE @TokenType NVARCHAR(50) = 'document';
 DECLARE @Status NVARCHAR(50) = 'new';
 DECLARE @IsActive BIT = 1;
 
+-- Use Medium severity to isolate time effects
+DECLARE @Severity NVARCHAR(50) = 'Medium';
+
 ------------------------------------------------------------
--- 1. CREATE TOKENS (ALL SAME SEVERITY TO ISOLATE CONTEXT EFFECT)
+-- 1. CREATE TOKENS (ALL SAME SEVERITY)
 ------------------------------------------------------------
-DECLARE @NullDeptToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @SameDeptToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @DiffDeptToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @WeekendToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @OffHoursToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @BusinessToken UNIQUEIDENTIFIER = NEWID();
 
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
 VALUES
-(@NullDeptToken, @TokenType, 'Medium', @Now, @Now),
-(@SameDeptToken, @TokenType, 'Medium', @Now, @Now),
-(@DiffDeptToken, @TokenType, 'Medium', @Now, @Now);
+(@WeekendToken,  @TokenType, @Severity, @Now, @Now),
+(@OffHoursToken, @TokenType, @Severity, @Now, @Now),
+(@BusinessToken, @TokenType, @Severity, @Now, @Now);
 
 ------------------------------------------------------------
--- 2. CREATE DOCUMENTS WITH DIFFERENT DEPARTMENT STATES
+-- 2. CREATE DOCUMENTS (ALL SAME DEPARTMENT TO ISOLATE TIME)
 ------------------------------------------------------------
--- NULL department → context = 1.0
 INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
-VALUES ('DocNull', 'loc', NULL, NULL, NULL, NULL, @NullDeptToken);
-
--- Same department → context = 0.75
-INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
-VALUES ('DocSame', 'loc', @SubjectDept, NULL, NULL, NULL, @SameDeptToken);
-
--- Different department → context = 2.0
-INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
-VALUES ('DocDiff', 'loc', 'Cybersecurity', NULL, NULL, NULL, @DiffDeptToken);
+VALUES
+('WeekendDoc',  'loc', 'Technology', NULL, NULL, NULL, @WeekendToken),
+('OffHoursDoc', 'loc', 'Technology', NULL, NULL, NULL, @OffHoursToken),
+('BusinessDoc', 'loc', 'Technology', NULL, NULL, NULL, @BusinessToken);
 
 ------------------------------------------------------------
--- 3. CREATE INCIDENTS LINKED TO THOSE TOKENS
+-- 3. CREATE TIMESTAMPS FOR EACH CASE
 ------------------------------------------------------------
-DECLARE @NullIncident INT, @SameIncident INT, @DiffIncident INT;
+-- Weekend: Sunday at noon
+DECLARE @WeekendTime DATETIME2 = DATEADD(WEEK, 0, DATETIMEFROMPARTS(2026, 4, 12, 12, 0, 0, 0));
+
+-- Off-hours: Monday at 8 AM
+DECLARE @OffHoursTime DATETIME2 = DATETIMEFROMPARTS(2026, 4, 13, 8, 0, 0, 0);
+
+-- Business hours: Monday at 10 AM
+DECLARE @BusinessTime DATETIME2 = DATETIMEFROMPARTS(2026, 4, 13, 10, 0, 0, 0);
+
+------------------------------------------------------------
+-- 4. CREATE INCIDENTS USING THOSE TIMESTAMPS
+------------------------------------------------------------
+DECLARE @WeekendIncident INT, @OffHoursIncident INT, @BusinessIncident INT;
 
 INSERT INTO dbo.Incidents
 (
@@ -66,60 +74,58 @@ INSERT INTO dbo.Incidents
     IncidentTokenId
 )
 VALUES
-(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @NullDeptToken),
-(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @SameDeptToken),
-(@Title, @Desc, @Now, @Now, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @DiffDeptToken);
+(@Title, @Desc, @WeekendTime,  @WeekendTime,  @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @WeekendToken),
+(@Title, @Desc, @OffHoursTime, @OffHoursTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @OffHoursToken),
+(@Title, @Desc, @BusinessTime, @BusinessTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @BusinessToken);
 
 -- Capture IDs
 SELECT TOP 3 IncidentId, ROW_NUMBER() OVER (ORDER BY IncidentId) AS rn
 INTO #TempInc
 FROM dbo.Incidents
-WHERE IncidentCreatedDate = @Now
-  AND IncidentTiedSubjectId = @SubjectId;
+WHERE IncidentTiedSubjectId = @SubjectId
+  AND IncidentCreatedDate IN (@WeekendTime, @OffHoursTime, @BusinessTime);
 
-SELECT @NullIncident = IncidentId FROM #TempInc WHERE rn = 1;
-SELECT @SameIncident = IncidentId FROM #TempInc WHERE rn = 2;
-SELECT @DiffIncident = IncidentId FROM #TempInc WHERE rn = 3;
+SELECT @WeekendIncident  = IncidentId FROM #TempInc WHERE rn = 1;
+SELECT @OffHoursIncident = IncidentId FROM #TempInc WHERE rn = 2;
+SELECT @BusinessIncident = IncidentId FROM #TempInc WHERE rn = 3;
 
 DROP TABLE #TempInc;
 
 ------------------------------------------------------------
--- 4. SHOW RAW INCIDENTS + DOCUMENT DEPARTMENTS
+-- 5. SHOW INCIDENTS + EXPECTED TIME MULTIPLIER
 ------------------------------------------------------------
-PRINT '=== INCIDENTS + DOCUMENT DEPARTMENTS ===';
+PRINT '=== INCIDENTS WITH TIMESTAMPS ===';
 SELECT 
-    I.IncidentId,
-    T.TokenSeverity,
-    D.DocumentDepartment,
-    I.IncidentCreatedDate
-FROM dbo.Incidents I
-JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
-JOIN dbo.Documents D ON D.DocumentTokenId = T.TokenId
-WHERE I.IncidentCreatedDate = @Now
-  AND I.IncidentTiedSubjectId = @SubjectId;
+    IncidentId,
+    IncidentCreatedDate,
+    CASE 
+        WHEN DATEPART(WEEKDAY, IncidentCreatedDate) IN (1,7) THEN 'Weekend (1.3)'
+        WHEN DATEPART(HOUR, IncidentCreatedDate) < 9 OR DATEPART(HOUR, IncidentCreatedDate) >= 18 THEN 'Off-hours (1.2)'
+        ELSE 'Business hours (1.0)'
+    END AS ExpectedTimeCategory
+FROM dbo.Incidents
+WHERE IncidentId IN (@WeekendIncident, @OffHoursIncident, @BusinessIncident);
 
 ------------------------------------------------------------
--- 5. RUN INCIDENT RISK SCORE FUNCTION
+-- 6. RUN INCIDENT RISK SCORE FUNCTION
 ------------------------------------------------------------
-PRINT '=== INCIDENT RISK SCORES (CONTEXT MULTIPLIER TEST) ===';
+PRINT '=== INCIDENT RISK SCORES (TIME MULTIPLIER TEST) ===';
 SELECT 
     I.IncidentId,
-    D.DocumentDepartment,
+    I.IncidentCreatedDate,
     dbo.fn_incident_score(@SubjectId, I.IncidentTokenId, I.IncidentCreatedDate) AS IncidentRiskScore
 FROM dbo.Incidents I
-JOIN dbo.Documents D ON D.DocumentTokenId = I.IncidentTokenId
-WHERE I.IncidentCreatedDate = @Now
-  AND I.IncidentTiedSubjectId = @SubjectId
+WHERE I.IncidentId IN (@WeekendIncident, @OffHoursIncident, @BusinessIncident)
 ORDER BY I.IncidentId;
 
 ------------------------------------------------------------
--- 6. SUBJECT RISK SCORE
+-- 7. SUBJECT RISK SCORE
 ------------------------------------------------------------
 PRINT '=== SUBJECT RISK SCORE ===';
 SELECT dbo.fn_subject_risk(@SubjectId) AS SubjectRiskScore;
 
 ------------------------------------------------------------
--- 7. CLEANUP
+-- 8. CLEANUP
 ------------------------------------------------------------
 PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
