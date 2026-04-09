@@ -225,7 +225,7 @@ namespace InsiderOUT.Server.Services
             await _db.SaveChangesAsync();
 
             //New Test  --Revert if Broken
-            if (oldSubjectId != dto.TiedSubjectId)
+            if (oldSubjectID != dto.TiedSubjectId)
             {
                 await _db.Database.ExecuteSqlRawAsync(
                     "EXEC dbo.sp_recalculate_after_assignment @p0",
