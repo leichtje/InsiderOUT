@@ -207,7 +207,7 @@ namespace InsiderOUT.Server.Services
 
             entity.IncidentTitle = dto.Title;
             entity.IncidentDescription = dto.Desc;
-            entity.IncidentCreatedDate = dto.Date;
+            //entity.IncidentCreatedDate = dto.Date;
             entity.IncidentUpdatedDate = dto.Updated;
             entity.IncidentAgent = dto.Agent;
 
