@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
-PRINT '=== TIME MULTIPLIER TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+PRINT '=== SENSITIVITY MAPPING TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 
 ------------------------------------------------------------
 -- 0. VARIABLES
@@ -8,54 +8,42 @@ PRINT '=== TIME MULTIPLIER TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 DECLARE @SubjectId INT = 8;
 DECLARE @Now DATETIME2 = SYSDATETIME();
 
-DECLARE @Title NVARCHAR(255) = 'Time Test';
-DECLARE @Desc NVARCHAR(MAX) = 'Testing time multiplier logic';
+DECLARE @Title NVARCHAR(255) = 'Sensitivity Test';
+DECLARE @Desc NVARCHAR(MAX) = 'Testing sensitivity mapping logic';
 DECLARE @Agent NVARCHAR(255) = 'TestAgent';
 DECLARE @TokenType NVARCHAR(50) = 'document';
 DECLARE @Status NVARCHAR(50) = 'new';
 DECLARE @IsActive BIT = 1;
 
--- Use Medium severity to isolate time effects
-DECLARE @Severity NVARCHAR(50) = 'Medium';
+-- Use a business-hours timestamp to force time multiplier = 1.0
+DECLARE @TestTime DATETIME2 = DATETIMEFROMPARTS(2026, 4, 13, 10, 0, 0, 0);
 
 ------------------------------------------------------------
--- 1. CREATE TOKENS (ALL SAME SEVERITY)
+-- 1. CREATE TOKENS (LOW, MEDIUM, HIGH)
 ------------------------------------------------------------
-DECLARE @WeekendToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @OffHoursToken UNIQUEIDENTIFIER = NEWID();
-DECLARE @BusinessToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @LowToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @MedToken UNIQUEIDENTIFIER = NEWID();
+DECLARE @HighToken UNIQUEIDENTIFIER = NEWID();
 
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
 VALUES
-(@WeekendToken,  @TokenType, @Severity, @Now, @Now),
-(@OffHoursToken, @TokenType, @Severity, @Now, @Now),
-(@BusinessToken, @TokenType, @Severity, @Now, @Now);
+(@LowToken,  @TokenType, 'Low',    @Now, @Now),
+(@MedToken,  @TokenType, 'Medium', @Now, @Now),
+(@HighToken, @TokenType, 'High',   @Now, @Now);
 
 ------------------------------------------------------------
--- 2. CREATE DOCUMENTS (ALL SAME DEPARTMENT TO ISOLATE TIME)
+-- 2. CREATE DOCUMENTS (ALL SAME DEPARTMENT TO ISOLATE CONTEXT)
 ------------------------------------------------------------
 INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
 VALUES
-('WeekendDoc',  'loc', 'Technology', NULL, NULL, NULL, @WeekendToken),
-('OffHoursDoc', 'loc', 'Technology', NULL, NULL, NULL, @OffHoursToken),
-('BusinessDoc', 'loc', 'Technology', NULL, NULL, NULL, @BusinessToken);
+('DocLow',  'loc', 'Technology', NULL, NULL, NULL, @LowToken),
+('DocMed',  'loc', 'Technology', NULL, NULL, NULL, @MedToken),
+('DocHigh', 'loc', 'Technology', NULL, NULL, NULL, @HighToken);
 
 ------------------------------------------------------------
--- 3. CREATE TIMESTAMPS FOR EACH CASE
+-- 3. CREATE INCIDENTS (ALL SAME TIMESTAMP)
 ------------------------------------------------------------
--- Weekend: Sunday at noon
-DECLARE @WeekendTime DATETIME2 = DATEADD(WEEK, 0, DATETIMEFROMPARTS(2026, 4, 12, 12, 0, 0, 0));
-
--- Off-hours: Monday at 8 AM
-DECLARE @OffHoursTime DATETIME2 = DATETIMEFROMPARTS(2026, 4, 13, 8, 0, 0, 0);
-
--- Business hours: Monday at 10 AM
-DECLARE @BusinessTime DATETIME2 = DATETIMEFROMPARTS(2026, 4, 13, 10, 0, 0, 0);
-
-------------------------------------------------------------
--- 4. CREATE INCIDENTS USING THOSE TIMESTAMPS
-------------------------------------------------------------
-DECLARE @WeekendIncident INT, @OffHoursIncident INT, @BusinessIncident INT;
+DECLARE @LowIncident INT, @MedIncident INT, @HighIncident INT;
 
 INSERT INTO dbo.Incidents
 (
@@ -74,58 +62,56 @@ INSERT INTO dbo.Incidents
     IncidentTokenId
 )
 VALUES
-(@Title, @Desc, @WeekendTime,  @WeekendTime,  @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @WeekendToken),
-(@Title, @Desc, @OffHoursTime, @OffHoursTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @OffHoursToken),
-(@Title, @Desc, @BusinessTime, @BusinessTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @BusinessToken);
+(@Title, @Desc, @TestTime, @TestTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @LowToken),
+(@Title, @Desc, @TestTime, @TestTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @MedToken),
+(@Title, @Desc, @TestTime, @TestTime, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @HighToken);
 
 -- Capture IDs
 SELECT TOP 3 IncidentId, ROW_NUMBER() OVER (ORDER BY IncidentId) AS rn
 INTO #TempInc
 FROM dbo.Incidents
-WHERE IncidentTiedSubjectId = @SubjectId
-  AND IncidentCreatedDate IN (@WeekendTime, @OffHoursTime, @BusinessTime);
+WHERE IncidentCreatedDate = @TestTime
+  AND IncidentTiedSubjectId = @SubjectId;
 
-SELECT @WeekendIncident  = IncidentId FROM #TempInc WHERE rn = 1;
-SELECT @OffHoursIncident = IncidentId FROM #TempInc WHERE rn = 2;
-SELECT @BusinessIncident = IncidentId FROM #TempInc WHERE rn = 3;
+SELECT @LowIncident  = IncidentId FROM #TempInc WHERE rn = 1;
+SELECT @MedIncident  = IncidentId FROM #TempInc WHERE rn = 2;
+SELECT @HighIncident = IncidentId FROM #TempInc WHERE rn = 3;
 
 DROP TABLE #TempInc;
 
 ------------------------------------------------------------
--- 5. SHOW INCIDENTS + EXPECTED TIME MULTIPLIER
+-- 4. SHOW INCIDENTS + EXPECTED SENSITIVITY VALUES
 ------------------------------------------------------------
-PRINT '=== INCIDENTS WITH TIMESTAMPS ===';
-SELECT 
-    IncidentId,
-    IncidentCreatedDate,
-    CASE 
-        WHEN DATEPART(WEEKDAY, IncidentCreatedDate) IN (1,7) THEN 'Weekend (1.3)'
-        WHEN DATEPART(HOUR, IncidentCreatedDate) < 9 OR DATEPART(HOUR, IncidentCreatedDate) >= 18 THEN 'Off-hours (1.2)'
-        ELSE 'Business hours (1.0)'
-    END AS ExpectedTimeCategory
-FROM dbo.Incidents
-WHERE IncidentId IN (@WeekendIncident, @OffHoursIncident, @BusinessIncident);
-
-------------------------------------------------------------
--- 6. RUN INCIDENT RISK SCORE FUNCTION
-------------------------------------------------------------
-PRINT '=== INCIDENT RISK SCORES (TIME MULTIPLIER TEST) ===';
+PRINT '=== INCIDENTS WITH SENSITIVITY VALUES ===';
 SELECT 
     I.IncidentId,
-    I.IncidentCreatedDate,
+    T.TokenSeverity,
+    dbo.fn_get_sensitivity_value(T.TokenSeverity) AS SensitivityValue
+FROM dbo.Incidents I
+JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
+WHERE I.IncidentId IN (@LowIncident, @MedIncident, @HighIncident);
+
+------------------------------------------------------------
+-- 5. RUN INCIDENT RISK SCORE FUNCTION
+------------------------------------------------------------
+PRINT '=== INCIDENT RISK SCORES (SENSITIVITY TEST) ===';
+SELECT 
+    I.IncidentId,
+    T.TokenSeverity,
     dbo.fn_incident_score(@SubjectId, I.IncidentTokenId, I.IncidentCreatedDate) AS IncidentRiskScore
 FROM dbo.Incidents I
-WHERE I.IncidentId IN (@WeekendIncident, @OffHoursIncident, @BusinessIncident)
+JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
+WHERE I.IncidentId IN (@LowIncident, @MedIncident, @HighIncident)
 ORDER BY I.IncidentId;
 
 ------------------------------------------------------------
--- 7. SUBJECT RISK SCORE
+-- 6. SUBJECT RISK SCORE
 ------------------------------------------------------------
 PRINT '=== SUBJECT RISK SCORE ===';
 SELECT dbo.fn_subject_risk(@SubjectId) AS SubjectRiskScore;
 
 ------------------------------------------------------------
--- 8. CLEANUP
+-- 7. CLEANUP
 ------------------------------------------------------------
 PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
