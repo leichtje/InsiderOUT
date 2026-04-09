@@ -228,8 +228,9 @@ namespace InsiderOUT.Server.Services
             if (oldSubjectID != dto.TiedSubjectId)
             {
                 await _db.Database.ExecuteSqlRawAsync(
-                    "EXEC dbo.sp_recalculate_after_assignment @p0",
-                    entity.IncidentId
+                    "EXEC dbo.sp_recalculate_after_assignment @p0, @p1",
+                    entity.IncidentId,
+                    oldSubjectId
                 );
             }
             
