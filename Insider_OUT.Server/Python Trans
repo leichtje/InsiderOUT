@@ -89,7 +89,7 @@ PRINT '=== INCIDENT RISK SCORES BY SEVERITY ===';
 SELECT 
     I.IncidentId,
     T.TokenSeverity,
-    dbo.fn_calculate_incident_risk_score(I.IncidentId) AS IncidentRiskScore
+    dbo.fn_incident_score(I.IncidentId) AS IncidentRiskScore
 FROM dbo.Incidents I
 JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
 WHERE I.IncidentCreatedDate = @Now
