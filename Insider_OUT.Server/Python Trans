@@ -1,9 +1,9 @@
 BEGIN TRANSACTION;
 
-PRINT '=== REASSIGNMENT & RECALCULATION TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+PRINT '=== FULL LIFECYCLE RISK TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 
 ------------------------------------------------------------
--- 0. CREATE TWO TEST SUBJECTS (A AND B)
+-- 0. CREATE TWO TEST SUBJECTS
 ------------------------------------------------------------
 DECLARE @SubjectA INT, @SubjectB INT;
 
@@ -18,21 +18,22 @@ INSERT INTO dbo.Subjects
     SubjectRiskScore
 )
 VALUES
-('Reassign', 'TestA', 'a@test.local', NULL, 'Technology', 'Employee', 0),
-('Reassign', 'TestB', 'b@test.local', NULL, 'Technology', 'Employee', 0);
+('Lifecycle', 'SubjectA', 'lifeA@test.local', NULL, 'Technology', 'Employee', 0),
+('Lifecycle', 'SubjectB', 'lifeB@test.local', NULL, 'Technology', 'Employee', 0);
 
 SELECT @SubjectA = MIN(SubjectId), @SubjectB = MAX(SubjectId)
 FROM dbo.Subjects
-WHERE SubjectEmail IN ('a@test.local', 'b@test.local');
+WHERE SubjectEmail IN ('lifeA@test.local', 'lifeB@test.local');
 
 PRINT 'Subject A ID: ' + CAST(@SubjectA AS NVARCHAR(20));
 PRINT 'Subject B ID: ' + CAST(@SubjectB AS NVARCHAR(20));
 
 ------------------------------------------------------------
--- 1. CREATE TOKEN + DOCUMENT FOR INCIDENT
+-- 1. CREATE TOKEN + DOCUMENT + INCIDENT FOR SUBJECT A
 ------------------------------------------------------------
 DECLARE @Tok UNIQUEIDENTIFIER = NEWID();
 DECLARE @Now DATETIME2 = SYSDATETIME();
+DECLARE @Inc INT;
 
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
 VALUES (@Tok, 'document', 'Medium', @Now, @Now);
@@ -48,12 +49,7 @@ INSERT INTO dbo.Documents
     DocumentTokenId
 )
 VALUES
-('ReassignDoc', 'loc', 'Technology', NULL, NULL, NULL, @Tok);
-
-------------------------------------------------------------
--- 2. CREATE INCIDENT TIED TO SUBJECT A
-------------------------------------------------------------
-DECLARE @Inc INT;
+('LifecycleDoc', 'loc', 'Technology', NULL, NULL, NULL, @Tok);
 
 INSERT INTO dbo.Incidents
 (
@@ -73,7 +69,7 @@ INSERT INTO dbo.Incidents
 )
 VALUES
 (
-    'Reassign Test Incident',
+    'Lifecycle Test Incident',
     'Initial incident for Subject A',
     @Now,
     @Now,
@@ -93,68 +89,103 @@ SET @Inc = SCOPE_IDENTITY();
 PRINT 'Created IncidentId: ' + CAST(@Inc AS NVARCHAR(20));
 
 ------------------------------------------------------------
--- 3. INITIAL RISK CALCULATION (SUBJECT A)
+-- 2. INITIAL RISK CALCULATION
 ------------------------------------------------------------
-PRINT '=== INITIAL INCIDENT RISK CALCULATION (SUBJECT A) ===';
+PRINT '=== INITIAL RISK CALCULATION ===';
 
 UPDATE dbo.Incidents
 SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
 WHERE IncidentId = @Inc;
 
-SELECT 
-    I.IncidentId,
-    I.IncidentTiedSubjectId,
-    I.IncidentRiskScore
-FROM dbo.Incidents I
-WHERE I.IncidentId = @Inc;
+SELECT 'Initial Incident Score' AS Step,
+       IncidentRiskScore
+FROM dbo.Incidents WHERE IncidentId = @Inc;
 
-PRINT '=== INITIAL SUBJECT RISK SCORES ===';
-
-SELECT 
-    'SubjectA' AS Label,
-    dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore
-UNION ALL
-SELECT 
-    'SubjectB' AS Label,
-    dbo.fn_subject_risk(@SubjectB) AS SubjectRiskScore;
+SELECT 'Initial Subject A Score' AS Step,
+       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
 
 ------------------------------------------------------------
--- 4. REASSIGN INCIDENT FROM SUBJECT A TO SUBJECT B
+-- 3. CHANGE SEVERITY (Medium -> High)
 ------------------------------------------------------------
-PRINT '=== REASSIGNING INCIDENT FROM SUBJECT A TO SUBJECT B ===';
+PRINT '=== SEVERITY CHANGE TEST (Medium -> High) ===';
+
+UPDATE dbo.Tokens
+SET TokenSeverity = 'High'
+WHERE TokenId = @Tok;
+
+UPDATE dbo.Incidents
+SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
+WHERE IncidentId = @Inc;
+
+SELECT 'After Severity Change' AS Step,
+       IncidentRiskScore
+FROM dbo.Incidents WHERE IncidentId = @Inc;
+
+SELECT 'Subject A After Severity Change' AS Step,
+       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
+
+------------------------------------------------------------
+-- 4. CHANGE DOCUMENT DEPARTMENT (Technology -> Cybersecurity)
+------------------------------------------------------------
+PRINT '=== DEPARTMENT CHANGE TEST (Technology -> Cybersecurity) ===';
+
+UPDATE dbo.Documents
+SET DocumentDepartment = 'Cybersecurity'
+WHERE DocumentTokenId = @Tok;
+
+UPDATE dbo.Incidents
+SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
+WHERE IncidentId = @Inc;
+
+SELECT 'After Department Change' AS Step,
+       IncidentRiskScore
+FROM dbo.Incidents WHERE IncidentId = @Inc;
+
+SELECT 'Subject A After Department Change' AS Step,
+       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
+
+------------------------------------------------------------
+-- 5. CHANGE TIMESTAMP (Move incident 40 days back)
+------------------------------------------------------------
+PRINT '=== TIMESTAMP CHANGE TEST (40 Days Old) ===';
+
+UPDATE dbo.Incidents
+SET IncidentCreatedDate = DATEADD(DAY, -40, SYSDATETIME())
+WHERE IncidentId = @Inc;
+
+UPDATE dbo.Incidents
+SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
+WHERE IncidentId = @Inc;
+
+SELECT 'After Timestamp Change (40 Days)' AS Step,
+       IncidentRiskScore
+FROM dbo.Incidents WHERE IncidentId = @Inc;
+
+SELECT 'Subject A After Timestamp Change' AS Step,
+       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
+
+------------------------------------------------------------
+-- 6. REASSIGN INCIDENT TO SUBJECT B
+------------------------------------------------------------
+PRINT '=== REASSIGNMENT TEST (A -> B) ===';
 
 UPDATE dbo.Incidents
 SET IncidentTiedSubjectId = @SubjectB
 WHERE IncidentId = @Inc;
 
-------------------------------------------------------------
--- 5. RECALCULATE INCIDENT RISK AFTER REASSIGNMENT
-------------------------------------------------------------
-PRINT '=== RECALCULATING INCIDENT RISK AFTER REASSIGNMENT ===';
-
 UPDATE dbo.Incidents
 SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
 WHERE IncidentId = @Inc;
 
-SELECT 
-    I.IncidentId,
-    I.IncidentTiedSubjectId,
-    I.IncidentRiskScore
-FROM dbo.Incidents I
-WHERE I.IncidentId = @Inc;
+SELECT 'After Reassignment' AS Step,
+       IncidentRiskScore
+FROM dbo.Incidents WHERE IncidentId = @Inc;
 
-------------------------------------------------------------
--- 6. SUBJECT RISK SCORES AFTER REASSIGNMENT
-------------------------------------------------------------
-PRINT '=== SUBJECT RISK SCORES AFTER REASSIGNMENT ===';
-
-SELECT 
-    'SubjectA' AS Label,
-    dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore
+SELECT 'Subject A After Reassignment' AS Step,
+       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore
 UNION ALL
-SELECT 
-    'SubjectB' AS Label,
-    dbo.fn_subject_risk(@SubjectB) AS SubjectRiskScore;
+SELECT 'Subject B After Reassignment',
+       dbo.fn_subject_risk(@SubjectB);
 
 ------------------------------------------------------------
 -- 7. CLEANUP
@@ -162,5 +193,4 @@ SELECT
 PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
 
-PRINT '=== REASSIGNMENT & RECALCULATION TEST COMPLETE ===';
-
+PRINT '=== FULL LIFECYCLE RISK TEST COMPLETE ===';
