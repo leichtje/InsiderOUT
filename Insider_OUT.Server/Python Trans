@@ -7,14 +7,23 @@ PRINT '=== REASSIGNMENT & RECALCULATION TEST STARTED (NO CHANGES WILL BE SAVED) 
 ------------------------------------------------------------
 DECLARE @SubjectA INT, @SubjectB INT;
 
-INSERT INTO dbo.Subjects (SubjectName, SubjectEmail, SubjectDepartment, IsActive)
+INSERT INTO dbo.Subjects
+(
+    SubjectFirstName,
+    SubjectLastName,
+    SubjectEmail,
+    SubjectPhone,
+    SubjectDepartment,
+    SubjectRole,
+    SubjectRiskScore
+)
 VALUES
-('Reassign Test A', 'a@test.local', 'Technology', 1),
-('Reassign Test B', 'b@test.local', 'Technology', 1);
+('Reassign', 'TestA', 'a@test.local', NULL, 'Technology', 'Employee', 0),
+('Reassign', 'TestB', 'b@test.local', NULL, 'Technology', 'Employee', 0);
 
 SELECT @SubjectA = MIN(SubjectId), @SubjectB = MAX(SubjectId)
 FROM dbo.Subjects
-WHERE SubjectName IN ('Reassign Test A', 'Reassign Test B');
+WHERE SubjectEmail IN ('a@test.local', 'b@test.local');
 
 PRINT 'Subject A ID: ' + CAST(@SubjectA AS NVARCHAR(20));
 PRINT 'Subject B ID: ' + CAST(@SubjectB AS NVARCHAR(20));
@@ -28,8 +37,18 @@ DECLARE @Now DATETIME2 = SYSDATETIME();
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
 VALUES (@Tok, 'document', 'Medium', @Now, @Now);
 
-INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
-VALUES ('ReassignDoc', 'loc', 'Technology', NULL, NULL, NULL, @Tok);
+INSERT INTO dbo.Documents
+(
+    DocumentName,
+    DocumentLocation,
+    DocumentDepartment,
+    DocumentContent,
+    DocumentHeader,
+    DocumentFilepath,
+    DocumentTokenId
+)
+VALUES
+('ReassignDoc', 'loc', 'Technology', NULL, NULL, NULL, @Tok);
 
 ------------------------------------------------------------
 -- 2. CREATE INCIDENT TIED TO SUBJECT A
@@ -110,8 +129,6 @@ WHERE IncidentId = @Inc;
 
 ------------------------------------------------------------
 -- 5. RECALCULATE INCIDENT RISK AFTER REASSIGNMENT
---    (NO DATA CHANGED EXCEPT SUBJECT, SO SCORE SHOULD BE SAME,
---     BUT SUBJECT AGGREGATION WILL CHANGE)
 ------------------------------------------------------------
 PRINT '=== RECALCULATING INCIDENT RISK AFTER REASSIGNMENT ===';
 
@@ -146,3 +163,4 @@ PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
 
 PRINT '=== REASSIGNMENT & RECALCULATION TEST COMPLETE ===';
+
