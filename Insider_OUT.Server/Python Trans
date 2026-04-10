@@ -1,128 +1,148 @@
 BEGIN TRANSACTION;
 
-PRINT '=== SUBJECT AGGREGATION TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+PRINT '=== REASSIGNMENT & RECALCULATION TEST STARTED (NO CHANGES WILL BE SAVED) ===';
 
 ------------------------------------------------------------
--- 0. VARIABLES
+-- 0. CREATE TWO TEST SUBJECTS (A AND B)
 ------------------------------------------------------------
-DECLARE @SubjectId INT = 8;
+DECLARE @SubjectA INT, @SubjectB INT;
+
+INSERT INTO dbo.Subjects (SubjectName, SubjectEmail, SubjectDepartment, IsActive)
+VALUES
+('Reassign Test A', 'a@test.local', 'Technology', 1),
+('Reassign Test B', 'b@test.local', 'Technology', 1);
+
+SELECT @SubjectA = MIN(SubjectId), @SubjectB = MAX(SubjectId)
+FROM dbo.Subjects
+WHERE SubjectName IN ('Reassign Test A', 'Reassign Test B');
+
+PRINT 'Subject A ID: ' + CAST(@SubjectA AS NVARCHAR(20));
+PRINT 'Subject B ID: ' + CAST(@SubjectB AS NVARCHAR(20));
+
+------------------------------------------------------------
+-- 1. CREATE TOKEN + DOCUMENT FOR INCIDENT
+------------------------------------------------------------
+DECLARE @Tok UNIQUEIDENTIFIER = NEWID();
 DECLARE @Now DATETIME2 = SYSDATETIME();
 
-DECLARE @Title NVARCHAR(255) = 'Aggregation Test';
-DECLARE @Desc NVARCHAR(MAX) = 'Testing full subject aggregation logic';
-DECLARE @Agent NVARCHAR(255) = 'TestAgent';
-DECLARE @TokenType NVARCHAR(50) = 'document';
-DECLARE @Status NVARCHAR(50) = 'new';
-DECLARE @IsActive BIT = 1;
-
-------------------------------------------------------------
--- 1. CREATE TOKENS FOR 5 INCIDENTS
-------------------------------------------------------------
-DECLARE @Tok1 UNIQUEIDENTIFIER = NEWID();  -- High severity, different dept, weekend
-DECLARE @Tok2 UNIQUEIDENTIFIER = NEWID();  -- Medium severity, same dept, off-hours
-DECLARE @Tok3 UNIQUEIDENTIFIER = NEWID();  -- Low severity, same dept, business hours
-DECLARE @Tok4 UNIQUEIDENTIFIER = NEWID();  -- High severity, same dept, 10 days old
-DECLARE @Tok5 UNIQUEIDENTIFIER = NEWID();  -- Medium severity, diff dept, 40 days old
-
 INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
-VALUES
-(@Tok1, @TokenType, 'High',   @Now, @Now),
-(@Tok2, @TokenType, 'Medium', @Now, @Now),
-(@Tok3, @TokenType, 'Low',    @Now, @Now),
-(@Tok4, @TokenType, 'High',   @Now, @Now),
-(@Tok5, @TokenType, 'Medium', @Now, @Now);
+VALUES (@Tok, 'document', 'Medium', @Now, @Now);
 
-------------------------------------------------------------
--- 2. CREATE DOCUMENTS WITH DEPARTMENTS FOR CONTEXT MULTIPLIER
-------------------------------------------------------------
 INSERT INTO dbo.Documents (DocumentName, DocumentLocation, DocumentDepartment, DocumentContent, DocumentHeader, DocumentFilepath, DocumentTokenId)
-VALUES
-('Doc1', 'loc', 'Cybersecurity', NULL, NULL, NULL, @Tok1),  -- Different dept
-('Doc2', 'loc', 'Technology',    NULL, NULL, NULL, @Tok2),  -- Same dept
-('Doc3', 'loc', 'Technology',    NULL, NULL, NULL, @Tok3),  -- Same dept
-('Doc4', 'loc', 'Technology',    NULL, NULL, NULL, @Tok4),  -- Same dept
-('Doc5', 'loc', 'Cybersecurity', NULL, NULL, NULL, @Tok5);  -- Different dept
+VALUES ('ReassignDoc', 'loc', 'Technology', NULL, NULL, NULL, @Tok);
 
 ------------------------------------------------------------
--- 3. CREATE TIMESTAMPS FOR EACH INCIDENT
+-- 2. CREATE INCIDENT TIED TO SUBJECT A
 ------------------------------------------------------------
-DECLARE @T1 DATETIME2 = DATETIMEFROMPARTS(2026, 4, 12, 12, 0, 0, 0); -- Weekend
-DECLARE @T2 DATETIME2 = DATEADD(MINUTE, -20, SYSDATETIME());        -- Off-hours recent
-DECLARE @T3 DATETIME2 = DATEADD(MINUTE, -10, SYSDATETIME());        -- Business hours recent
-DECLARE @T4 DATETIME2 = DATEADD(DAY, -10, SYSDATETIME());           -- 10 days old
-DECLARE @T5 DATETIME2 = DATEADD(DAY, -40, SYSDATETIME());           -- 40 days old
-
-------------------------------------------------------------
--- 4. CREATE INCIDENTS
-------------------------------------------------------------
-DECLARE @Inc1 INT, @Inc2 INT, @Inc3 INT, @Inc4 INT, @Inc5 INT;
+DECLARE @Inc INT;
 
 INSERT INTO dbo.Incidents
 (
-    IncidentTitle, IncidentDescription, IncidentCreatedDate, IncidentUpdatedDate,
-    IncidentAgent, IncidentTokenType, IncidentStatus, IncidentAssignedUserId,
-    IncidentTiedSubjectId, IsActive, IncidentRiskScore, IncidentIP, IncidentTokenId
+    IncidentTitle,
+    IncidentDescription,
+    IncidentCreatedDate,
+    IncidentUpdatedDate,
+    IncidentAgent,
+    IncidentTokenType,
+    IncidentStatus,
+    IncidentAssignedUserId,
+    IncidentTiedSubjectId,
+    IsActive,
+    IncidentRiskScore,
+    IncidentIP,
+    IncidentTokenId
 )
 VALUES
-(@Title, @Desc, @T1, @T1, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok1),
-(@Title, @Desc, @T2, @T2, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok2),
-(@Title, @Desc, @T3, @T3, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok3),
-(@Title, @Desc, @T4, @T4, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok4),
-(@Title, @Desc, @T5, @T5, @Agent, @TokenType, @Status, NULL, @SubjectId, @IsActive, NULL, '127.0.0.1', @Tok5);
+(
+    'Reassign Test Incident',
+    'Initial incident for Subject A',
+    @Now,
+    @Now,
+    'TestAgent',
+    'document',
+    'new',
+    NULL,
+    @SubjectA,
+    1,
+    NULL,
+    '127.0.0.1',
+    @Tok
+);
 
--- Capture IDs
-SELECT IncidentId, ROW_NUMBER() OVER (ORDER BY IncidentId) AS rn
-INTO #TempInc
-FROM dbo.Incidents
-WHERE IncidentTiedSubjectId = @SubjectId
-  AND IncidentCreatedDate IN (@T1, @T2, @T3, @T4, @T5);
+SET @Inc = SCOPE_IDENTITY();
 
-SELECT @Inc1 = IncidentId FROM #TempInc WHERE rn = 1;
-SELECT @Inc2 = IncidentId FROM #TempInc WHERE rn = 2;
-SELECT @Inc3 = IncidentId FROM #TempInc WHERE rn = 3;
-SELECT @Inc4 = IncidentId FROM #TempInc WHERE rn = 4;
-SELECT @Inc5 = IncidentId FROM #TempInc WHERE rn = 5;
-
-DROP TABLE #TempInc;
+PRINT 'Created IncidentId: ' + CAST(@Inc AS NVARCHAR(20));
 
 ------------------------------------------------------------
--- 5. SHOW INCIDENT RISK SCORES
+-- 3. INITIAL RISK CALCULATION (SUBJECT A)
 ------------------------------------------------------------
-PRINT '=== INCIDENT RISK SCORES ===';
+PRINT '=== INITIAL INCIDENT RISK CALCULATION (SUBJECT A) ===';
+
+UPDATE dbo.Incidents
+SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
+WHERE IncidentId = @Inc;
+
 SELECT 
     I.IncidentId,
-    T.TokenSeverity,
-    D.DocumentDepartment,
-    I.IncidentCreatedDate,
-    dbo.fn_incident_score(@SubjectId, I.IncidentTokenId, I.IncidentCreatedDate) AS IncidentRiskScore
+    I.IncidentTiedSubjectId,
+    I.IncidentRiskScore
 FROM dbo.Incidents I
-JOIN dbo.Tokens T ON I.IncidentTokenId = T.TokenId
-JOIN dbo.Documents D ON D.DocumentTokenId = T.TokenId
-WHERE I.IncidentId IN (@Inc1, @Inc2, @Inc3, @Inc4, @Inc5)
-ORDER BY I.IncidentId;
+WHERE I.IncidentId = @Inc;
 
-------------------------------------------------------------
--- 6. SHOW TIME DECAY VALUES
-------------------------------------------------------------
-PRINT '=== TIME DECAY VALUES ===';
+PRINT '=== INITIAL SUBJECT RISK SCORES ===';
+
 SELECT 
-    IncidentId,
-    IncidentCreatedDate,
-    dbo.fn_time_decay(IncidentCreatedDate) AS TimeDecay
-FROM dbo.Incidents
-WHERE IncidentId IN (@Inc1, @Inc2, @Inc3, @Inc4, @Inc5)
-ORDER BY IncidentId;
+    'SubjectA' AS Label,
+    dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore
+UNION ALL
+SELECT 
+    'SubjectB' AS Label,
+    dbo.fn_subject_risk(@SubjectB) AS SubjectRiskScore;
 
 ------------------------------------------------------------
--- 7. SHOW FINAL SUBJECT RISK SCORE
+-- 4. REASSIGN INCIDENT FROM SUBJECT A TO SUBJECT B
 ------------------------------------------------------------
-PRINT '=== FINAL SUBJECT RISK SCORE ===';
-SELECT dbo.fn_subject_risk(@SubjectId) AS SubjectRiskScore;
+PRINT '=== REASSIGNING INCIDENT FROM SUBJECT A TO SUBJECT B ===';
+
+UPDATE dbo.Incidents
+SET IncidentTiedSubjectId = @SubjectB
+WHERE IncidentId = @Inc;
 
 ------------------------------------------------------------
--- 8. CLEANUP
+-- 5. RECALCULATE INCIDENT RISK AFTER REASSIGNMENT
+--    (NO DATA CHANGED EXCEPT SUBJECT, SO SCORE SHOULD BE SAME,
+--     BUT SUBJECT AGGREGATION WILL CHANGE)
+------------------------------------------------------------
+PRINT '=== RECALCULATING INCIDENT RISK AFTER REASSIGNMENT ===';
+
+UPDATE dbo.Incidents
+SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
+WHERE IncidentId = @Inc;
+
+SELECT 
+    I.IncidentId,
+    I.IncidentTiedSubjectId,
+    I.IncidentRiskScore
+FROM dbo.Incidents I
+WHERE I.IncidentId = @Inc;
+
+------------------------------------------------------------
+-- 6. SUBJECT RISK SCORES AFTER REASSIGNMENT
+------------------------------------------------------------
+PRINT '=== SUBJECT RISK SCORES AFTER REASSIGNMENT ===';
+
+SELECT 
+    'SubjectA' AS Label,
+    dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore
+UNION ALL
+SELECT 
+    'SubjectB' AS Label,
+    dbo.fn_subject_risk(@SubjectB) AS SubjectRiskScore;
+
+------------------------------------------------------------
+-- 7. CLEANUP
 ------------------------------------------------------------
 PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
 ROLLBACK TRANSACTION;
 
-PRINT '=== TEST COMPLETE ===';
+PRINT '=== REASSIGNMENT & RECALCULATION TEST COMPLETE ===';
