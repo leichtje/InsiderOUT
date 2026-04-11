@@ -1,196 +1,148 @@
 BEGIN TRANSACTION;
-
-PRINT '=== FULL LIFECYCLE RISK TEST STARTED (NO CHANGES WILL BE SAVED) ===';
+SET NOCOUNT ON;
 
 ------------------------------------------------------------
--- 0. CREATE TWO TEST SUBJECTS
+-- 1. Assign aging pattern using NON‑SEQUENTIAL ordering
+--    We shuffle using CHECKSUM(IncidentId) so the order
+--    is stable but not sequential.
 ------------------------------------------------------------
-DECLARE @SubjectA INT, @SubjectB INT;
-
-INSERT INTO dbo.Subjects
-(
-    SubjectFirstName,
-    SubjectLastName,
-    SubjectEmail,
-    SubjectPhone,
-    SubjectDepartment,
-    SubjectRole,
-    SubjectRiskScore
+;WITH OrderedIncidents AS (
+    SELECT 
+        I.IncidentId,
+        ROW_NUMBER() OVER (ORDER BY CHECKSUM(I.IncidentId)) AS rn
+    FROM dbo.Incidents I
 )
-VALUES
-('Lifecycle', 'SubjectA', 'lifeA@test.local', NULL, 'Technology', 'Employee', 0),
-('Lifecycle', 'SubjectB', 'lifeB@test.local', NULL, 'Technology', 'Employee', 0);
+UPDATE I
+SET 
+    IncidentCreatedDate =
+        CASE 
+            -- Today: 8 incidents
+            WHEN O.rn BETWEEN 1 AND 8 THEN 
+                CAST('2026-04-11T10:00:00' AS datetime2(7))
 
-SELECT @SubjectA = MIN(SubjectId), @SubjectB = MAX(SubjectId)
-FROM dbo.Subjects
-WHERE SubjectEmail IN ('lifeA@test.local', 'lifeB@test.local');
+            -- Apr 8–10: 10 incidents
+            WHEN O.rn BETWEEN 9 AND 18 THEN 
+                DATEADD(DAY, ((O.rn - 9) % 3), CAST('2026-04-08T10:00:00' AS datetime2(7)))
 
-PRINT 'Subject A ID: ' + CAST(@SubjectA AS NVARCHAR(20));
-PRINT 'Subject B ID: ' + CAST(@SubjectB AS NVARCHAR(20));
+            -- Apr 1–7: 10 incidents
+            WHEN O.rn BETWEEN 19 AND 28 THEN 
+                DATEADD(DAY, ((O.rn - 19) % 7), CAST('2026-04-01T10:00:00' AS datetime2(7)))
+
+            -- March: 6 incidents
+            WHEN O.rn BETWEEN 29 AND 34 THEN 
+                DATEADD(DAY, ((O.rn - 29) % 31), CAST('2026-03-01T10:00:00' AS datetime2(7)))
+
+            -- February: 3 incidents
+            WHEN O.rn BETWEEN 35 AND 37 THEN 
+                DATEADD(DAY, ((O.rn - 35) % 28), CAST('2026-02-01T10:00:00' AS datetime2(7)))
+        END,
+    IncidentStatus =
+        CASE 
+            -- Today: New + inProgress
+            WHEN O.rn BETWEEN 1 AND 8 THEN 
+                CASE WHEN (O.rn % 3) = 0 THEN 'inProgress' ELSE 'New' END
+
+            -- Apr 8–10: New + Resolved
+            WHEN O.rn BETWEEN 9 AND 18 THEN 
+                CASE WHEN (O.rn % 2) = 0 THEN 'Resolved' ELSE 'New' END
+
+            -- Apr 1–7: Resolved + Closed
+            WHEN O.rn BETWEEN 19 AND 28 THEN 
+                CASE WHEN (O.rn % 2) = 0 THEN 'Closed' ELSE 'Resolved' END
+
+            -- March + February: Closed
+            WHEN O.rn BETWEEN 29 AND 37 THEN 'Closed'
+        END,
+    IsActive =
+        CASE 
+            WHEN 
+                CASE 
+                    WHEN O.rn BETWEEN 1 AND 8 THEN 
+                        CASE WHEN (O.rn % 3) = 0 THEN 'inProgress' ELSE 'New' END
+                    WHEN O.rn BETWEEN 9 AND 18 THEN 
+                        CASE WHEN (O.rn % 2) = 0 THEN 'Resolved' ELSE 'New' END
+                    WHEN O.rn BETWEEN 19 AND 28 THEN 
+                        CASE WHEN (O.rn % 2) = 0 THEN 'Closed' ELSE 'Resolved' END
+                    WHEN O.rn BETWEEN 29 AND 37 THEN 'Closed'
+                END = 'Closed'
+            THEN 0
+            ELSE 1
+        END
+FROM dbo.Incidents I
+JOIN OrderedIncidents O
+    ON I.IncidentId = O.IncidentId;
 
 ------------------------------------------------------------
--- 1. CREATE TOKEN + DOCUMENT + INCIDENT FOR SUBJECT A
+-- 2. Velocity cluster for Peter Quill (SubjectId = 23)
+--    3 incidents within a tight window on 2026‑04‑11
 ------------------------------------------------------------
-DECLARE @Tok UNIQUEIDENTIFIER = NEWID();
-DECLARE @Now DATETIME2 = SYSDATETIME();
-DECLARE @Inc INT;
-
-INSERT INTO dbo.Tokens (TokenId, TokenType, TokenSeverity, CreatedDate, UpdatedDate)
-VALUES (@Tok, 'document', 'Medium', @Now, @Now);
-
-INSERT INTO dbo.Documents
-(
-    DocumentName,
-    DocumentLocation,
-    DocumentDepartment,
-    DocumentContent,
-    DocumentHeader,
-    DocumentFilepath,
-    DocumentTokenId
+;WITH QuillIncidents AS (
+    SELECT TOP (3)
+        I.IncidentId,
+        ROW_NUMBER() OVER (ORDER BY CHECKSUM(I.IncidentId)) AS rn
+    FROM dbo.Incidents I
+    WHERE I.IncidentTiedSubjectId = 23
 )
-VALUES
-('LifecycleDoc', 'loc', 'Technology', NULL, NULL, NULL, @Tok);
-
-INSERT INTO dbo.Incidents
-(
-    IncidentTitle,
-    IncidentDescription,
-    IncidentCreatedDate,
-    IncidentUpdatedDate,
-    IncidentAgent,
-    IncidentTokenType,
-    IncidentStatus,
-    IncidentAssignedUserId,
-    IncidentTiedSubjectId,
-    IsActive,
-    IncidentRiskScore,
-    IncidentIP,
-    IncidentTokenId
-)
-VALUES
-(
-    'Lifecycle Test Incident',
-    'Initial incident for Subject A',
-    @Now,
-    @Now,
-    'TestAgent',
-    'document',
-    'new',
-    NULL,
-    @SubjectA,
-    1,
-    NULL,
-    '127.0.0.1',
-    @Tok
-);
-
-SET @Inc = SCOPE_IDENTITY();
-
-PRINT 'Created IncidentId: ' + CAST(@Inc AS NVARCHAR(20));
+UPDATE I
+SET IncidentCreatedDate =
+        DATEADD(MINUTE, (Q.rn - 1) * 2, CAST('2026-04-11T14:00:00' AS datetime2(7)))
+FROM dbo.Incidents I
+JOIN QuillIncidents Q
+    ON I.IncidentId = Q.IncidentId;
 
 ------------------------------------------------------------
--- 2. INITIAL RISK CALCULATION
+-- 3. Safety pass: Closed → IsActive = 0
 ------------------------------------------------------------
-PRINT '=== INITIAL RISK CALCULATION ===';
-
 UPDATE dbo.Incidents
-SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
-WHERE IncidentId = @Inc;
-
-SELECT 'Initial Incident Score' AS Step,
-       IncidentRiskScore
-FROM dbo.Incidents WHERE IncidentId = @Inc;
-
-SELECT 'Initial Subject A Score' AS Step,
-       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
+SET IsActive = CASE WHEN IncidentStatus = 'Closed' THEN 0 ELSE 1 END;
 
 ------------------------------------------------------------
--- 3. CHANGE SEVERITY (Medium -> High)
+-- 4. Automatic risk recalculation for every incident
 ------------------------------------------------------------
-PRINT '=== SEVERITY CHANGE TEST (Medium -> High) ===';
+DECLARE @IncidentId INT;
 
-UPDATE dbo.Tokens
-SET TokenSeverity = 'High'
-WHERE TokenId = @Tok;
+DECLARE IncidentCursor CURSOR FAST_FORWARD FOR
+    SELECT IncidentId
+    FROM dbo.Incidents;
 
-UPDATE dbo.Incidents
-SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
-WHERE IncidentId = @Inc;
+OPEN IncidentCursor;
+FETCH NEXT FROM IncidentCursor INTO @IncidentId;
 
-SELECT 'After Severity Change' AS Step,
-       IncidentRiskScore
-FROM dbo.Incidents WHERE IncidentId = @Inc;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC dbo.sp_recalculate_after_assignment @IncidentId = @IncidentId;
+    FETCH NEXT FROM IncidentCursor INTO @IncidentId;
+END
 
-SELECT 'Subject A After Severity Change' AS Step,
-       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
-
-------------------------------------------------------------
--- 4. CHANGE DOCUMENT DEPARTMENT (Technology -> Cybersecurity)
-------------------------------------------------------------
-PRINT '=== DEPARTMENT CHANGE TEST (Technology -> Cybersecurity) ===';
-
-UPDATE dbo.Documents
-SET DocumentDepartment = 'Cybersecurity'
-WHERE DocumentTokenId = @Tok;
-
-UPDATE dbo.Incidents
-SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
-WHERE IncidentId = @Inc;
-
-SELECT 'After Department Change' AS Step,
-       IncidentRiskScore
-FROM dbo.Incidents WHERE IncidentId = @Inc;
-
-SELECT 'Subject A After Department Change' AS Step,
-       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
+CLOSE IncidentCursor;
+DEALLOCATE IncidentCursor;
 
 ------------------------------------------------------------
--- 5. CHANGE TIMESTAMP (Move incident 40 days back)
+-- 5. Automatic subject risk recalculation
 ------------------------------------------------------------
-PRINT '=== TIMESTAMP CHANGE TEST (40 Days Old) ===';
+DECLARE @SubjectId INT;
 
-UPDATE dbo.Incidents
-SET IncidentCreatedDate = DATEADD(DAY, -40, SYSDATETIME())
-WHERE IncidentId = @Inc;
+DECLARE SubjectCursor CURSOR FAST_FORWARD FOR
+    SELECT SubjectId
+    FROM dbo.Subjects;
 
-UPDATE dbo.Incidents
-SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
-WHERE IncidentId = @Inc;
+OPEN SubjectCursor;
+FETCH NEXT FROM SubjectCursor INTO @SubjectId;
 
-SELECT 'After Timestamp Change (40 Days)' AS Step,
-       IncidentRiskScore
-FROM dbo.Incidents WHERE IncidentId = @Inc;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC dbo.sp_recalculate_subject_risk @SubjectId = @SubjectId;
+    FETCH NEXT FROM SubjectCursor INTO @SubjectId;
+END
 
-SELECT 'Subject A After Timestamp Change' AS Step,
-       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore;
-
-------------------------------------------------------------
--- 6. REASSIGN INCIDENT TO SUBJECT B
-------------------------------------------------------------
-PRINT '=== REASSIGNMENT TEST (A -> B) ===';
-
-UPDATE dbo.Incidents
-SET IncidentTiedSubjectId = @SubjectB
-WHERE IncidentId = @Inc;
-
-UPDATE dbo.Incidents
-SET IncidentRiskScore = dbo.fn_incident_score(IncidentTiedSubjectId, IncidentTokenId, IncidentCreatedDate)
-WHERE IncidentId = @Inc;
-
-SELECT 'After Reassignment' AS Step,
-       IncidentRiskScore
-FROM dbo.Incidents WHERE IncidentId = @Inc;
-
-SELECT 'Subject A After Reassignment' AS Step,
-       dbo.fn_subject_risk(@SubjectA) AS SubjectRiskScore
-UNION ALL
-SELECT 'Subject B After Reassignment',
-       dbo.fn_subject_risk(@SubjectB);
+CLOSE SubjectCursor;
+DEALLOCATE SubjectCursor;
 
 ------------------------------------------------------------
--- 7. CLEANUP
+-- 6. Commit or rollback
 ------------------------------------------------------------
-PRINT '=== ROLLING BACK — NO CHANGES SAVED ===';
-ROLLBACK TRANSACTION;
+-- If everything looks good:
+COMMIT TRANSACTION;
 
-PRINT '=== FULL LIFECYCLE RISK TEST COMPLETE ===';
+-- If you need to undo:
+-- ROLLBACK TRANSACTION;
