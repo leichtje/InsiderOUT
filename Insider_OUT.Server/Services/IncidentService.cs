@@ -203,7 +203,7 @@ namespace InsiderOUT.Server.Services
             if (entity == null) return false;
 
             //New Test  --Revert if Broken
-            var oldSubjectID = entity.IncidentTiedSubjectId;
+            var oldSubjectId = entity.IncidentTiedSubjectId;
 
             entity.IncidentTitle = dto.Title;
             entity.IncidentDescription = dto.Desc;
@@ -225,7 +225,7 @@ namespace InsiderOUT.Server.Services
             await _db.SaveChangesAsync();
 
             //New Test  --Revert if Broken
-            if (oldSubjectID != dto.TiedSubjectId)
+            if (oldSubjectId != dto.TiedSubjectId)
             {
                 await _db.Database.ExecuteSqlRawAsync(
                     "EXEC dbo.sp_recalculate_after_assignment @p0, @p1",

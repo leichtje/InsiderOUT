@@ -120,7 +120,7 @@ export class TokensDocumentsDetailComponent {
                 };
 
                 this.documentStore.update({ 
-                    id: currentDocument.documentId, 
+                    tokenId: currentDocument.tokenId, 
                     data: updatedDocument 
                 });
 

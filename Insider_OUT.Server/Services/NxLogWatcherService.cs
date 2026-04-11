@@ -37,7 +37,7 @@ namespace InsiderOUT.Server.Services
                     _logger.LogError(ex, "Error processing NXLog files.");
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
 
             _logger.LogInformation("NXLogWatcherService stopped.");
@@ -60,6 +60,18 @@ namespace InsiderOUT.Server.Services
         {
             var allFiles = Directory.GetFiles(_watchFolder);
 
+            //string[] allFiles;
+
+            //try
+            //{
+            //    allFiles = Directory.GetFiles(_watchFolder);
+            //}
+            //catch (IOException)
+            //{
+            //    _logger.LogDebug("Skipping scan - folder is locked by NXLog.");
+            //    return;
+            //}
+
             // -------------------------------------------------------
             // 1. DELETE .log.tmp FILES (ONLY IF UNLOCKED)
             // -------------------------------------------------------
@@ -81,12 +93,36 @@ namespace InsiderOUT.Server.Services
             // -------------------------------------------------------
             var logFiles = Directory.GetFiles(_watchFolder, "*.log");
 
+            //string[] logFiles;
+
+            //try
+            //{
+            //    logFiles = Directory.GetFiles(_watchFolder, "*.log");
+            //}
+            //catch (IOException)
+            //{
+            //    _logger.LogDebug("Skipping scan - folder is locked by NXLog.");
+            //    return;
+            //}
+
             foreach (var file in logFiles)
             {
                 _logger.LogInformation($"Processing NXLog file: {file}");
 
                 bool success = true;
                 var lines = File.ReadAllLines(file);
+
+                //string[] lines;
+                //try
+                //{
+                //    lines = File.ReadAllLines(file);
+                //}
+                //catch (IOException)
+                //{
+                //    _logger.LogDebug($"Skipping locked file: {file}");
+                //    continue;
+                //}
+
 
                 using var scope = _scopeFactory.CreateScope();
                 var incidentService = scope.ServiceProvider.GetRequiredService<IIncidentService>();

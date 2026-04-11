@@ -151,17 +151,17 @@ export const DocumentStore = signalStore(
                 )
             ),
 
-            update: rxMethod<{ id: number; data: DocumentModel }>(
+            update: rxMethod<{ tokenId: string; data: DocumentModel }>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true, error: null })),
-                    switchMap(({ id, data }) => {
+                    switchMap(({ tokenId, data }) => {
                         const payload = toDocumentDto(data);
 
-                        return http.put(`${apiUrl}/${id}`, payload).pipe(
+                        return http.put(`${apiUrl}/${tokenId}`, payload).pipe(
                             tap(() => {
                                 patchState(store, (state) => ({
-                                    documents: state.documents.map(i => i.documentId === id ? data : i),
-                                    selectedDocument: state.selectedDocument?.documentId === id ? data : state.selectedDocument,
+                                    documents: state.documents.map(i => i.tokenId === tokenId ? data : i),
+                                    selectedDocument: state.selectedDocument?.tokenId === tokenId ? data : state.selectedDocument,
                                     isLoading: false
                                 }));
 
