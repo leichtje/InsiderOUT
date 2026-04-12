@@ -4,20 +4,27 @@
 
     <h2>Edit Profile</h2>
 
-    <io-profile-card [profile]="profile"></io-profile-card>
+    <div class="profile-detail">
+        <io-profile-card [profile]="profile"></io-profile-card>
+    
+        @if (userStore.isCurrentUser(profile)) {
+    
+            <div>
+                <button (click)="onEdit(profile)">Edit</button>
+                <button class="danger" (click)="onDelete(profile)">Delete Account</button>
+            </div>
+    
+        }
+        @else if (isSubject(profile)) {
+    
+            <div>
+                <button (click)="onEdit(profile)">Edit</button>
+                <button class="danger" (click)="onDelete(profile)">Remove</button>
+            </div>
+    
+        }
+    </div>
 
-    @if (userStore.isCurrentUser(profile)) {
-
-        <button (click)="onEdit(profile)">Edit</button>
-        <button class="danger" (click)="onDelete(profile)">Delete Account</button>
-
-    }
-    @else if (isSubject(profile)) {
-
-        <button (click)="onEdit(profile)">Edit</button>
-        <button class="danger" (click)="onDelete(profile)">Remove</button>
-
-    }
 
 } @else {
     <p>Profile Not Found</p>

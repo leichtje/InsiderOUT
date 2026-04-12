@@ -91,7 +91,7 @@ export const UserStore = signalStore(
                     switchMap(() => http.get<UserDto[]>(apiUrl).pipe(
                         map((dtos) => dtos.map(toUserModel)), 
                         tap((users) => {
-                            const defaultUser = users.find(u => u.userId === 1) || null;
+                            const defaultUser = users.find(u => u.userId === 2) || null;
                             patchState(store, { 
                                 users, 
                                 currentUser: defaultUser, 

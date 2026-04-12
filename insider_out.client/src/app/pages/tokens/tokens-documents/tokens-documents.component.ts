@@ -16,7 +16,7 @@ export class TokensDocumentsComponent {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
-    private allDocumentTokens = this.documentStore.documents;
+    private allDocumentTokens = this.documentStore.sortedDocuments;
     protected currentDepartmentFilter = signal<string>('');
 
     readonly searchQuery = signal<string>('');

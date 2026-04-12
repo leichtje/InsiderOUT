@@ -66,6 +66,11 @@ export const DocumentStore = signalStore(
         documentCount: computed(() => store.documents().length),
         hasSelectedDocument: computed(() => !!store.selectedDocument()),
 
+        sortedDocuments: computed(() => {
+            return [...store.documents()]
+            .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
+        }),
+
         entityMap: computed(() => {
             const map: Record<string, DocumentModel> = {};
             for (const document of store.documents()) {

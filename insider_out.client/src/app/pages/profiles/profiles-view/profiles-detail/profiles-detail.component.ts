@@ -12,6 +12,7 @@ import { Title } from "@angular/platform-browser";
 @Component({
     selector:'io-profiles-detail',
     templateUrl:'profiles-detail.component.html',
+    styleUrl:'profiles-detail.component.scss',
     standalone:true,
     imports: [ProfileCardComponent]
 })

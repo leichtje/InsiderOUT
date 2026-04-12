@@ -20,7 +20,7 @@ import { DocumentStore } from '../../../stores/documents.store';
 })
 export class IncidentsListComponent {
 
-protected userStore = inject(UserStore);
+    protected userStore = inject(UserStore);
     protected subjectStore = inject(SubjectStore);
     protected documentStore = inject(DocumentStore);
 

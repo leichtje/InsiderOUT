@@ -67,14 +67,6 @@ export const IncidentStore = signalStore(
             store.incidents().filter(inc => inc.assignedUserId === null)
         ),
 
-        activeIncidents: computed(() => 
-            store.incidents().filter(inc => inc.isActive === true)
-        ),
-
-        InActiveIncidents: computed(() => 
-            store.incidents().filter(inc => inc.isActive === false)
-        ),
-
         sortedIncidents: computed(() => {
             return [...store.incidents()]
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -88,6 +80,17 @@ export const IncidentStore = signalStore(
             return map;
         })
     })),
+
+    withComputed((store) => ({
+        activeIncidents: computed(() => 
+            store.sortedIncidents().filter(inc => inc.isActive === true)
+        ),
+
+        InActiveIncidents: computed(() => 
+            store.sortedIncidents().filter(inc => inc.isActive === false)
+        ),
+    })),
+
 
     withMethods((store, http = inject(HttpClient), snackBar = inject(MatSnackBar)) => {
         const apiUrl = 'https://localhost:7244/api/incidents'; 
