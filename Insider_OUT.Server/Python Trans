@@ -1,148 +1,27 @@
-BEGIN TRANSACTION;
-SET NOCOUNT ON;
+-- Preview
 
-------------------------------------------------------------
--- 1. Assign aging pattern using NON‑SEQUENTIAL ordering
---    We shuffle using CHECKSUM(IncidentId) so the order
---    is stable but not sequential.
-------------------------------------------------------------
-;WITH OrderedIncidents AS (
-    SELECT 
-        I.IncidentId,
-        ROW_NUMBER() OVER (ORDER BY CHECKSUM(I.IncidentId)) AS rn
-    FROM dbo.Incidents I
-)
-UPDATE I
-SET 
-    IncidentCreatedDate =
-        CASE 
-            -- Today: 8 incidents
-            WHEN O.rn BETWEEN 1 AND 8 THEN 
-                CAST('2026-04-11T10:00:00' AS datetime2(7))
+SELECT 
+    IncidentId,
+    IncidentTitle AS CurrentTitle,
+    IncidentCreatedDate,
+    CONCAT(
+        'INC-',
+        FORMAT(IncidentCreatedDate, 'yyyyMMdd'),
+        '-',
+        RIGHT('0000' + CAST(IncidentId AS VARCHAR(4)), 4)
+    ) AS NewTitlePreview
+FROM Incidents
+ORDER BY IncidentId;
 
-            -- Apr 8–10: 10 incidents
-            WHEN O.rn BETWEEN 9 AND 18 THEN 
-                DATEADD(DAY, ((O.rn - 9) % 3), CAST('2026-04-08T10:00:00' AS datetime2(7)))
 
-            -- Apr 1–7: 10 incidents
-            WHEN O.rn BETWEEN 19 AND 28 THEN 
-                DATEADD(DAY, ((O.rn - 19) % 7), CAST('2026-04-01T10:00:00' AS datetime2(7)))
 
-            -- March: 6 incidents
-            WHEN O.rn BETWEEN 29 AND 34 THEN 
-                DATEADD(DAY, ((O.rn - 29) % 31), CAST('2026-03-01T10:00:00' AS datetime2(7)))
+-- Update
 
-            -- February: 3 incidents
-            WHEN O.rn BETWEEN 35 AND 37 THEN 
-                DATEADD(DAY, ((O.rn - 35) % 28), CAST('2026-02-01T10:00:00' AS datetime2(7)))
-        END,
-    IncidentStatus =
-        CASE 
-            -- Today: New + inProgress
-            WHEN O.rn BETWEEN 1 AND 8 THEN 
-                CASE WHEN (O.rn % 3) = 0 THEN 'inProgress' ELSE 'New' END
 
-            -- Apr 8–10: New + Resolved
-            WHEN O.rn BETWEEN 9 AND 18 THEN 
-                CASE WHEN (O.rn % 2) = 0 THEN 'Resolved' ELSE 'New' END
-
-            -- Apr 1–7: Resolved + Closed
-            WHEN O.rn BETWEEN 19 AND 28 THEN 
-                CASE WHEN (O.rn % 2) = 0 THEN 'Closed' ELSE 'Resolved' END
-
-            -- March + February: Closed
-            WHEN O.rn BETWEEN 29 AND 37 THEN 'Closed'
-        END,
-    IsActive =
-        CASE 
-            WHEN 
-                CASE 
-                    WHEN O.rn BETWEEN 1 AND 8 THEN 
-                        CASE WHEN (O.rn % 3) = 0 THEN 'inProgress' ELSE 'New' END
-                    WHEN O.rn BETWEEN 9 AND 18 THEN 
-                        CASE WHEN (O.rn % 2) = 0 THEN 'Resolved' ELSE 'New' END
-                    WHEN O.rn BETWEEN 19 AND 28 THEN 
-                        CASE WHEN (O.rn % 2) = 0 THEN 'Closed' ELSE 'Resolved' END
-                    WHEN O.rn BETWEEN 29 AND 37 THEN 'Closed'
-                END = 'Closed'
-            THEN 0
-            ELSE 1
-        END
-FROM dbo.Incidents I
-JOIN OrderedIncidents O
-    ON I.IncidentId = O.IncidentId;
-
-------------------------------------------------------------
--- 2. Velocity cluster for Peter Quill (SubjectId = 23)
---    3 incidents within a tight window on 2026‑04‑11
-------------------------------------------------------------
-;WITH QuillIncidents AS (
-    SELECT TOP (3)
-        I.IncidentId,
-        ROW_NUMBER() OVER (ORDER BY CHECKSUM(I.IncidentId)) AS rn
-    FROM dbo.Incidents I
-    WHERE I.IncidentTiedSubjectId = 23
-)
-UPDATE I
-SET IncidentCreatedDate =
-        DATEADD(MINUTE, (Q.rn - 1) * 2, CAST('2026-04-11T14:00:00' AS datetime2(7)))
-FROM dbo.Incidents I
-JOIN QuillIncidents Q
-    ON I.IncidentId = Q.IncidentId;
-
-------------------------------------------------------------
--- 3. Safety pass: Closed → IsActive = 0
-------------------------------------------------------------
-UPDATE dbo.Incidents
-SET IsActive = CASE WHEN IncidentStatus = 'Closed' THEN 0 ELSE 1 END;
-
-------------------------------------------------------------
--- 4. Automatic risk recalculation for every incident
-------------------------------------------------------------
-DECLARE @IncidentId INT;
-
-DECLARE IncidentCursor CURSOR FAST_FORWARD FOR
-    SELECT IncidentId
-    FROM dbo.Incidents;
-
-OPEN IncidentCursor;
-FETCH NEXT FROM IncidentCursor INTO @IncidentId;
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    EXEC dbo.sp_recalculate_after_assignment @IncidentId = @IncidentId;
-    FETCH NEXT FROM IncidentCursor INTO @IncidentId;
-END
-
-CLOSE IncidentCursor;
-DEALLOCATE IncidentCursor;
-
-------------------------------------------------------------
--- 5. Automatic subject risk recalculation
-------------------------------------------------------------
-DECLARE @SubjectId INT;
-
-DECLARE SubjectCursor CURSOR FAST_FORWARD FOR
-    SELECT SubjectId
-    FROM dbo.Subjects;
-
-OPEN SubjectCursor;
-FETCH NEXT FROM SubjectCursor INTO @SubjectId;
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    EXEC dbo.sp_recalculate_subject_risk @SubjectId = @SubjectId;
-    FETCH NEXT FROM SubjectCursor INTO @SubjectId;
-END
-
-CLOSE SubjectCursor;
-DEALLOCATE SubjectCursor;
-
-------------------------------------------------------------
--- 6. Commit or rollback
-------------------------------------------------------------
--- If everything looks good:
-COMMIT TRANSACTION;
-
--- If you need to undo:
--- ROLLBACK TRANSACTION;
+UPDATE Incidents
+SET IncidentTitle = CONCAT(
+    'INC-',
+    FORMAT(IncidentCreatedDate, 'yyyyMMdd'),
+    '-',
+    RIGHT('0000' + CAST(IncidentId AS VARCHAR(4)), 4)
+);
