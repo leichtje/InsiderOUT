@@ -1,15 +1,15 @@
--- Preview
+--Preview
 
 SELECT 
     IncidentId,
-    IncidentTitle AS CurrentTitle,
+    IncidentTitle,
     IncidentCreatedDate,
+    TokenSeverity,
     CONCAT(
-        'INC-',
-        FORMAT(IncidentCreatedDate, 'yyyyMMdd'),
-        '-',
-        RIGHT('0000' + CAST(IncidentId AS VARCHAR(4)), 4)
-    ) AS NewTitlePreview
+        'System detected a ',
+        TokenSeverity,
+        ' severity event requiring triage.'
+    ) AS NewDescriptionPreview
 FROM Incidents
 ORDER BY IncidentId;
 
@@ -17,11 +17,3 @@ ORDER BY IncidentId;
 
 -- Update
 
-
-UPDATE Incidents
-SET IncidentTitle = CONCAT(
-    'INC-',
-    FORMAT(IncidentCreatedDate, 'yyyyMMdd'),
-    '-',
-    RIGHT('0000' + CAST(IncidentId AS VARCHAR(4)), 4)
-);
