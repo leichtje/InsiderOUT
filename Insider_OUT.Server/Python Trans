@@ -1,19 +1,29 @@
 --Preview
 
 SELECT 
-    IncidentId,
-    IncidentTitle,
-    IncidentCreatedDate,
-    TokenSeverity,
+    i.IncidentId,
+    i.IncidentTitle,
+    i.IncidentCreatedDate,
+    t.TokenSeverity,
     CONCAT(
         'System detected a ',
-        TokenSeverity,
+        t.TokenSeverity,
         ' severity event requiring triage.'
     ) AS NewDescriptionPreview
-FROM Incidents
-ORDER BY IncidentId;
+FROM Incidents i
+JOIN Tokens t ON t.TokenId = i.IncidentTokenId
+ORDER BY i.IncidentId;
+
 
 
 
 -- Update
 
+UPDATE i
+SET i.IncidentDescription = CONCAT(
+        'System detected a ',
+        t.TokenSeverity,
+        ' severity event requiring triage.'
+    )
+FROM Incidents i
+JOIN Tokens t ON t.TokenId = i.IncidentTokenId;
